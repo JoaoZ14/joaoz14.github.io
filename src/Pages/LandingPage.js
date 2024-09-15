@@ -2,8 +2,18 @@ import React from "react";
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaWhatsapp } from "react-icons/fa6";
+import { FaGithub } from "react-icons/fa";
+import { FaLinkedin } from "react-icons/fa";
 
 const FaWhatsappIcon = styled(FaWhatsapp)`
+  color: white;
+  font-size: 30px;
+`;
+const FaGithubIcon = styled(FaGithub)`
+  color: white;
+  font-size: 30px;
+`;
+const FaLinkedinIcon = styled(FaLinkedin)`
   color: white;
   font-size: 30px;
 `;
@@ -11,6 +21,14 @@ const FaWhatsappIcon = styled(FaWhatsapp)`
 const DivIcons = styled.div`
   margin-top: 100px;
   display: flex;
+  gap: 5px;
+
+  a {
+    transition: 0.3s;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 `;
 
 const Wraper = styled.div`
@@ -82,6 +100,14 @@ const LandingPage = () => {
         <DivIcons>
           <a href="">
             <FaWhatsappIcon />
+          </a>
+
+          <a href="">
+            <FaGithubIcon />
+          </a>
+
+          <a href="">
+            <FaLinkedinIcon />
           </a>
         </DivIcons>
         <Line />
