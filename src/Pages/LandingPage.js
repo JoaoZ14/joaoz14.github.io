@@ -138,20 +138,20 @@ const LandingPage = () => {
           <ButtonCV href="">Baixar CV</ButtonCV>
         </DivText>
         <DivIcons>
-          <a href="">
+          <a href="https://wa.me/5524988685043">
             <FaWhatsappIcon />
           </a>
 
-          <a href="">
+          <a href="https://github.com/JoaoZ14" target="_blank">
             <FaGithubIcon />
           </a>
 
-          <a href="">
+          <a href="http://www.linkedin.com/in/joao-possidonio" target="_blank">
             <FaLinkedinIcon />
           </a>
         </DivIcons>
         <Line />
-        <AboutDiv>
+        <AboutDiv id="Sobre">
           <AboutTitle>SOBRE</AboutTitle>
           <AboutText>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
