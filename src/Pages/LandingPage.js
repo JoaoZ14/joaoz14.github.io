@@ -17,17 +17,45 @@ import {
 } from "../components/Icons";
 
 const AboutSection = styled.section`
-  margin: 50px 0;
+   height: 100vh; /* Ocupa a tela inteira */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   padding: 20px;
   background-color: #2c2c2c;
   color: white;
-  text-align: center;
+
+  @media (max-width: 600px) {
+      max-width: 100vw; /* Ajuste para telas menores */
+display: flex;
+flex-direction: column;
+
+      text-align: center;
+    }
   #one {
     display: flex;
+
+    @media (max-width: 600px) {
+      max-width: 100vw; /* Ajuste para telas menores */
+display: flex;
+flex-direction: column;
+align-items: center;
+
+      text-align: center;
+    }
   }
   #text {
     text-align: left;
     width: 40%;
+
+    @media (max-width: 600px) {
+      max-width: 100vw; /* Ajuste para telas menores */
+      width: 90%;
+
+
+      text-align: center;
+    }
   }
   #image {
     display: flex;
@@ -42,6 +70,10 @@ const AboutSection = styled.section`
       position: absolute;
       border-radius: 50%;
       z-index: 10;
+      @media (max-width: 768px) {
+        width: 200px; /* Reduz tamanho para celulares */
+        height: 200px;
+      }
     }
   }
 
@@ -50,6 +82,11 @@ const AboutSection = styled.section`
     height: 300px;
     border-radius: 50%;
     z-index: 11;
+
+     @media (max-width: 768px) {
+        width: 200px; /* Reduz tamanho para celulares */
+        height: 200px;
+      }
   }
   h2 {
     font-size: 30px;
@@ -62,6 +99,10 @@ const AboutSection = styled.section`
     line-height: 1.6;
     color: silver;
     font-family: "Titillium Web", sans-serif;
+
+    @media (max-width: 768px) {
+      font-size: 16px; /* Ajusta fonte para telas menores */
+       }
   }
 `;
 
@@ -104,10 +145,10 @@ const ProjectCard = styled.a`
 
 const DivIcons = styled.div`
   margin-top: 100px;
-  margin-bottom: 100px;
+  margin-bottom: 0px;
 
   display: flex;
-  gap: 5px;
+  gap: 10px;
 
   a {
     transition: 0.3s;
@@ -170,7 +211,6 @@ const Wraper = styled.div`
 `;
 
 const DivPrincipal = styled.div`
-  margin-top: 100px;
   text-align: center;
   align-items: center;
   display: flex;
@@ -179,11 +219,15 @@ const DivPrincipal = styled.div`
 `;
 
 const DivMargin = styled.div`
-  height: 170px;
+  height: 1px;
 `;
 
 const DivText = styled.div`
   width: 1200px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   flex-direction: column;
 `;
@@ -237,11 +281,16 @@ const Popup = styled.div`
 const Section = styled.section`
   margin: 50px 0;
   text-align: center;
+  
 
   h2 {
     font-size: 30px;
     margin-bottom: 20px;
     font-family: Garamond, serif;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
   }
 `;
 
@@ -408,8 +457,9 @@ const LandingPage = () => {
 
   return (
     <Wraper>
-      <DivMargin id="home" />
       <DivPrincipal>
+      <DivMargin id="home" />
+
         <DivText>
           <TextFirst>Hello World,</TextFirst>
           <TextSecond>
@@ -417,16 +467,8 @@ const LandingPage = () => {
             <br /> <p>DESENVOLVEDOR FRONTEND</p>
           </TextSecond>
           <ButtonCV onClick={() => setShowPopup(true)}>Baixar CV</ButtonCV>
-        </DivText>
 
-        <Popup show={showPopup}>
-          <h3>Selecione o idioma do CV</h3>
-          <button onClick={() => handleDownloadCV("pt")}>Português</button>
-          <button onClick={() => handleDownloadCV("en")}>Inglês</button>
-          <button onClick={() => setShowPopup(false)}>Fechar</button>
-        </Popup>
-
-        <DivIcons>
+          <DivIcons>
           <a href="https://wa.me/5524988685043">
             <FaWhatsappIcon />
           </a>
@@ -439,6 +481,16 @@ const LandingPage = () => {
             <FaLinkedinIcon />
           </a>
         </DivIcons>
+        </DivText>
+
+        <Popup show={showPopup}>
+          <h3>Selecione o idioma do CV</h3>
+          <button onClick={() => handleDownloadCV("pt")}>Português</button>
+          <button onClick={() => handleDownloadCV("en")}>Inglês</button>
+          <button onClick={() => setShowPopup(false)}>Fechar</button>
+        </Popup>
+
+       
         <Line id="about" />
         <AboutSection>
           <div id="one">

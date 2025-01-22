@@ -14,6 +14,9 @@ const NavBar = styled.div`
   background-color:rgba(33, 33, 33, 0.65);
   z-index: 20;
 
+  @media (max-width: 768px) {
+max-width:  100vw;
+}
 `;
 const Logo = styled.h1`
   font-family: Georgia, serif;
