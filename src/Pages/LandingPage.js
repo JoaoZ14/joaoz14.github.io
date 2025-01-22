@@ -1,25 +1,111 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
-import { FaWhatsapp } from "react-icons/fa6";
-import { FaGithub } from "react-icons/fa";
-import { FaLinkedin } from "react-icons/fa";
+import {
+  FaCssIcon,
+  FaGithubIcon,
+  FaHtmlIcon,
+  FaJavaIcon,
+  FaJsIcon,
+  FaLinkedinIcon,
+  FaNodeJsIcon,
+  FaPythonIcon,
+  FaReactIcon,
+  FaWhatsappIcon,
+  SiGitIcon,
+  SiSpringbootIcon,
+} from "../components/Icons";
 
-const FaWhatsappIcon = styled(FaWhatsapp)`
+const AboutSection = styled.section`
+  margin: 50px 0;
+  padding: 20px;
+  background-color: #2c2c2c;
   color: white;
-  font-size: 30px;
+  text-align: center;
+  #one {
+    display: flex;
+  }
+  #text {
+    text-align: left;
+    width: 40%;
+  }
+  #image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+
+    #background {
+      width: 300px;
+      height: 300px;
+      background-color: rgb(255, 252, 223);
+      position: absolute;
+      border-radius: 50%;
+      z-index: 10;
+    }
+  }
+
+  img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    z-index: 11;
+  }
+  h2 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    font-family: Garamond, serif;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: silver;
+    font-family: "Titillium Web", sans-serif;
+  }
 `;
-const FaGithubIcon = styled(FaGithub)`
+
+const ProjectCard = styled.a`
+  display: block;
+  width: 300px;
+  background-color: #2c2c2c;
+  border-radius: 24px;
+  text-decoration: none;
   color: white;
-  font-size: 30px;
-`;
-const FaLinkedinIcon = styled(FaLinkedin)`
-  color: white;
-  font-size: 30px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  div {
+    padding: 15px;
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: silver;
+    }
+  }
 `;
 
 const DivIcons = styled.div`
   margin-top: 100px;
+  margin-bottom: 100px;
+
   display: flex;
   gap: 5px;
 
@@ -31,17 +117,66 @@ const DivIcons = styled.div`
   }
 `;
 
+const DivIconsTec = styled.div`
+  margin-top: 30px;
+  display: flex;
+  gap: 20px; 
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  svg {
+    font-size: 48px;
+    transition: transform 0.3s;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+`;
+
+const DescriptionBox = styled.div`
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  height: 20px;
+  text-align: center;
+  color: silver;
+  font-size: 16px;
+`;
+
+const Description = styled.p`
+  margin-top: 10px;
+  font-size: 14px;
+  color: silver;
+  text-align: center;
+  position: absolute;
+  bottom: -40px; /* Ajusta a posição abaixo do ícone */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px); /* Inicia com deslocamento */
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none; /* Impede interação com o texto */
+`;
 const Wraper = styled.div`
   background-color: #212121;
 `;
 
 const DivPrincipal = styled.div`
-  margin-top: 10%;
+  margin-bottom: auto;
   text-align: center;
   align-items: center;
   display: flex;
   justify-content: center;
   flex-direction: column;
+`;
+
+const DivMargin = styled.div`
+  height: 170px;
 `;
 
 const DivText = styled.div`
@@ -61,6 +196,99 @@ const TextSecond = styled.h2`
   font-family: Garamond, serif;
   font-size: 50px;
   font-weight: 100;
+
+  p {
+    margin-top: 10px;
+    font-size: 20px;
+    letter-spacing: 6px;
+    font-family: "Titillium Web", sans-serif;
+  }
+`;
+
+const Popup = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  display: ${({ show }) => (show ? "block" : "none")};
+
+  button {
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: silver;
+    cursor: pointer;
+
+    &:hover {
+      background-color: gray;
+    }
+  }
+`;
+
+const Section = styled.section`
+  margin: 50px 0;
+  text-align: center;
+
+  h2 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    font-family: Garamond, serif;
+  }
+`;
+
+const ProjectsGrid = styled.div`
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+
+  div {
+    text-align: center;
+
+    img {
+      width: 300px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    a {
+      display: block;
+      margin-top: 10px;
+      text-decoration: none;
+      color: white;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+`;
+
+const ContactList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+
+  p {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  svg {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  a {
+    text-decoration: none;
+    color: rgb(121, 121, 121);
+  }
 `;
 
 const ButtonCV = styled.a`
@@ -71,6 +299,8 @@ const ButtonCV = styled.a`
   color: white;
   border-radius: 5px;
   font-weight: 300;
+
+  cursor: pointer;
 `;
 
 const LineLateral = styled.div`
@@ -80,23 +310,81 @@ const LineLateral = styled.div`
 `;
 
 const Line = styled.div`
-  margin-top: 100px;
   width: 90%;
   height: 2px;
   background-color: silver;
 `;
 
 const LandingPage = () => {
+  const [selectedIcon, setSelectedIcon] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedTechnology, setSelectedTechnology] = useState("");
+
+
+  const descriptions = {
+    react:
+      "React é uma biblioteca JavaScript para criar interfaces de usuário.",
+    js: "JavaScript é uma linguagem de programação versátil e essencial para o desenvolvimento web.",
+    html: "HTML é a linguagem de marcação padrão para criar páginas da web.",
+    css: "CSS é usado para estilizar páginas web e melhorar sua aparência.",
+    node: "Node.js é um ambiente para executar JavaScript no lado do servidor.",
+    python:
+      "Python é uma linguagem de programação popular para diversas aplicações.",
+    java: "Java é uma linguagem de programação amplamente usada para criar aplicativos robustos.",
+    springboot:
+      "Spring Boot é um framework Java para construir aplicativos web.",
+    git: "Git é um sistema de controle de versão usado para rastrear alterações no código.",
+  };
+
+  const icons = {
+    react: <FaReactIcon />,
+    js: <FaJsIcon />,
+    html: <FaHtmlIcon />,
+    css: <FaCssIcon />,
+    node: <FaNodeJsIcon />,
+    python: <FaPythonIcon />,
+    java: <FaJavaIcon />,
+    springboot: <SiSpringbootIcon />,
+    git: <SiGitIcon />,
+  };
+
+  const projects = [
+    {
+      name: "Calculadora",
+      image: "calculadora.png",
+      github: "https://github.com/JoaoZ14/Calculator",
+    },
+  ];
+
+  const handleDownloadCV = (language) => {
+    if (language === "pt") {
+      window.open("/files/cv_portugues.pdf", "_blank");
+    } else {
+      window.open("/files/cv_ingles.pdf", "_blank");
+    }
+    setShowPopup(false);
+  };
+
   return (
     <Wraper>
+      <DivMargin id="home" />
       <DivPrincipal>
         <DivText>
           <TextFirst>Hello World,</TextFirst>
           <TextSecond>
-            Meu nome é João Guilherme, e sou desenvolvedor front-end - React
+            Meu nome é João Guilherme,
+            <br /> <p>DESENVOLVEDOR FRONTEND</p>
           </TextSecond>
-          <ButtonCV href="">Baixar CV</ButtonCV>
+          <ButtonCV onClick={() => setShowPopup(true)}>Baixar CV</ButtonCV>
         </DivText>
+
+        <Popup show={showPopup}>
+          <h3>Selecione o idioma do CV</h3>
+          <button onClick={() => handleDownloadCV("pt")}>Português</button>
+          <button onClick={() => handleDownloadCV("en")}>Inglês</button>
+          <button onClick={() => setShowPopup(false)}>Fechar</button>
+        </Popup>
+
         <DivIcons>
           <a href="">
             <FaWhatsappIcon />
@@ -110,7 +398,106 @@ const LandingPage = () => {
             <FaLinkedinIcon />
           </a>
         </DivIcons>
+        <Line id="about" />
+        <AboutSection>
+          <div id="one">
+            <div id="image">
+              <img src="me2.png" />
+              <div id="background" />
+            </div>
+            <div id="text">
+              <h2>Sobre Mim</h2>
+
+              <p>
+                Olá! Meu nome é João Guilherme, sou um desenvolvedor frontend
+                apaixonado por criar interfaces intuitivas e designs funcionais.
+                Adoro transformar ideias em experiências digitais, com foco em
+                detalhes e desempenho. Tenho experiência com React, JavaScript,
+                HTML, CSS, e sempre estou explorando novas tecnologias para
+                expandir minhas habilidades.
+              </p>
+              <p>
+                Além de programação, gosto de resolver problemas complexos,
+                colaborar com equipes criativas, e me manter atualizado com as
+                últimas tendências em desenvolvimento web.
+              </p>
+            </div>
+          </div>
+        </AboutSection>
         <Line />
+        <h2>Tecnologias</h2>
+
+         <DivIconsTec>
+        {Object.keys(descriptions).map((key) => (
+          <IconWrapper
+            key={key}
+            onMouseEnter={() => setSelectedTechnology(key)}
+            onMouseLeave={() => setSelectedTechnology("")}
+          >
+            {icons[key]}
+          </IconWrapper>
+        ))}
+      </DivIconsTec>
+
+      <DescriptionBox>
+        {selectedTechnology && descriptions[selectedTechnology]}
+      </DescriptionBox>
+        {selectedIcon && (
+          <Description>{descriptions[selectedIcon]}</Description>
+        )}
+        <Line id="projects" />
+        <h2>Projetos</h2>
+
+        <Section>
+          <ProjectsGrid>
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={index}
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={project.image} alt={project.name} />
+                <div>
+                  <h3>{project.name}</h3>
+                  <p>Clique para acessar o repositório no GitHub</p>
+                </div>
+              </ProjectCard>
+            ))}
+          </ProjectsGrid>
+        </Section>
+        <Line />
+
+        <Section id="contact">
+          <h2>Contato</h2>
+          <ContactList>
+            <p>
+              <FaWhatsappIcon /> WhatsApp: (24) 98868-5043{" "}
+            </p>
+            <p>
+              <FaGithubIcon /> GitHub:{" "}
+              <a
+                href="https://github.com/JoaoZ14"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                github.com/JoaoZ14
+              </a>
+            </p>
+            <p>
+              <FaLinkedinIcon /> LinkedIn:{" "}
+              <a
+                href="https://www.linkedin.com/in/joao-possidonio/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                www.linkedin.com/in/joao-possidonio/{" "}
+              </a>
+            </p>
+            <p>Email: seuemail@email.com</p>
+          </ContactList>
+        </Section>
+
         <Line />
       </DivPrincipal>
     </Wraper>

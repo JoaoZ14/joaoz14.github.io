@@ -2,16 +2,27 @@ import React from "react";
 import styled from "styled-components";
 
 const NavBar = styled.div`
-  margin: 0;
   text-align: center;
+  margin-bottom: auto;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  position: fixed;
+  height: 80px;
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  background-color:rgba(33, 33, 33, 0.65);
+  z-index: 20;
+
 `;
 const Logo = styled.h1`
   font-family: Georgia, serif;
   font-size: 40px;
+
+
+  img{
+    width: 60px;
+  }
 `;
 const NavLinks = styled.li`
   font-family: Times, Times New Roman, serif;
@@ -31,11 +42,15 @@ const NavLinks = styled.li`
 const Navigation = () => {
   return (
     <NavBar>
-      <Logo>QUARTZ</Logo>
+      <Logo>
+        <a href="#home">
+        <img src="J (1)-Photoroom.png"/>
+        </a>
+      </Logo>
       <NavLinks>
-        <a href="">Sobre</a>
-        <a href="">Projetos</a>
-        <a href="">Contato</a>
+        <a href="#about">Sobre</a>
+        <a href="#projects">Projetos</a>
+        <a href="#contact">Contato</a>
       </NavLinks>
     </NavBar>
   );

@@ -5,12 +5,39 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+}
+
+html {
+  scroll-behavior: smooth; /* Rolagem suave */
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-    
 }
 
+h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  font-family: Garamond, serif;
+}
 
+/* Estilo minimalista para a barra de rolagem */
+::-webkit-scrollbar {
+  width: 5px; /* Largura da barra */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Cor da barra */
+  border-radius: 4px; /* Borda arredondada */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Cor ao passar o mouse */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Cor do trilho */
+  border-radius: 4px;
+}
