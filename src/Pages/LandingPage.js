@@ -657,7 +657,7 @@ const LandingPage = () => {
                 www.linkedin.com/in/joao-possidonio/{" "}
               </a>
             </p>
-            <p>Email: seuemail@email.com</p>
+            <p>Email: joaorlara26@gmail.com</p>
           </ContactList>
         </Section>
 
