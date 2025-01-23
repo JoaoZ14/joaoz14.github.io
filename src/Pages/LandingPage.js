@@ -19,9 +19,8 @@ import {
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-
 const AboutSection = styled.section`
-   height: 50vh; /* Ocupa a tela inteira */
+  height: 60vh; /* Ocupa a tela inteira */
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -31,23 +30,22 @@ const AboutSection = styled.section`
   color: white;
   box-shadow: 0px 0px 40px -10px rgb(0, 0, 0, 0.3);
 
-
   @media (max-width: 600px) {
-      max-width: 100vw; /* Ajuste para telas menores */
-      height: 100vh;
-display: flex;
-flex-direction: column;
+    max-width: 100vw; /* Ajuste para telas menores */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 
-      text-align: center;
-    }
+    text-align: center;
+  }
   #one {
     display: flex;
 
     @media (max-width: 600px) {
       max-width: 100vw; /* Ajuste para telas menores */
-display: flex;
-flex-direction: column;
-align-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       text-align: center;
     }
@@ -59,7 +57,6 @@ align-items: center;
     @media (max-width: 600px) {
       max-width: 100vw; /* Ajuste para telas menores */
       width: 90%;
-
 
       text-align: center;
     }
@@ -91,10 +88,10 @@ align-items: center;
     border-radius: 50%;
     z-index: 11;
 
-     @media (max-width: 768px) {
-        width: 200px; /* Reduz tamanho para celulares */
-        height: 200px;
-      }
+    @media (max-width: 768px) {
+      width: 200px; /* Reduz tamanho para celulares */
+      height: 200px;
+    }
   }
   h2 {
     font-size: 30px;
@@ -110,7 +107,7 @@ align-items: center;
 
     @media (max-width: 768px) {
       font-size: 16px; /* Ajusta fonte para telas menores */
-       }
+    }
   }
 `;
 
@@ -136,7 +133,7 @@ const ProjectCard = styled.a`
   }
 
   div {
-    padding: 15px;
+    padding: 10px 0px ;
 
     h3 {
       margin: 0;
@@ -147,6 +144,24 @@ const ProjectCard = styled.a`
       margin-top: 10px;
       font-size: 14px;
       color: silver;
+    }
+
+    .icons {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-top: -20px;
+
+      svg {
+        font-size: 20px;
+        color: silver;
+        transition: transform 0.3s;
+
+        &:hover {
+          transform: scale(1.2);
+          color: white;
+        }
+      }
     }
   }
 `;
@@ -167,22 +182,20 @@ const DivIcons = styled.div`
 `;
 
 const DivIconsTec = styled.div`
-  margin-top: 30px;
+  margin-top: 0;
   display: flex;
-  gap: 20px; 
+  gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
   @media (max-width: 600px) {
-padding: 0 30px;
-      
-    }
+    padding: 0 30px;
+  }
 `;
 
 const IconWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  
 
   svg {
     font-size: 48px;
@@ -194,21 +207,16 @@ const IconWrapper = styled.div`
 `;
 
 const DescriptionBox = styled.div`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 10px;
   height: 20px;
   text-align: center;
   color: silver;
   font-size: 16px;
 
-
   @media (max-width: 728px) {
-border-bottom: 30px;
-padding: 20px;
-      
-    }
-
- 
+    border-bottom: 30px;
+    padding: 20px;
+  }
 `;
 
 const Description = styled.p`
@@ -223,8 +231,6 @@ const Description = styled.p`
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
   pointer-events: none; /* Impede interação com o texto */
-
- 
 `;
 const Wraper = styled.div`
   background-color: #212121;
@@ -255,12 +261,12 @@ const DivText = styled.div`
   flex-direction: column;
 
   @media (max-width: 600px) {
-      max-width: 100vw; /* Ajuste para telas menores */
-display: flex;
-flex-direction: column;
+    max-width: 100vw; /* Ajuste para telas menores */
+    display: flex;
+    flex-direction: column;
 
-      text-align: center;
-    }
+    text-align: center;
+  }
 `;
 
 const TextFirst = styled.h1`
@@ -271,9 +277,7 @@ const TextFirst = styled.h1`
 
   @media (max-width: 600px) {
     font-size: 60px; // define o tamanho da fonte como 10% do viewport
-
-      
-    }
+  }
 `;
 
 const TextSecond = styled.h2`
@@ -284,9 +288,7 @@ const TextSecond = styled.h2`
 
   @media (max-width: 600px) {
     font-size: 30px; // define o tamanho da fonte como 10% do viewport
-
-      
-    }
+  }
 
   p {
     margin-top: 10px;
@@ -295,9 +297,7 @@ const TextSecond = styled.h2`
     font-family: "Titillium Web", sans-serif;
 
     @media (max-width: 600px) {
-    font-size: 15px; // define o tamanho da fonte como 10% do viewport
-
-      
+      font-size: 15px; // define o tamanho da fonte como 10% do viewport
     }
   }
 `;
@@ -325,14 +325,11 @@ const Popup = styled.div`
       background-color: gray;
     }
   }
- 
 `;
 
 const Section = styled.section`
   margin: 50px 0;
   text-align: center;
-
-  
 
   h2 {
     font-size: 30px;
@@ -350,7 +347,9 @@ const SectionProfile = styled.section`
   display: flex;
   align-items: center;
   text-align: center;
+  flex-direction: column;
   height: 100vh;
+  
 `;
 
 const ProjectsGrid = styled.div`
@@ -476,9 +475,6 @@ const LandingPage = () => {
     });
   }, []);
 
-  
-
-
   const descriptions = {
     react:
       "React é uma biblioteca JavaScript para criar interfaces de usuário.",
@@ -511,12 +507,22 @@ const LandingPage = () => {
       name: "Calculadora",
       image: "calculadora.png",
       github: "https://github.com/JoaoZ14/Calculator",
+      technologies: ["html", "css", "js"], // Tecnologias usadas
+    },
+    {
+      name: "Weather App",
+      image: "WeatherApp.png",
+      github: "https://github.com/JoaoZ14/Weather-App",
+      technologies: ["react", "html", "css", "js"],
     },
   ];
 
   const handleDownloadCV = (language) => {
     if (language === "pt") {
-      window.open("Currículo Simples Profissional - Formação, experiência, cursos e habilidades (1).pdf", "_blank");
+      window.open(
+        "Currículo Simples Profissional - Formação, experiência, cursos e habilidades (1).pdf",
+        "_blank"
+      );
     } else {
       window.open("Currículo Simples Profissional - English (2).pdf", "_blank");
     }
@@ -526,7 +532,7 @@ const LandingPage = () => {
   return (
     <Wraper>
       <DivPrincipal>
-      <DivMargin id="home" />
+        <DivMargin id="home" />
 
         <DivText>
           <TextFirst>Hello World,</TextFirst>
@@ -537,78 +543,84 @@ const LandingPage = () => {
           <ButtonCV onClick={() => setShowPopup(true)}>Baixar CV</ButtonCV>
 
           <DivIcons>
-          <a href="https://wa.me/5524988685043">
-            <FaWhatsappIcon />
-          </a>
+            <a href="https://wa.me/5524988685043">
+              <FaWhatsappIcon />
+            </a>
 
-          <a href="https://github.com/JoaoZ14" target="_blank">
-            <FaGithubIcon />
-          </a>
+            <a href="https://github.com/JoaoZ14" target="_blank">
+              <FaGithubIcon />
+            </a>
 
-          <a href="http://www.linkedin.com/in/joao-possidonio" target="_blank">
-            <FaLinkedinIcon />
-          </a>
-        </DivIcons>
+            <a
+              href="http://www.linkedin.com/in/joao-possidonio"
+              target="_blank"
+            >
+              <FaLinkedinIcon />
+            </a>
+          </DivIcons>
         </DivText>
 
         <Popup show={showPopup}>
           <h3>Selecione o idioma do CV</h3>
           <button onClick={() => handleDownloadCV("pt")}>Português</button>
           <button onClick={() => handleDownloadCV("en")}>Inglês</button>
-          <IconCloseCircle onClick={() => setShowPopup(false)}>X</IconCloseCircle>
+          <IconCloseCircle onClick={() => setShowPopup(false)}>
+            X
+          </IconCloseCircle>
         </Popup>
 
-       
         <Line id="about" />
         <SectionProfile>
-        <AboutSection>
-          <div id="one">
-            <div id="image">
-              <img data-aos="fade-up" src="me2.png" />
-              <div data-aos="fade-up" id="background" />
+          <AboutSection>
+            <div id="one">
+              <div id="image">
+                <img data-aos="fade-up" src="me2.png" />
+                <div data-aos="fade-up" id="background" />
+              </div>
+              <div data-aos="fade-left" id="text">
+                <h2>Sobre Mim</h2>
+
+                <p>
+                  Olá! Meu nome é João Guilherme. <br/>Sou um desenvolvedor frontend
+                  apaixonado por criar interfaces intuitivas e designs
+                  funcionais. Adoro transformar ideias em experiências digitais
+                  com foco em detalhes e desempenho. Tenho experiência com
+                  React, JavaScript, HTML, CSS, e sempre estou explorando novas
+                  tecnologias para expandir minhas habilidades.
+                  <br/>
+                
+                  Além de programação, gosto de resolver problemas complexos,
+                  colaborar com equipes criativas, e me manter atualizado com as
+                  últimas tendências em desenvolvimento web.
+                </p>
+              </div>
             </div>
-            <div data-aos="fade-left" id="text">
-              <h2 >Sobre Mim</h2>
+          </AboutSection>
+          <h2>Tecnologias</h2>
 
-              <p>
-                Olá! Meu nome é João Guilherme, sou um desenvolvedor frontend
-                apaixonado por criar interfaces intuitivas e designs funcionais.
-                Adoro transformar ideias em experiências digitais, com foco em
-                detalhes e desempenho. Tenho experiência com React, JavaScript,
-                HTML, CSS, e sempre estou explorando novas tecnologias para
-                expandir minhas habilidades.
-              </p>
-              <p>
-                Além de programação, gosto de resolver problemas complexos,
-                colaborar com equipes criativas, e me manter atualizado com as
-                últimas tendências em desenvolvimento web.
-              </p>
-            </div>
-          </div>
-        </AboutSection>
-        </SectionProfile>
-        <Line />
-        <h2>Tecnologias</h2>
-
-         <DivIconsTec data-aos="fade-right">
-        {Object.keys(descriptions).map((key) => (
-          <IconWrapper
-            key={key}
-            onMouseEnter={() => setSelectedTechnology(key)}
-            onMouseLeave={() => setSelectedTechnology("")}
-          >
-            {icons[key]}
-          </IconWrapper>
-        ))}
-      </DivIconsTec>
-
-      <DescriptionBox>
-        {selectedTechnology && descriptions[selectedTechnology]}
-      </DescriptionBox>
+        <DivIconsTec data-aos="fade-right">
+          {Object.keys(descriptions).map((key) => (
+            <IconWrapper
+              key={key}
+              onMouseEnter={() => setSelectedTechnology(key)}
+              onMouseLeave={() => setSelectedTechnology("")}
+            >
+              {icons[key]}
+            </IconWrapper>
+          ))}
+        </DivIconsTec>
+        <DescriptionBox>
+          {selectedTechnology && descriptions[selectedTechnology]}
+        </DescriptionBox>
         {selectedIcon && (
           <Description>{descriptions[selectedIcon]}</Description>
         )}
-        <Line id="projects" />
+        </SectionProfile>
+        
+
+        <DivMargin id="projects" />
+
+        <Line  />
         <h2>Projetos</h2>
 
         <Section>
@@ -623,7 +635,12 @@ const LandingPage = () => {
                 <img src={project.image} alt={project.name} />
                 <div>
                   <h3>{project.name}</h3>
-                  <p>Clique para acessar o repositório no GitHub</p>
+                  <p>Confira no GitHub</p>
+                  <div className="icons">
+        {project.technologies.map((tech) => (
+          <div key={tech}>{icons[tech]}</div>
+        ))}
+      </div>
                 </div>
               </ProjectCard>
             ))}
@@ -657,7 +674,7 @@ const LandingPage = () => {
                 www.linkedin.com/in/joao-possidonio/{" "}
               </a>
             </p>
-            <p>Email: joaorlara26@gmail.com</p>
+            <p>Email: joaopossidonio.dev@gmail.com</p>
           </ContactList>
         </Section>
 
