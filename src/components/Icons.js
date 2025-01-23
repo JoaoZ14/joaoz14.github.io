@@ -11,6 +11,8 @@ import { FaJava } from "react-icons/fa";
 import { SiSpringboot } from "react-icons/si";
 import { SiGit } from "react-icons/si";
 import styled from "styled-components";
+import { IoMdCloseCircle } from "react-icons/io";
+
 
 export const FaWhatsappIcon = styled(FaWhatsapp)`
   color: white;
@@ -70,4 +72,13 @@ export const SiSpringbootIcon = styled(SiSpringboot)`
 export const SiGitIcon = styled(SiGit)`
   color: #f34f29; /* Git orange */
   font-size: 60px;
+`;
+
+export const IconCloseCircle = styled(IoMdCloseCircle)`
+  color: red;
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 `;

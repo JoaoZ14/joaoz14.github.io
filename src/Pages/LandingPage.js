@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import {
@@ -12,12 +12,16 @@ import {
   FaPythonIcon,
   FaReactIcon,
   FaWhatsappIcon,
+  IconCloseCircle,
   SiGitIcon,
   SiSpringbootIcon,
 } from "../components/Icons";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 
 const AboutSection = styled.section`
-   height: 100vh; /* Ocupa a tela inteira */
+   height: 50vh; /* Ocupa a tela inteira */
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -25,9 +29,12 @@ const AboutSection = styled.section`
   padding: 20px;
   background-color: #2c2c2c;
   color: white;
+  box-shadow: 0px 0px 40px -10px rgb(0, 0, 0, 0.3);
+
 
   @media (max-width: 600px) {
       max-width: 100vw; /* Ajuste para telas menores */
+      height: 100vh;
 display: flex;
 flex-direction: column;
 
@@ -67,6 +74,7 @@ align-items: center;
       width: 300px;
       height: 300px;
       background-color: rgb(255, 252, 223);
+      box-shadow: 0px 0px 40px -10px rgb(0, 0, 0, 0.6);
       position: absolute;
       border-radius: 50%;
       z-index: 10;
@@ -164,12 +172,17 @@ const DivIconsTec = styled.div`
   gap: 20px; 
   justify-content: center;
   flex-wrap: wrap;
+  @media (max-width: 600px) {
+padding: 0 30px;
+      
+    }
 `;
 
 const IconWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  
 
   svg {
     font-size: 48px;
@@ -183,11 +196,19 @@ const IconWrapper = styled.div`
 const DescriptionBox = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
-
   height: 20px;
   text-align: center;
   color: silver;
   font-size: 16px;
+
+
+  @media (max-width: 728px) {
+border-bottom: 30px;
+padding: 20px;
+      
+    }
+
+ 
 `;
 
 const Description = styled.p`
@@ -202,6 +223,8 @@ const Description = styled.p`
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
   pointer-events: none; /* Impede interação com o texto */
+
+ 
 `;
 const Wraper = styled.div`
   background-color: #212121;
@@ -230,6 +253,14 @@ const DivText = styled.div`
   justify-content: center;
   text-align: center;
   flex-direction: column;
+
+  @media (max-width: 600px) {
+      max-width: 100vw; /* Ajuste para telas menores */
+display: flex;
+flex-direction: column;
+
+      text-align: center;
+    }
 `;
 
 const TextFirst = styled.h1`
@@ -237,6 +268,12 @@ const TextFirst = styled.h1`
   font-size: 100px; // define o tamanho da fonte como 10% do viewport
   font-weight: 100;
   margin: 0;
+
+  @media (max-width: 600px) {
+    font-size: 60px; // define o tamanho da fonte como 10% do viewport
+
+      
+    }
 `;
 
 const TextSecond = styled.h2`
@@ -245,11 +282,23 @@ const TextSecond = styled.h2`
   font-size: 50px; // define o tamanho da fonte como 5% do viewport
   font-weight: 100;
 
+  @media (max-width: 600px) {
+    font-size: 30px; // define o tamanho da fonte como 10% do viewport
+
+      
+    }
+
   p {
     margin-top: 10px;
     font-size: 20px;
     letter-spacing: 6px;
     font-family: "Titillium Web", sans-serif;
+
+    @media (max-width: 600px) {
+    font-size: 15px; // define o tamanho da fonte como 10% do viewport
+
+      
+    }
   }
 `;
 
@@ -260,7 +309,7 @@ const Popup = styled.div`
   transform: translate(-50%, -50%);
   background-color: #333;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   display: ${({ show }) => (show ? "block" : "none")};
 
@@ -268,7 +317,7 @@ const Popup = styled.div`
     margin: 10px;
     padding: 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: 16px;
     background-color: silver;
     cursor: pointer;
 
@@ -276,11 +325,13 @@ const Popup = styled.div`
       background-color: gray;
     }
   }
+ 
 `;
 
 const Section = styled.section`
   margin: 50px 0;
   text-align: center;
+
   
 
   h2 {
@@ -292,6 +343,14 @@ const Section = styled.section`
   @media (max-width: 768px) {
     padding: 10px;
   }
+`;
+
+const SectionProfile = styled.section`
+  margin: 50px 0;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
 `;
 
 const ProjectsGrid = styled.div`
@@ -360,7 +419,7 @@ const ButtonCV = styled.a`
   border: 3px solid white;
   text-decoration: none;
   color: white;
-  border-radius: 5px;
+  border-radius: 16px;
   font-weight: 300;
 
   cursor: pointer;
@@ -410,6 +469,15 @@ const LandingPage = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedTechnology, setSelectedTechnology] = useState("");
 
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Duração da animação em milissegundos
+      once: true, // Executa a animação apenas uma vez ao rolar
+    });
+  }, []);
+
+  
+
 
   const descriptions = {
     react:
@@ -448,9 +516,9 @@ const LandingPage = () => {
 
   const handleDownloadCV = (language) => {
     if (language === "pt") {
-      window.open("/files/cv_portugues.pdf", "_blank");
+      window.open("Currículo Simples Profissional - Formação, experiência, cursos e habilidades (1).pdf", "_blank");
     } else {
-      window.open("/files/cv_ingles.pdf", "_blank");
+      window.open("Currículo Simples Profissional - English (2).pdf", "_blank");
     }
     setShowPopup(false);
   };
@@ -487,19 +555,20 @@ const LandingPage = () => {
           <h3>Selecione o idioma do CV</h3>
           <button onClick={() => handleDownloadCV("pt")}>Português</button>
           <button onClick={() => handleDownloadCV("en")}>Inglês</button>
-          <button onClick={() => setShowPopup(false)}>Fechar</button>
+          <IconCloseCircle onClick={() => setShowPopup(false)}>X</IconCloseCircle>
         </Popup>
 
        
         <Line id="about" />
+        <SectionProfile>
         <AboutSection>
           <div id="one">
             <div id="image">
-              <img src="me2.png" />
-              <div id="background" />
+              <img data-aos="fade-up" src="me2.png" />
+              <div data-aos="fade-up" id="background" />
             </div>
-            <div id="text">
-              <h2>Sobre Mim</h2>
+            <div data-aos="fade-left" id="text">
+              <h2 >Sobre Mim</h2>
 
               <p>
                 Olá! Meu nome é João Guilherme, sou um desenvolvedor frontend
@@ -517,10 +586,11 @@ const LandingPage = () => {
             </div>
           </div>
         </AboutSection>
+        </SectionProfile>
         <Line />
         <h2>Tecnologias</h2>
 
-         <DivIconsTec>
+         <DivIconsTec data-aos="fade-right">
         {Object.keys(descriptions).map((key) => (
           <IconWrapper
             key={key}
@@ -542,7 +612,7 @@ const LandingPage = () => {
         <h2>Projetos</h2>
 
         <Section>
-          <ProjectsGrid>
+          <ProjectsGrid data-aos="fade-down">
             {projects.map((project, index) => (
               <ProjectCard
                 key={index}
