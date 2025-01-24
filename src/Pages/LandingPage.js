@@ -188,8 +188,11 @@ const DivIconsTec = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   @media (max-width: 600px) {
-    padding: 0 30px;
-  }
+    padding: 0 10px;
+    max-width: 100vw;
+    gap: 10px;
+    height: 100px;
+    }
 `;
 
 const IconWrapper = styled.div`
@@ -231,6 +234,8 @@ const Description = styled.p`
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
   pointer-events: none; /* Impede interação com o texto */
+
+
 `;
 const Wraper = styled.div`
   background-color: #212121;
@@ -348,7 +353,13 @@ const SectionProfile = styled.section`
   align-items: center;
   text-align: center;
   flex-direction: column;
-  height: 100vh;
+  height: 90vh;
+
+  @media (max-width: 600px) {
+    padding: 0 30px;
+    height: 128vh;
+    margin-bottom: 100px;
+    }
   
 `;
 
@@ -356,6 +367,9 @@ const ProjectsGrid = styled.div`
   display: flex;
   gap: 20px;
   justify-content: center;
+  @media (max-width: 600px) {
+    flex-wrap: wrap;
+    }
 
   div {
     text-align: center;
