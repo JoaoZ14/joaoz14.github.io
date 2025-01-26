@@ -146,6 +146,32 @@ const ProjectCard = styled.a`
       color: silver;
     }
 
+    #buttonDeploy{
+      border: none;
+      background-color: rgb(255, 252, 223);
+      color: #2c2c2c;
+      border-radius: 24px;
+      height: 40px ;
+      padding: 0 20px;
+
+      &:hover {
+          background-color: white;
+        }
+
+    }
+    #buttonGit{
+      border: none;
+      background-color: rgb(255, 252, 223);
+      color: #2c2c2c;
+      border-radius: 50%;
+      padding: 5px ;
+
+      &:hover {
+          background-color: white;
+        }
+
+    }
+
     .icons {
       display: flex;
       gap: 5px;
@@ -521,12 +547,14 @@ const LandingPage = () => {
       name: "Calculadora",
       image: "calculadora.png",
       github: "https://github.com/JoaoZ14/Calculator",
+      deploy: "",
       technologies: ["html", "css", "js"], // Tecnologias usadas
     },
     {
       name: "Weather App",
       image: "WeatherApp.png",
       github: "https://github.com/JoaoZ14/Weather-App",
+      deploy: "https://weatherappjg.netlify.app",
       technologies: ["react", "html", "css", "js"],
     },
   ];
@@ -595,14 +623,14 @@ const LandingPage = () => {
                 <h2>Sobre Mim</h2>
 
                 <p>
-                  Olá! Meu nome é João Guilherme. <br/>Sou um desenvolvedor frontend
+                  Olá! Meu nome é João Guilherme. <br />Sou um desenvolvedor frontend
                   apaixonado por criar interfaces intuitivas e designs
                   funcionais. Adoro transformar ideias em experiências digitais
                   com foco em detalhes e desempenho. Tenho experiência com
                   React, JavaScript, HTML, CSS, e sempre estou explorando novas
                   tecnologias para expandir minhas habilidades.
-                  <br/>
-                
+                  <br />
+
                   Além de programação, gosto de resolver problemas complexos,
                   colaborar com equipes criativas, e me manter atualizado com as
                   últimas tendências em desenvolvimento web.
@@ -612,49 +640,66 @@ const LandingPage = () => {
           </AboutSection>
           <h2>Tecnologias</h2>
 
-        <DivIconsTec data-aos="fade-right">
-          {Object.keys(descriptions).map((key) => (
-            <IconWrapper
-              key={key}
-              onMouseEnter={() => setSelectedTechnology(key)}
-              onMouseLeave={() => setSelectedTechnology("")}
-            >
-              {icons[key]}
-            </IconWrapper>
-          ))}
-        </DivIconsTec>
-        <DescriptionBox>
-          {selectedTechnology && descriptions[selectedTechnology]}
-        </DescriptionBox>
-        {selectedIcon && (
-          <Description>{descriptions[selectedIcon]}</Description>
-        )}
+          <DivIconsTec data-aos="fade-right">
+            {Object.keys(descriptions).map((key) => (
+              <IconWrapper
+                key={key}
+                onMouseEnter={() => setSelectedTechnology(key)}
+                onMouseLeave={() => setSelectedTechnology("")}
+              >
+                {icons[key]}
+              </IconWrapper>
+            ))}
+          </DivIconsTec>
+          <DescriptionBox>
+            {selectedTechnology && descriptions[selectedTechnology]}
+          </DescriptionBox>
+          {selectedIcon && (
+            <Description>{descriptions[selectedIcon]}</Description>
+          )}
         </SectionProfile>
-        
+
 
         <DivMargin id="projects" />
 
-        <Line  />
+        <Line />
         <h2>Projetos</h2>
 
         <Section>
           <ProjectsGrid data-aos="fade-down">
             {projects.map((project, index) => (
               <ProjectCard
-                key={index}
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
+              key={index}
+
               >
                 <img src={project.image} alt={project.name} />
                 <div>
                   <h3>{project.name}</h3>
-                  <p>Confira no GitHub</p>
                   <div className="icons">
-        {project.technologies.map((tech) => (
-          <div key={tech}>{icons[tech]}</div>
-        ))}
-      </div>
+                    
+                    {project.technologies.map((tech) => (
+                      <div key={tech}>{icons[tech]}</div>
+                    ))}
+                  </div>
+                  <DivIconsTec>
+
+                  {project.deploy ?
+                      <button
+                      id="buttonDeploy"
+                      onClick={() => window.open(project.deploy, "_blank", "noopener,noreferrer")}
+                    >DEPLOY</button>
+                      : ""
+
+                    }
+                    {project.github ?
+                      <FaGithubIcon
+                      id="buttonGit"
+                      onClick={() => window.open(project.github, "_blank", "noopener,noreferrer")}
+                    ></FaGithubIcon>
+                      : ""
+
+                    }
+                    </DivIconsTec>
                 </div>
               </ProjectCard>
             ))}
