@@ -544,6 +544,13 @@ const LandingPage = () => {
 
   const projects = [
     {
+      name: "Busca Cep",
+      image: "BuscaCep.png",
+      github: "https://github.com/JoaoZ14/BuscaCep",
+      deploy: "https://searcep.netlify.app/",
+      technologies: ["react", "js", "css", "html"], // Tecnologias usadas
+    },
+    {
       name: "Calculadora",
       image: "calculadora.png",
       github: "https://github.com/JoaoZ14/Calculator",
