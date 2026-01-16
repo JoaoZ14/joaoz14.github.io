@@ -3,14 +3,18 @@ import styled from "styled-components";
 
 const NavBar = styled.div`
   text-align: center;
-  position: fixed;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
   height: 80px;
-  width: 100vw;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-around;
   background-color: rgba(33, 33, 33, 0.95);
-  z-index: 20;
+  z-index: 1000 !important;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     justify-content: space-around;
@@ -22,7 +26,7 @@ const Logo = styled.h1`
   font-size: 40px;
 
   img {
-    width: 60px;
+    width: 100px;
   }
 `;
 
@@ -100,7 +104,7 @@ const Navigation = () => {
     <NavBar ref={navRef}>
       <Logo>
         <a href="#home">
-          <img src="J (1)-Photoroom.png" alt="Logo" />
+          <img src="../Logo/Design sem nome (27)-Photoroom.png" alt="Logo" />
         </a>
       </Logo>
       <Hamburger onClick={toggleMenu}>

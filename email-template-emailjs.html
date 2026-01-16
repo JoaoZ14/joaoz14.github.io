@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Arial, sans-serif; background-color: #ffffff; -webkit-font-smoothing: antialiased;">
+    
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #ffffff;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 40px 0 30px; text-align: center;">
+                            <img src="https://raw.githubusercontent.com/JoaoZ14/email-assets/main/Design%20sem%20nome%20(26).png" alt="Logo" style="max-width: 120px; height: auto; display: block; margin: 0 auto 20px;">
+                            <h1 style="font-size: 22px; font-weight: 400; color: #212121; margin: 0; font-family: 'Segoe UI', Roboto, Arial, sans-serif; letter-spacing: 0.5px;">
+                                Nova Mensagem do Portfólio
+                            </h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Divisor -->
+                    <tr>
+                        <td style="padding: 0 0 30px;">
+                            <div style="width: 60px; height: 1px; background-color: #e0e0e0; margin: 0 auto;"></div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Corpo -->
+                    <tr>
+                        <td style="padding: 0 0 40px; color: #333333; line-height: 1.7;">
+                            
+                            <!-- Informações -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 30px;">
+                                <tr>
+                                    <td style="padding-bottom: 18px;">
+                                        <strong style="font-size: 12px; color: #999999; font-weight: 500; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Nome</strong>
+                                        <span style="font-size: 16px; color: #212121; font-weight: 400;">{{from_name}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 18px;">
+                                        <strong style="font-size: 12px; color: #999999; font-weight: 500; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Email</strong>
+                                        <a href="mailto:{{from_email}}" style="font-size: 16px; color: #0066cc; text-decoration: none; font-weight: 400;">{{from_email}}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 18px;">
+                                        <strong style="font-size: 12px; color: #999999; font-weight: 500; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Assunto</strong>
+                                        <span style="font-size: 16px; color: #212121; font-weight: 400;">{{subject}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 18px;">
+                                        <strong style="font-size: 12px; color: #999999; font-weight: 500; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Empresa</strong>
+                                        <span style="font-size: 16px; color: #212121; font-weight: 400;">{{company}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Mensagem -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 30px;">
+                                <tr>
+                                    <td>
+                                        <strong style="font-size: 12px; color: #999999; font-weight: 500; display: block; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Mensagem</strong>
+                                        <div style="padding: 20px; background-color: #f9f9f9; border-radius: 4px; border-left: 3px solid #0066cc;">
+                                            <p style="margin: 0; font-size: 15px; color: #333333; line-height: 1.8; white-space: pre-wrap; font-weight: 400;">{{message}}</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Divisor -->
+                            <div style="width: 100%; height: 1px; background-color: #e0e0e0; margin: 30px 0;"></div>
+                            
+                            <!-- Rodapé -->
+                            <p style="margin: 0; font-size: 13px; color: #999999; text-align: center; line-height: 1.6;">
+                                Esta mensagem foi enviada através do formulário de contato do portfólio.<br>
+                                Você pode responder diretamente a este email.
+                            </p>
+                            
+                        </td>
+                    </tr>
+                </table>
+                
+            </td>
+        </tr>
+    </table>
+    
+</body>
+</html>
+
