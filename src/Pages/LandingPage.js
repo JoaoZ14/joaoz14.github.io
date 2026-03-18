@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import {
   FaCssIcon,
@@ -13,6 +13,9 @@ import {
   FaReactIcon,
   FaWhatsappIcon,
   SiGitIcon,
+  SiDockerIcon,
+  SiOpenidIcon,
+  SiJsonwebtokensIcon,
   SiSpringbootIcon,
 } from "../components/Icons";
 import AOS from "aos";
@@ -283,6 +286,27 @@ const ProjectImageWrapper = styled.div`
       height: 300px;
     }
   }
+
+  ${({ $logoThumbnail }) =>
+    $logoThumbnail &&
+    css`
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: auto;
+        height: auto;
+        max-width: 52%;
+        max-height: 62%;
+        object-fit: contain;
+        transition: none;
+      }
+
+      &:hover img {
+        transform: none;
+      }
+    `}
 `;
 
 const ProjectInfo = styled.div`
@@ -367,16 +391,22 @@ const ProjectLink = styled.a`
 `;
 
 const DivIcons = styled.div`
-  margin-top: 100px;
-  margin-bottom: 0px;
+  margin-top: 28px;
+  margin-bottom: 2px;
 
   display: flex;
-  gap: 10px;
+  gap: 14px;
 
   a {
-    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    opacity: 0.9;
+
     &:hover {
-      transform: scale(1.1);
+      transform: translateY(-2px);
+      opacity: 1;
     }
   }
 `;
@@ -569,53 +599,68 @@ const DivMargin = styled.div`
 `;
 
 const DivText = styled.div`
-  width: 1200px;
+  width: min(100%, 960px);
   max-width: 100%;
-  height: 100vh;
+  min-height: 86vh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   flex-direction: column;
+  gap: 16px;
+  padding: 100px 24px 64px;
+
+  @media (max-width: 900px) {
+    min-height: auto;
+    padding: 120px 24px 72px;
+    gap: 14px;
+  }
 
   @media (max-width: 600px) {
-    max-width: 100vw; /* Ajuste para telas menores */
-    display: flex;
-    flex-direction: column;
-
-    text-align: center;
+    width: 100%;
+    max-width: 100vw;
+    min-height: auto;
+    padding: 100px 16px 56px;
+    gap: 12px;
   }
 `;
 
 const TextFirst = styled.h1`
   font-family: Garamond, serif;
-  font-size: 100px; // define o tamanho da fonte como 10% do viewport
+  font-size: clamp(52px, 8vw, 84px);
   font-weight: 100;
   margin: 0;
+  line-height: 0.95;
+  letter-spacing: 0.5px;
 
   @media (max-width: 600px) {
-    font-size: 60px; // define o tamanho da fonte como 10% do viewport
+    font-size: 46px;
   }
 `;
 
 const TextSecond = styled.h2`
-  margin-top: 0;
+  margin: 0;
   font-family: Garamond, serif;
-  font-size: 50px; // define o tamanho da fonte como 5% do viewport
+  font-size: clamp(28px, 4.4vw, 44px);
   font-weight: 100;
+  line-height: 1.2;
+  max-width: 820px;
 
   @media (max-width: 600px) {
-    font-size: 30px; // define o tamanho da fonte como 10% do viewport
+    font-size: 28px;
   }
 
   p {
-    margin-top: 10px;
-    font-size: 20px;
-    letter-spacing: 6px;
+    margin-top: 14px;
+    font-size: clamp(14px, 1.8vw, 18px);
+    letter-spacing: 3px;
     font-family: "Titillium Web", sans-serif;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.85);
 
     @media (max-width: 600px) {
-      font-size: 15px; // define o tamanho da fonte como 10% do viewport
+      font-size: 13px;
+      letter-spacing: 2px;
     }
   }
 `;
@@ -1144,26 +1189,30 @@ const TextSecondDigit = styled.h2`
 const ButtonCVContainer = styled.div`
   position: relative;
   display: inline-block;
-  margin-top: 20px;
+  margin-top: 14px;
 `;
 
 const ButtonCV = styled.button`
   background-color: white;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
   text-decoration: none;
   color: #212121;
-  font-weight: 300;
-  padding: 10px 20px;
+  font-weight: 400;
+  padding: 10px 16px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
+  font-family: "Titillium Web", sans-serif;
+  letter-spacing: 0.4px;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: background-color 0.3s;
+  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   
   &:hover {
     background-color: rgb(255, 252, 223);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   }
 `;
 
@@ -1177,29 +1226,30 @@ const ArrowIcon = styled(IoIosArrowDown)`
 const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 10px);
-  left: 0;
+  left: 50%;
   background-color: #2c2c2c;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  min-width: 150px;
+  min-width: 170px;
   opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
   visibility: ${({ isOpen }) => (isOpen ? "visible" : "hidden")};
-  transform: ${({ isOpen }) => (isOpen ? "translateY(0)" : "translateY(-10px)")};
-  transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+  transform: ${({ isOpen }) => (isOpen ? "translate(-50%, 0)" : "translate(-50%, -10px)")};
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
   z-index: 1000;
   overflow: hidden;
 `;
 
 const DropdownItem = styled.button`
   width: 100%;
-  padding: 12px 20px;
+  padding: 11px 16px;
   border: none;
   background-color: transparent;
   color: white;
   text-align: left;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
+  font-size: 14px;
+  font-family: "Titillium Web", sans-serif;
+  transition: background-color 0.25s ease;
   
   &:hover {
     background-color: #3c3c3c;
@@ -1317,6 +1367,9 @@ const LandingPage = () => {
     java: <FaJavaIcon />,
     springboot: <SiSpringbootIcon />,
     git: <SiGitIcon />,
+    docker: <SiDockerIcon />,
+    openid: <SiOpenidIcon />,
+    jwt: <SiJsonwebtokensIcon />,
   };
 
   const projects = [
@@ -1370,17 +1423,30 @@ const LandingPage = () => {
       deploy: "",
       technologies: ["html", "css", "js"],
     },
+    {
+      name: "Elevate Auth API",
+      image: "https://elevatebr.org/images/elevate-logo.png",
+      description:
+        "Plataforma de autenticação e autorização (Java + Spring Boot) com OAuth2/OpenID Connect e emissão/validação de tokens JWT. Solução multi-tenant por domínio, login customizado por cliente, controle de escopos/permissões e endpoints administrativos, com deploy containerizado via Docker.",
+      logoThumbnail: true,
+      github: "",
+      deploy: "",
+      partner: {
+        name: "Elevate",
+        logo: "https://elevatebr.org/images/elevate-logo.png",
+        url: "https://elevatebr.org/",
+      },
+      technologies: ["java", "springboot", "openid", "jwt", "docker", "git"],
+    },
   ];
 
   const handleDownloadCV = (language) => {
-    if (language === "pt") {
-      window.open(
-        "Currículo Simples Profissional - Formação, experiência, cursos e habilidades (1).pdf",
-        "_blank"
-      );
-    } else {
-      window.open("Currículo Simples Profissional - English (2).pdf", "_blank");
-    }
+    const cvPath =
+      language === "pt"
+        ? "/Curriculo%20Jo%C3%A3o%20Guilherme-PORTUGUES.pdf"
+        : "/Curriculo%20Jo%C3%A3o%20Guilherme-ENGLISH.pdf";
+
+    window.open(`${process.env.PUBLIC_URL}${cvPath}`, "_blank");
     setShowDropdown(false);
   };
 
@@ -1578,7 +1644,7 @@ const LandingPage = () => {
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
-              <ProjectImageWrapper reverse={index % 2 !== 0}>
+              <ProjectImageWrapper reverse={index % 2 !== 0} $logoThumbnail={project.logoThumbnail}>
                 <img src={project.image} alt={project.name} />
               </ProjectImageWrapper>
               
