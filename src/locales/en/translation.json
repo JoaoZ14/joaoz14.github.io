@@ -118,7 +118,7 @@
       "restful": "API integration and consumption to connect systems and keep end-to-end flows running",
       "aws": "Cloud services for deployment, scalability, and application operations",
       "googlecloud": "Cloud services for infrastructure, integrations, and application operations",
-      "stripe": "Payments integration focused on reliability and user experience",
+      "stripe": "Integration with Mercado Pago API, focused on reliability and user experience",
       "oauth2": "Authentication and authorization focused on security and system integration",
       "git": "Advanced version control, Git Flow, conflict resolution, and team collaboration",
       "github": "Collaboration and versioning focused on quality, reviews, and work organization",

@@ -1,3 +1,14 @@
+/* ===== UM ÚNICO SCROLL =====
+   Apenas o html rola. Nenhum wrapper interno pode ter barra própria. */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100vw;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -9,16 +20,32 @@ body {
   color: #fff;
   font-size: 16px;
   line-height: 1.5;
-  overflow-x: hidden; /* Previne scroll horizontal */
+  overflow: hidden !important;
   width: 100%;
   max-width: 100vw;
+  height: auto !important;
+  min-height: 0;
 }
 
-html {
-  scroll-behavior: smooth; /* Rolagem suave */
-  overflow-x: hidden; /* Previne scroll horizontal */
-  width: 100%;
-  max-width: 100vw;
+/* #root e toda a árvore do app: sem altura fixa, sem overflow-y que crie scroll */
+#root {
+  overflow: visible !important;
+  overflow-x: hidden;
+  overflow-y: visible !important;
+  height: auto !important;
+  min-height: 0;
+}
+
+/* Todos os wrappers principais: sem scroll próprio (só o html rola) */
+#root > *,
+#root > * > *,
+#root > * > * > *,
+#root > * > * > * > *,
+#root > * > * > * > * > * {
+  overflow-x: hidden;
+  overflow-y: visible !important;
+  height: auto !important;
+  max-height: none !important;
 }
 
 code {
@@ -75,4 +102,11 @@ h2 {
 ::-webkit-scrollbar-track {
   background: transparent; /* Cor do trilho */
   border-radius: 4px;
+}
+
+/* AOS: mostrar tudo imediatamente (sem revelar conforme rola) */
+[data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
 }

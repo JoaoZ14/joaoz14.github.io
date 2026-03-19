@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { HiBars3, HiXMark } from "react-icons/hi2";
 
 const flagSrc = {
   pt: "/flags/br.svg",
@@ -18,14 +19,16 @@ const NavBar = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   background-color: rgba(33, 33, 33, 0.95);
   z-index: 1000 !important;
   box-sizing: border-box;
   padding: 0 var(--container-x);
+  overflow: visible;
 
   @media (min-width: 900px) {
     height: 80px;
+    justify-content: space-around;
   }
 `;
 
@@ -35,7 +38,9 @@ const Logo = styled.h1`
   margin: 0;
 
   img {
-    width: 84px;
+    width: 72px;
+    height: auto;
+    display: block;
   }
 
   @media (min-width: 900px) {
@@ -47,24 +52,27 @@ const Logo = styled.h1`
 
 const NavLinks = styled.ul`
   list-style: none;
-  display: flex;
-  gap: 18px;
+  display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
+  flex-direction: column;
+  gap: 6px;
   font-family: Times, Times New Roman, serif;
   text-align: center;
   font-size: 15px;
   font-weight: 100;
-  align-items: center;
+  align-items: stretch;
   margin: 0;
-  padding: 0;
+  padding: 14px 12px 18px;
 
   a {
     text-decoration: none;
-    color: white;
-    opacity: 0.92;
+    color: rgba(255, 255, 255, 0.95);
+    opacity: 1;
     transition: opacity 120ms ease, transform 120ms ease;
-    display: inline-block;
-    padding: 10px 10px; /* hit-area */
+    display: block;
+    width: 100%;
+    padding: 12px 10px; /* hit-area */
     border-radius: 10px;
+    box-sizing: border-box;
   }
 
   a:hover {
@@ -72,44 +80,72 @@ const NavLinks = styled.ul`
     transform: translateY(-1px);
   }
 
-  @media (min-width: 900px) {
-    gap: 36px;
-    font-size: 16px;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background-color: rgba(33, 33, 33, 0.98);
+  width: 100vw;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 5000;
+  min-height: 180px;
+
+  li {
+    margin: 0;
   }
 
-  @media (max-width: 899px) {
-    display: ${({ $isOpen }) => ($isOpen ? "block" : "none")}; /* Esconde/mostra no dropdown */
-    position: absolute;
-    top: 64px;
-    left: 0;
-    background-color: rgba(33, 33, 33, 0.95);
-    width: 100%;
-    text-align: center;
-    padding: 18px 0 22px;
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  @media (min-width: 900px) {
+    display: flex;
+    flex-direction: row;
+    position: static;
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    border-top: none;
+    border-bottom: none;
+    backdrop-filter: none;
+    z-index: auto;
+    gap: 36px;
+    font-size: 16px;
+    align-items: center;
 
     li {
-      margin: 8px 0;
+      margin: 0;
     }
+  }
+
+  @media (max-width: 899px) and (min-height: 700px) {
+    min-height: 220px;
   }
 `;
 
-const Hamburger = styled.div`
-  display: none; /* Esconde o botão de hambúrguer no desktop */
+const Hamburger = styled.button`
+  display: inline-flex;
+  background: transparent;
+  border: none;
+  padding: 8px;
+  margin-left: auto;
+  z-index: 1002;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 
-  @media (max-width: 899px) {
-    display: block;
-    cursor: pointer;
+  @media (min-width: 900px) {
+    display: none; /* Esconde o botão de hambúrguer no desktop */
   }
+`;
 
-  div {
-    width: 24px;
-    height: 3px;
-    background-color: white;
-    margin: 5px 0;
-    transition: 0.4s;
-  }
+const HamburgerIcon = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 30px;
+  line-height: 1;
 `;
 
 const LanguageSwitcher = styled.div`
@@ -208,6 +244,7 @@ const Navigation = () => {
 
   const currentLang = (i18n.resolvedLanguage || i18n.language || "pt").split("-")[0];
   const setLang = (next) => i18n.changeLanguage(next);
+  const closeMenu = () => setIsOpen(false);
 
   return (
     <NavBar ref={navRef}>
@@ -216,20 +253,24 @@ const Navigation = () => {
           <img src="../Logo/Design sem nome (27)-Photoroom.png" alt="Logo" />
         </a>
       </Logo>
-      <Hamburger onClick={toggleMenu}>
-        <div />
-        <div />
-        <div />
+      <Hamburger
+        type="button"
+        aria-label={isOpen ? "Fechar menu de navegação" : "Abrir menu de navegação"}
+        onClick={toggleMenu}
+      >
+        <HamburgerIcon>
+          {isOpen ? <HiXMark /> : <HiBars3 />}
+        </HamburgerIcon>
       </Hamburger>
       <NavLinks $isOpen={isOpen}>
         <li>
-          <a href="#about">{t("nav.about")}</a>
+          <a href="#about" onClick={closeMenu}>{t("nav.about")}</a>
         </li>
         <li>
-          <a href="#projects">{t("nav.projects")}</a>
+          <a href="#projects" onClick={closeMenu}>{t("nav.projects")}</a>
         </li>
         <li>
-          <a href="#contact">{t("nav.contact")}</a>
+          <a href="#contact" onClick={closeMenu}>{t("nav.contact")}</a>
         </li>
         <li>
           <LanguageSwitcher aria-label={t("nav.language")}>

@@ -14,15 +14,13 @@ const scaleIn = keyframes`
 
 const SplashContainer = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background-color: #212121;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  box-sizing: border-box;
   opacity: ${({ $isHiding }) => ($isHiding ? 0 : 1)};
   transition: opacity 1s ease-in-out;
   pointer-events: ${({ $isHiding }) => ($isHiding ? "none" : "auto")};
@@ -30,13 +28,18 @@ const SplashContainer = styled.div`
 `;
 
 const LogoImage = styled.img`
+  display: block;
   width: 200px;
   height: auto;
+  max-width: 80vw;
+  max-height: 80vh;
+  object-fit: contain;
   animation: ${scaleIn} 0.8s ease-out;
   transition: opacity 1s ease-in-out;
   opacity: ${({ $isHiding }) => ($isHiding ? 0 : 1)};
+  transform-origin: center;
   
-  @media (max-width: 600px) {
+  @media (max-width: -1px) {
     width: 150px;
   }
 `;

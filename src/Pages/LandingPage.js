@@ -8,7 +8,7 @@ import {
   SiGooglecloud,
   SiPostgresql,
   SiReact,
-  SiStripe,
+  SiMercadopago,
   SiStyledcomponents,
   SiTypescript,
 } from "react-icons/si";
@@ -79,6 +79,14 @@ const AboutContent = styled.div`
   z-index: 1;
   padding: 0 20px;
   overflow: visible;
+
+  @media (max-width: 768px) {
+    padding: 0 24px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 18px;
+  }
 `;
 
 const AboutBlocks = styled.div`
@@ -104,6 +112,10 @@ const AboutHighlights = styled.ul`
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
+
+  @media (max-width: 600px) {
+    gap: 8px;
+  }
 `;
 
 const AboutHighlightItem = styled.li`
@@ -181,6 +193,7 @@ const AboutSectionText = styled.p`
     font-size: 16px;
     line-height: 1.8;
     margin-bottom: 20px;
+    padding: 0 4px;
   }
 `;
 
@@ -191,6 +204,11 @@ const CompanyHeader = styled.div`
   gap: 14px;
   flex-wrap: wrap;
   margin: 0 0 16px;
+
+  @media (max-width: 768px) {
+    gap: 10px;
+    margin: 0 0 12px;
+  }
 `;
 
 const CompanyLogo = styled.img`
@@ -208,6 +226,10 @@ const CompanyName = styled.h3`
   color: rgb(255, 252, 223);
   text-transform: lowercase;
   letter-spacing: 1px;
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+  }
 `;
 
 const CompanyDescription = styled.p`
@@ -219,6 +241,13 @@ const CompanyDescription = styled.p`
   line-height: 1.9;
   color: rgba(255, 255, 255, 0.8);
   font-family: "Titillium Web", sans-serif;
+
+  @media (max-width: 768px) {
+    padding: 0 4px;
+    margin-bottom: 34px;
+    font-size: 15px;
+    line-height: 1.75;
+  }
 `;
 
 const ExperienceTitle = styled.h3`
@@ -251,6 +280,11 @@ const ExperienceCard = styled.div`
 
   @media (max-width: 768px) {
     padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 10px;
+    box-shadow: none;
   }
 `;
 
@@ -260,6 +294,13 @@ const ExperienceRole = styled.div`
   color: white;
   font-family: "Titillium Web", sans-serif;
   margin-bottom: 0;
+
+  @media (max-width: 768px) {
+    font-size: 17px;
+    line-height: 1.5;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
 `;
 
 const ExperienceMeta = styled.div`
@@ -282,6 +323,11 @@ const ExperiencePhrases = styled.div`
   flex-direction: column;
   gap: 10px;
   margin-top: 0;
+
+  @media (max-width: 768px) {
+    gap: 10px;
+    margin-top: 0;
+  }
 `;
 
 const ExperiencePhrase = styled.p`
@@ -290,12 +336,25 @@ const ExperiencePhrase = styled.p`
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.85);
   font-family: "Titillium Web", sans-serif;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    line-height: 1.68;
+    padding-right: 6px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
 `;
 
 const ExperiencePeriod = styled.span`
   font-size: 0.72em;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.78);
+
+  @media (max-width: 768px) {
+    font-size: 0.74em;
+    line-height: 1.4;
+  }
 `;
 
 const ExperienceDivider = styled.div`
@@ -303,6 +362,11 @@ const ExperienceDivider = styled.div`
   height: 1px;
   background: rgba(255, 252, 223, 0.25);
   margin: 8px 0 4px;
+
+  @media (max-width: 768px) {
+    margin: 8px 0 6px;
+    background: rgba(255, 252, 223, 0.25);
+  }
 `;
 
 const ExperienceList = styled.ul`
@@ -353,6 +417,15 @@ const ExperienceTimeline = styled.div`
     background: rgba(255, 252, 223, 0.35);
     border-radius: 2px;
   }
+
+  @media (max-width: 768px) {
+    padding-left: 0;
+    padding-right: 4px;
+
+    &::before {
+      display: none;
+    }
+  }
 `;
 
 const ExperienceTimelineItem = styled.div`
@@ -361,6 +434,10 @@ const ExperienceTimelineItem = styled.div`
 
   &:last-child {
     margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 12px;
   }
 `;
 
@@ -389,6 +466,7 @@ const SkillsContainer = styled.div`
     grid-template-columns: 1fr;
     gap: 30px;
     margin-top: 0;
+    padding: 0 14px;
   }
 
   @media (min-width: 1020px) {
@@ -426,7 +504,7 @@ const SkillCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 0;
+    padding: 0 6px;
   }
 
   @media (min-width: 1020px) {
@@ -462,6 +540,10 @@ const SkillSummary = styled.p`
   color: rgba(255, 255, 255, 0.75);
   font-family: "Titillium Web", sans-serif;
   text-align: left;
+
+  @media (max-width: 768px) {
+    padding-inline: 4px;
+  }
 `;
 
 const SkillList = styled.ul`
@@ -471,6 +553,10 @@ const SkillList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    padding-inline: 4px;
+  }
 `;
 
 const SkillListItem = styled.li`
@@ -500,6 +586,18 @@ const ProjectsSection = styled.section`
   margin: var(--section-y) auto;
   padding: 0 var(--container-x);
   width: 100%;
+
+  @media (max-width: 768px) {
+    padding: 0;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: auto;
+    width: 300px;
+  }
 
   @media (min-width: 900px) {
     margin: 80px auto;
@@ -543,9 +641,12 @@ const ProjectItem = styled.div`
   margin-bottom: 72px;
   position: relative;
 
-  @media (min-width: 600px) {
-    gap: 30px;
-    margin-bottom: 90px;
+ 
+
+  @media (max-width: 768px) {
+    gap: 14px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   }
 
   @media (min-width: 900px) {
@@ -593,6 +694,14 @@ const ProjectImageWrapper = styled.div`
       height: 300px;
     }
   }
+
+  @media (max-width: 768px) {
+    img {
+      height: 180px;
+    }
+
+    border-radius: 12px;
+  }
   
   @media (min-width: 900px) {
     order: ${({ $reverse }) => ($reverse ? "1" : "0")};
@@ -627,6 +736,10 @@ const ProjectImageWrapper = styled.div`
 const ProjectInfo = styled.div`
   order: 1;
 
+  @media (max-width: 768px) {
+    text-align: left;
+  }
+
   @media (min-width: 900px) {
     order: ${({ $reverse }) => ($reverse ? "0" : "1")};
   }
@@ -640,6 +753,11 @@ const ProjectName = styled.h3`
   margin-bottom: 15px;
   letter-spacing: 1px;
 
+  @media (max-width: 768px) {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
   @media (min-width: 900px) {
     font-size: 32px;
   }
@@ -652,6 +770,13 @@ const ProjectDescription = styled.p`
   font-family: "Titillium Web", sans-serif;
   margin-bottom: 25px;
   font-weight: 300;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    line-height: 1.65;
+    margin-bottom: 18px;
+    text-align: left;
+  }
 `;
 
 const ProjectTechnologies = styled.div`
@@ -659,6 +784,12 @@ const ProjectTechnologies = styled.div`
   gap: 15px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
 
   svg {
     font-size: 28px;
@@ -670,16 +801,24 @@ const ProjectTechnologies = styled.div`
       color: rgb(255, 252, 223);
     }
   }
+
+  @media (max-width: 768px) {
+    svg {
+      font-size: 22px;
+    }
+  }
 `;
 
 const ProjectLinks = styled.div`
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
 
   @media (max-width: 599px) {
-    flex-direction: column;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
   }
 `;
 
@@ -708,14 +847,27 @@ const ProjectLink = styled.a`
     color: rgb(255, 252, 223);
     transform: translateY(-2px);
   }
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    padding: 11px 16px;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
 `;
 
 const DivIcons = styled.div`
-  margin-top: 18px;
+  margin-top: 14px;
   margin-bottom: 2px;
 
   display: flex;
   gap: 14px;
+
+  @media (max-width: 600px) {
+    margin-top: 10px;
+    gap: 12px;
+  }
 
   a {
     display: inline-flex;
@@ -784,6 +936,37 @@ const TechCategories = styled.div`
 const TechCategory = styled.div`
   text-align: left;
   align-self: start;
+
+  @media (max-width: 899px) {
+    padding: 0 0 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  @media (max-width: 899px) {
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  @media (min-width: 900px) {
+    padding: 0 18px 18px 0;
+  }
+
+  @media (min-width: 900px) {
+    &:nth-child(1) {
+      border-right: 1px solid rgba(255, 255, 255, 0.18);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    &:nth-child(2) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    &:nth-child(3) {
+      border-right: 1px solid rgba(255, 255, 255, 0.18);
+    }
+  }
 `;
 
 const TechCategoryTitle = styled.h4`
@@ -794,6 +977,11 @@ const TechCategoryTitle = styled.h4`
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.65);
+
+  @media (max-width: 899px) {
+    text-align: center;
+    margin-bottom: 16px;
+  }
 `;
 
 const TechItems = styled.div`
@@ -1036,6 +1224,7 @@ const Wraper = styled.div`
   align-items: center;
   width: 100%;
   overflow-x: hidden;
+  overflow-y: visible;
 `;
 
 const DivPrincipal = styled.div`
@@ -1046,6 +1235,9 @@ const DivPrincipal = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+  height: auto;
 `;
 
 const DivMargin = styled.div`
@@ -1065,17 +1257,17 @@ const DivText = styled.div`
   padding: 100px 24px 64px;
 
   @media (max-width: 900px) {
-    min-height: auto;
-    padding: 120px 24px 72px;
-    gap: 14px;
+    min-height: 100svh;
+    padding: 96px 24px 56px;
+    gap: 12px;
   }
 
   @media (max-width: 600px) {
     width: 100%;
     max-width: 100vw;
-    min-height: auto;
-    padding: 100px 16px 56px;
-    gap: 12px;
+    min-height: 100svh;
+    padding: 88px 16px 44px;
+    gap: 10px;
   }
 `;
 
@@ -1616,6 +1808,10 @@ const ButtonCVContainer = styled.div`
   position: relative;
   display: inline-block;
   margin-top: 14px;
+
+  @media (max-width: 600px) {
+    margin-top: 10px;
+  }
 `;
 
 const ButtonCV = styled.button`
@@ -1804,7 +2000,7 @@ const LandingPage = () => {
     restful: "RESTful APIs",
     aws: "AWS",
     googlecloud: "Google Cloud",
-    stripe: "Stripe",
+    stripe: "API Mercado Pago",
     oauth2: "OAuth 2.0",
     git: "Git",
     github: "GitHub",
@@ -1827,7 +2023,7 @@ const LandingPage = () => {
     firebase: <SiFirebase />,
     aws: <SiAmazonwebservices />,
     googlecloud: <SiGooglecloud />,
-    stripe: <SiStripe />,
+    stripe: <SiMercadopago />,
     oauth2: <SiOpenidIcon />,
     git: <SiGitIcon />,
     github: <FaGithubIcon />,
@@ -1843,11 +2039,11 @@ const LandingPage = () => {
     },
     {
       title: t("tech.categories.backend"),
-      keys: ["springboot", "java", "sql", "postgresql"],
+      keys: ["node", "java", "springboot", "python", "sql", "postgresql", "restful", "oauth2"],
     },
     {
       title: t("tech.categories.other"),
-      keys: ["firebase", "restful", "aws", "googlecloud", "stripe", "oauth2", "git", "github"],
+      keys: ["firebase", "aws", "googlecloud", "stripe", "git", "github"],
     },
     {
       title: t("tech.categories.softSkills"),
@@ -2075,6 +2271,7 @@ const LandingPage = () => {
                     <CompanyLogo
                       src="https://elevatebr.org/images/elevate-logo.png"
                       alt="Logo da elevate"
+                      loading="eager"
                     />
                     <CompanyName>elevate</CompanyName>
                   </CompanyHeader>
@@ -2094,7 +2291,7 @@ const LandingPage = () => {
 
                     <ExperienceTimelineItem data-aos="fade-up" data-aos-delay="100" >
                       <ExperienceCard>
-                        <ExperienceRole style={{ marginBottom: '25px' }}>
+                        <ExperienceRole style={{ marginBottom: '16px' }}>
                           {t("experience.elevate.roles.intern.title")} —{" "}
                           <ExperiencePeriod>{t("experience.elevate.roles.intern.period")}</ExperiencePeriod>
                         </ExperienceRole>
@@ -2261,7 +2458,7 @@ const LandingPage = () => {
               data-aos-delay={index * 100}
             >
               <ProjectImageWrapper $reverse={index % 2 !== 0} $logoThumbnail={project.logoThumbnail}>
-                <img src={project.image} alt={project.name} />
+                <img src={project.image} alt={project.name} loading="eager" />
               </ProjectImageWrapper>
               
               <ProjectInfo $reverse={index % 2 !== 0}>
@@ -2276,7 +2473,7 @@ const LandingPage = () => {
                       rel="noopener noreferrer"
                       aria-label={t("projects.visitPartnerSiteAria", { name: project.partner.name })}
                     >
-                      <img src={project.partner.logo} alt={project.partner.name} />
+                      <img src={project.partner.logo} alt={project.partner.name} loading="eager" />
                       <span>{project.partner.name}</span>
                     </PartnerLogoLink>
                   </ProjectPartner>
