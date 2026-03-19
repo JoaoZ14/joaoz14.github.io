@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "about": "Sobre",
+    "projects": "Projetos",
+    "contact": "Contato",
+    "language": "Idioma"
+  },
+  "hero": {
+    "greeting": "Hello World,",
+    "intro": "Meu nome é João Guilherme,",
+    "role": "DESENVOLVEDOR FULLSTACK",
+    "cv": "Currículo Virtual",
+    "portuguese": "Português",
+    "english": "Inglês"
+  },
+  "about": {
+    "title": "Sobre Mim",
+    "summary1": "Fullstack com experiência em React/Javascript e Java/Spring Boot, focado em qualidade, colaboração e entregas com impacto.",
+    "summary2": "Atuo do frontend ao backend, do requisito à entrega, mantendo o foco em qualidade e consistência. Trabalho com Clean Code e padrões de engenharia, apoiando decisões técnicas bem fundamentadas, revisões e prioridades claras. Tenho postura colaborativa, comunicação direta e compromisso com crescimento contínuo no time.",
+    "experienceTitle": "Experiência Profissional"
+  },
+  "contact": {
+    "title": "Entre em Contato",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn",
+    "github": "GitHub"
+  },
+  "experience": {
+    "elevate": {
+      "description": "Na elevate, atuei no time de desenvolvimento fullstack, contribuindo para a evolução de produtos digitais com foco em qualidade, consistência entre UI e APIs e entrega contínua.",
+      "roles": {
+        "junior": {
+          "title": "Desenvolvedor Junior Fullstack",
+          "period": "Julho 2025 – Presente"
+        },
+        "intern": {
+          "title": "Estagiário em Desenvolvimento de Software",
+          "period": "Agosto 2024 – Julho 2025"
+        }
+      },
+      "bullets": {
+        "techLead": "Atuei como Tech Lead, liderando prioridades e decisões técnicas para garantir entregas com qualidade.",
+        "productEvolution": "Atuo na construção e evolução de produtos, garantindo consistência entre UI e APIs com foco em qualidade.",
+        "endToEndImprovements": "Implementei melhorias ponta a ponta, reduzindo retrabalho e aumentando previsibilidade nas entregas.",
+        "architectureBestPractices": "Contribuí com arquitetura e boas práticas, apoiando decisões técnicas e revisão de código.",
+        "bugFixes": "Diagnóstico e correções de bugs com o time, preservando estabilidade e experiência do usuário.",
+        "fullCycleDelivery": "Contribuí com entregas no ciclo completo do software, evoluindo para apoiar mentoria e padrão de qualidade.",
+        "featuresFrontendBackend": "Desenvolvi funcionalidades e ajustes frontend/backend seguindo boas práticas de código.",
+        "reviewsDocumentation": "Apoiei revisões e documentação técnica para manter continuidade do projeto."
+      }
+    }
+  },
+  "skills": {
+    "title": "Habilidades",
+    "frontend": {
+      "title": "Desenvolvimento Frontend",
+      "summary": "Construção de interfaces responsivas e acessíveis, com foco em clareza, experiência do usuário e entrega consistente.",
+      "items": {
+        "reusableComponents": "Componentes reutilizáveis e organização de estado",
+        "performanceUx": "Melhorias de performance e UX para reduzir atrito",
+        "serviceIntegrations": "Integração com serviços para manter o fluxo funcionando fim a fim"
+      }
+    },
+    "backend": {
+      "title": "Arquitetura Backend",
+      "summary": "Integração de serviços e dados com foco em segurança, consistência e escalabilidade das rotinas.",
+      "items": {
+        "endpointsIntegrations": "Implementação de endpoints e integrações necessárias ao produto",
+        "businessRules": "Modelagem e aplicação de regras de negócio",
+        "authAccessControl": "Autenticação e controle de acesso para proteger funcionalidades"
+      }
+    },
+    "excellence": {
+      "title": "Excelência Técnica",
+      "summary": "Padrões de engenharia e disciplina de processo para garantir qualidade, previsibilidade e continuidade do projeto.",
+      "items": {
+        "codeReview": "Revisão de código e alinhamento de boas práticas",
+        "documentation": "Documentação para reduzir dependências e facilitar manutenção",
+        "teamwork": "Trabalho em equipe com comunicação clara"
+      }
+    }
+  },
+  "tech": {
+    "title": "Tecnologias",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "other": "Outras tecnologias",
+      "softSkills": "Soft Skills"
+    },
+    "exploreDefault": "Explore as tecnologias que utilizo para criar soluções digitais",
+    "softSkills": {
+      "items": [
+        "Atitude proativa",
+        "Comunicação eficaz",
+        "Solução de problemas",
+        "Trabalho em equipe",
+        "Adaptabilidade",
+        "Liderança"
+      ]
+    },
+    "descriptions": {
+      "react": "Desenvolvimento de SPAs e interfaces reativas com componentes reutilizáveis, hooks e gerenciamento de estado eficiente",
+      "reactnative": "Desenvolvimento de aplicações mobile com foco em experiência consistente, performance e reutilização de componentes",
+      "js": "Domínio completo de ES6+, programação assíncrona, manipulação de DOM e integração com APIs REST",
+      "typescript": "Tipagem e organização de código para aumentar previsibilidade, manutenção e segurança de alterações",
+      "html": "Estruturação semântica, acessibilidade e otimização SEO para experiências web de qualidade",
+      "css": "Criação de layouts responsivos com Flexbox, Grid, animações CSS3 e arquiteturas escaláveis",
+      "styledcomponents": "Estilização com componentes e consistência visual mantendo escalabilidade e manutenção",
+      "node": "Desenvolvimento de APIs RESTful, autenticação, middlewares e integração com bancos de dados",
+      "python": "Automação de processos, scripts, análise de dados e desenvolvimento de aplicações backend",
+      "java": "Programação orientada a objetos, estruturas de dados e desenvolvimento de sistemas robustos",
+      "springboot": "Arquitetura de microserviços, APIs REST, Spring Security e integração com banco de dados",
+      "sql": "Modelagem e consultas em banco de dados com foco em integridade, performance e confiabilidade",
+      "postgresql": "Uso de PostgreSQL para persistência, consultas e suporte a regras de negócio",
+      "firebase": "Serviços gerenciados para autenticação, dados e integrações rápidas com foco em produtividade",
+      "restful": "Integração e consumo de APIs para conectar sistemas e manter o fluxo funcionando ponta a ponta",
+      "aws": "Serviços em nuvem para deploy, escalabilidade e operação de aplicações",
+      "googlecloud": "Serviços em nuvem para infraestrutura, integrações e operação de aplicações",
+      "stripe": "Integração de pagamentos com foco em confiabilidade e experiência do usuário",
+      "oauth2": "Autenticação e autorização com foco em segurança e integração entre sistemas",
+      "git": "Controle de versão avançado, Git Flow, resolução de conflitos e colaboração em equipe",
+      "github": "Colaboração e versionamento com foco em qualidade, revisões e organização do trabalho",
+      "softskills": "Atitude proativa, comunicação eficaz, solução de problemas, trabalho em equipe, adaptabilidade e liderança"
+    }
+  },
+  "projects": {
+    "title": "Projetos",
+    "inCollaborationWith": "Em colaboração com",
+    "visitPartnerSiteAria": "Visitar site da {{name}}",
+    "viewSite": "Ver Site",
+    "code": "Código",
+    "items": {
+      "elevateAuthApi": {
+        "description": "Plataforma de autenticação e autorização (Java + Spring Boot) com OAuth2/OpenID Connect e emissão/validação de tokens JWT. Solução multi-tenant por domínio, login customizado por cliente, controle de escopos/permissões e endpoints administrativos, com deploy containerizado via Docker."
+      },
+      "seatHub": {
+        "description": "Plataforma completa de coworking para reserva de espaços de trabalho. Sistema de gestão com controle de disponibilidade, reservas por hora/dia/mês, dashboard administrativo e integração de pagamentos. Aplicação web e mobile com mapas interativos."
+      },
+      "tapInOut": {
+        "description": "Sistema de controle de ponto digital inteligente com biometria facial e GPS em tempo real. Dashboard com IA para alertas de horas extras, gestão de banco de horas e detecção de riscos trabalhistas. Segurança avançada com criptografia AES-256 e OAuth2."
+      },
+      "buscaCep": {
+        "description": "Aplicação web para consulta de CEPs integrada à API ViaCEP. Interface intuitiva que permite buscar endereços completos através do código postal, com validação e tratamento de erros."
+      },
+      "weatherApp": {
+        "description": "Aplicação de previsão do tempo em tempo real integrada com API meteorológica. Exibe temperatura, condições climáticas e previsões com design clean e responsivo."
+      },
+      "calculator": {
+        "description": "Calculadora web moderna e funcional com design minimalista. Realiza operações matemáticas básicas com interface responsiva e experiência de usuário fluida."
+      }
+    }
+  }
+}
+

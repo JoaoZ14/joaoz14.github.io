@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import "./App.css";
 import LandingPage from "./Pages/LandingPage";
 import Navigation from "./components/Navigation";
@@ -12,20 +12,9 @@ const AppDiv = styled.div`
   max-width: 100vw;
 `;
 
-const fadeInUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
 const ContentWrapper = styled.div`
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  transform: ${({ isVisible }) => (isVisible ? "translateY(0)" : "translateY(20px)")};
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transform: ${({ $isVisible }) => ($isVisible ? "translateY(0)" : "translateY(20px)")};
   transition: opacity 1.2s ease-out, transform 1.2s ease-out;
 `;
 
@@ -45,7 +34,7 @@ function App() {
     <AppDiv>
       {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
       <Navigation />
-      <ContentWrapper isVisible={contentVisible}>
+      <ContentWrapper $isVisible={contentVisible}>
         <LandingPage />
       </ContentWrapper>
     </AppDiv>

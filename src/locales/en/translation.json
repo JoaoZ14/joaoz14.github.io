@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "about": "About",
+    "projects": "Projects",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "hero": {
+    "greeting": "Hello World,",
+    "intro": "My name is João Guilherme,",
+    "role": "FULLSTACK DEVELOPER",
+    "cv": "Virtual Resume",
+    "portuguese": "Portuguese",
+    "english": "English"
+  },
+  "about": {
+    "title": "About Me",
+    "summary1": "Fullstack developer with experience in React/JavaScript and Java/Spring Boot, focused on quality, collaboration, and impactful deliveries.",
+    "summary2": "I work across frontend and backend, from requirements to delivery, keeping a strong focus on quality and consistency. I follow Clean Code and engineering patterns, support well-grounded technical decisions, reviews, and clear priorities. I bring a collaborative mindset, direct communication, and a commitment to continuous growth within the team.",
+    "experienceTitle": "Professional Experience"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn",
+    "github": "GitHub"
+  },
+  "experience": {
+    "elevate": {
+      "description": "At elevate, I worked on the fullstack development team, contributing to the evolution of digital products with a focus on quality, UI/API consistency, and continuous delivery.",
+      "roles": {
+        "junior": {
+          "title": "Junior Fullstack Developer",
+          "period": "July 2025 – Present"
+        },
+        "intern": {
+          "title": "Software Development Intern",
+          "period": "August 2024 – July 2025"
+        }
+      },
+      "bullets": {
+        "techLead": "Acted as Tech Lead, driving priorities and technical decisions to ensure high-quality deliveries.",
+        "productEvolution": "Built and evolved products, ensuring consistency between UI and APIs with a strong quality focus.",
+        "endToEndImprovements": "Delivered end-to-end improvements, reducing rework and increasing delivery predictability.",
+        "architectureBestPractices": "Contributed to architecture and best practices, supporting technical decisions and code reviews.",
+        "bugFixes": "Partnered with the team to diagnose and fix bugs, preserving stability and user experience.",
+        "fullCycleDelivery": "Contributed across the full software lifecycle, evolving to support mentorship and quality standards.",
+        "featuresFrontendBackend": "Implemented features and frontend/backend adjustments following solid coding practices.",
+        "reviewsDocumentation": "Supported reviews and technical documentation to maintain project continuity."
+      }
+    }
+  },
+  "skills": {
+    "title": "Skills",
+    "frontend": {
+      "title": "Frontend Development",
+      "summary": "Building responsive and accessible interfaces, with a focus on clarity, user experience, and consistent delivery.",
+      "items": {
+        "reusableComponents": "Reusable components and state organization",
+        "performanceUx": "Performance and UX improvements to reduce friction",
+        "serviceIntegrations": "Service integrations to keep end-to-end flows reliable"
+      }
+    },
+    "backend": {
+      "title": "Backend Architecture",
+      "summary": "Integrating services and data with a focus on security, consistency, and scalable routines.",
+      "items": {
+        "endpointsIntegrations": "Implementation of endpoints and integrations required by the product",
+        "businessRules": "Modeling and enforcing business rules",
+        "authAccessControl": "Authentication and access control to protect features"
+      }
+    },
+    "excellence": {
+      "title": "Technical Excellence",
+      "summary": "Engineering standards and process discipline to ensure quality, predictability, and project continuity.",
+      "items": {
+        "codeReview": "Code review and alignment on best practices",
+        "documentation": "Documentation to reduce dependencies and ease maintenance",
+        "teamwork": "Teamwork with clear communication"
+      }
+    }
+  },
+  "tech": {
+    "title": "Technologies",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "other": "Other technologies",
+      "softSkills": "Soft Skills"
+    },
+    "exploreDefault": "Explore the technologies I use to build digital solutions",
+    "softSkills": {
+      "items": [
+        "Proactive attitude",
+        "Effective communication",
+        "Problem solving",
+        "Teamwork",
+        "Adaptability",
+        "Leadership"
+      ]
+    },
+    "descriptions": {
+      "react": "Building SPAs and reactive interfaces with reusable components, hooks, and efficient state management",
+      "reactnative": "Developing mobile applications focused on consistent experience, performance, and component reuse",
+      "js": "Strong command of ES6+, asynchronous programming, DOM manipulation, and REST API integration",
+      "typescript": "Typing and code organization to improve predictability, maintainability, and change safety",
+      "html": "Semantic structure, accessibility, and SEO optimization for high-quality web experiences",
+      "css": "Responsive layouts with Flexbox, Grid, CSS3 animations, and scalable architectures",
+      "styledcomponents": "Component-based styling and visual consistency with scalability and maintainability",
+      "node": "Building RESTful APIs, authentication, middleware, and database integrations",
+      "python": "Process automation, scripting, data analysis, and backend application development",
+      "java": "Object-oriented programming, data structures, and robust system development",
+      "springboot": "Microservices architecture, REST APIs, Spring Security, and database integration",
+      "sql": "Database modeling and queries focused on integrity, performance, and reliability",
+      "postgresql": "Using PostgreSQL for persistence, queries, and business rule support",
+      "firebase": "Managed services for authentication, data, and fast integrations with a productivity focus",
+      "restful": "API integration and consumption to connect systems and keep end-to-end flows running",
+      "aws": "Cloud services for deployment, scalability, and application operations",
+      "googlecloud": "Cloud services for infrastructure, integrations, and application operations",
+      "stripe": "Payments integration focused on reliability and user experience",
+      "oauth2": "Authentication and authorization focused on security and system integration",
+      "git": "Advanced version control, Git Flow, conflict resolution, and team collaboration",
+      "github": "Collaboration and versioning focused on quality, reviews, and work organization",
+      "softskills": "Proactive attitude, effective communication, problem solving, teamwork, adaptability, and leadership"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "inCollaborationWith": "In collaboration with",
+    "visitPartnerSiteAria": "Visit {{name}} website",
+    "viewSite": "View Site",
+    "code": "Code",
+    "items": {
+      "elevateAuthApi": {
+        "description": "Authentication and authorization platform (Java + Spring Boot) with OAuth2/OpenID Connect and JWT token issuance/validation. Multi-tenant solution by domain, client-specific custom login, scope/permission control, and administrative endpoints, with containerized deployment via Docker."
+      },
+      "seatHub": {
+        "description": "Complete coworking platform for booking workspaces. Management system with availability control, hourly/daily/monthly bookings, an admin dashboard, and payments integration. Web and mobile apps with interactive maps."
+      },
+      "tapInOut": {
+        "description": "Smart digital time tracking system with facial biometrics and real-time GPS. AI-powered dashboard for overtime alerts, time bank management, and labor risk detection. Advanced security with AES-256 encryption and OAuth2."
+      },
+      "buscaCep": {
+        "description": "Web app for postal code lookup integrated with the ViaCEP API. Intuitive interface to search full addresses by postal code, with validation and error handling."
+      },
+      "weatherApp": {
+        "description": "Real-time weather forecast app integrated with a weather API. Displays temperature, conditions, and forecasts with a clean, responsive design."
+      },
+      "calculator": {
+        "description": "Modern, functional web calculator with a minimalist design. Performs basic math operations with a responsive UI and smooth user experience."
+      }
+    }
+  }
+}
+

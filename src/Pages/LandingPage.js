@@ -1,6 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled, { css } from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
+import { useTranslation } from "react-i18next";
+import {
+  SiAmazonwebservices,
+  SiFirebase,
+  SiGooglecloud,
+  SiPostgresql,
+  SiReact,
+  SiStripe,
+  SiStyledcomponents,
+  SiTypescript,
+} from "react-icons/si";
 import {
   FaCssIcon,
   FaGithubIcon,
@@ -27,7 +38,7 @@ const AboutSection = styled.section`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 80px 40px 120px;
+  padding: var(--section-y) var(--container-x) calc(var(--section-y) + 28px);
   background: linear-gradient(180deg, #2c2c2c 0%, #212121 100%);
   color: white;
   width: 100%;
@@ -55,8 +66,8 @@ const AboutSection = styled.section`
     }
   }
 
-  @media (max-width: 768px) {
-    padding: 60px 15px 100px;
+  @media (min-width: 900px) {
+    padding: 80px 40px 120px;
   }
 `;
 
@@ -70,9 +81,59 @@ const AboutContent = styled.div`
   overflow: visible;
 `;
 
+const AboutBlocks = styled.div`
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 70px;
+  padding-top: 10px;
+`;
+
+const AboutBlock = styled.div`
+  text-align: center;
+`;
+
+const AboutHighlights = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 900px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+`;
+
+const AboutHighlightItem = styled.li`
+  text-align: left;
+  padding: 0 0 0 18px;
+  background: transparent;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: "Titillium Web", sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 8px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgb(255, 252, 223);
+    opacity: 0.85;
+  }
+`;
+
 const AboutSectionTitle = styled.h2`
-  font-size: 48px;
-  margin-bottom: 30px;
+  font-size: clamp(28px, 6vw, 40px);
+  margin-bottom: 20px;
   font-family: Garamond, serif;
   font-weight: 100;
   color: white;
@@ -95,18 +156,18 @@ const AboutSectionTitle = styled.h2`
     width: 100px;
   }
 
-  @media (max-width: 768px) {
-    font-size: 32px;
-    margin-bottom: 20px;
+  @media (min-width: 900px) {
+    font-size: 48px;
+    margin-bottom: 30px;
   }
 `;
 
 const AboutSectionText = styled.p`
-  font-size: 18px;
-  line-height: 2;
+  font-size: 16px;
+  line-height: 1.9;
   color: rgba(255, 255, 255, 0.8);
   font-family: "Titillium Web", sans-serif;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   max-width: 1100px;
   margin-left: auto;
   margin-right: auto;
@@ -123,12 +184,202 @@ const AboutSectionText = styled.p`
   }
 `;
 
+const CompanyHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0 0 16px;
+`;
+
+const CompanyLogo = styled.img`
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: brightness(1.05);
+`;
+
+const CompanyName = styled.h3`
+  font-size: 34px;
+  margin: 0;
+  font-family: Garamond, serif;
+  font-weight: 100;
+  color: rgb(255, 252, 223);
+  text-transform: lowercase;
+  letter-spacing: 1px;
+`;
+
+const CompanyDescription = styled.p`
+  margin-bottom: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 820px;
+  font-size: 16px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "Titillium Web", sans-serif;
+`;
+
+const ExperienceTitle = styled.h3`
+  font-size: 28px;
+  margin: 0 0 24px;
+  font-family: Garamond, serif;
+  font-weight: 100;
+  color: rgb(255, 252, 223);
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 22px;
+    margin: 40px 0 20px;
+  }
+`;
+
+const ExperienceCard = styled.div`
+  text-align: left;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+
+  transition: none;
+
+  &:hover {
+    transform: none;
+    background: transparent;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0;
+  }
+`;
+
+const ExperienceRole = styled.div`
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  font-family: "Titillium Web", sans-serif;
+  margin-bottom: 0;
+`;
+
+const ExperienceMeta = styled.div`
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 12px;
+  font-family: "Titillium Web", sans-serif;
+`;
+
+const ExperienceImpact = styled.p`
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: "Titillium Web", sans-serif;
+`;
+
+const ExperiencePhrases = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 0;
+`;
+
+const ExperiencePhrase = styled.p`
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: "Titillium Web", sans-serif;
+`;
+
+const ExperiencePeriod = styled.span`
+  font-size: 0.72em;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.78);
+`;
+
+const ExperienceDivider = styled.div`
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 252, 223, 0.25);
+  margin: 8px 0 4px;
+`;
+
+const ExperienceList = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 15px;
+  font-family: "Titillium Web", sans-serif;
+
+  li {
+    position: relative;
+    padding-left: 18px;
+    line-height: 1.6;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 8px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgb(255, 252, 223);
+    opacity: 0.85;
+  }
+`;
+
+const ExperienceTimeline = styled.div`
+  position: relative;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 34px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 16px;
+    bottom: 16px;
+    width: 2px;
+    background: rgba(255, 252, 223, 0.35);
+    border-radius: 2px;
+  }
+`;
+
+const ExperienceTimelineItem = styled.div`
+  position: relative;
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const ExperienceTimelineDot = styled.div`
+  position: absolute;
+  left: -20px;
+  top: 26px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 252, 223, 0.28);
+`;
+
 const SkillsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
-  margin-top: 50px;
-  margin-bottom: 20px;
+  gap: 26px;
+  margin-top: 0;
+  margin-bottom: 0;
   max-width: 100%;
   width: 100%;
   margin-left: auto;
@@ -137,76 +388,129 @@ const SkillsContainer = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 30px;
-    margin-top: 40px;
+    margin-top: 0;
+  }
+
+  @media (min-width: 1020px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
   }
 `;
 
 const SkillCard = styled.div`
-  padding: 20px 0;
-  transition: all 0.3s ease;
-  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  transition: none;
   position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 1px;
-    background: rgb(255, 252, 223);
-    transition: width 0.3s ease;
-  }
+  cursor: default;
 
   &:hover {
-    &::after {
-      width: 60px;
-    }
-
-    h3 {
-      color: rgb(255, 252, 223);
-    }
-
-    p {
-      color: rgba(255, 255, 255, 0.9);
-    }
+    transform: none;
+    background: transparent;
   }
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0;
 
   h3 {
     font-size: 22px;
-    margin-bottom: 10px;
+    margin: 0;
     color: rgba(255, 255, 255, 0.9);
     font-family: Garamond, serif;
     font-weight: 100;
-    transition: color 0.3s ease;
+    text-align: left;
   }
 
-  p {
-    font-size: 15px;
-    line-height: 1.8;
-    color: rgba(255, 255, 255, 0.6);
-    font-family: "Titillium Web", sans-serif;
-    transition: color 0.3s ease;
+  @media (max-width: 768px) {
+    padding: 0;
+  }
+
+  @media (min-width: 1020px) {
+    padding: 0 26px;
+
+    &:nth-child(1),
+    &:nth-child(2) {
+      border-right: 1px solid rgba(255, 252, 223, 0.22);
+    }
+  }
+`;
+
+const SkillCategoryPill = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 252, 223, 0.08);
+  color: rgba(255, 252, 223, 0.95);
+  font-family: "Titillium Web", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  align-self: flex-start;
+`;
+
+const SkillSummary = styled.p`
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: "Titillium Web", sans-serif;
+  text-align: left;
+`;
+
+const SkillList = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const SkillListItem = styled.li`
+  position: relative;
+  padding-left: 18px;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: "Titillium Web", sans-serif;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 8px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(255, 252, 223, 0.9);
+    opacity: 0.85;
   }
 `;
 
 const ProjectsSection = styled.section`
   max-width: 1200px;
-  margin: 80px auto;
-  padding: 0 40px;
+  margin: var(--section-y) auto;
+  padding: 0 var(--container-x);
   width: 100%;
 
-  @media (max-width: 768px) {
-    padding: 0 20px;
-    margin: 60px auto;
+  @media (min-width: 900px) {
+    margin: 80px auto;
+    padding: 0 40px;
   }
 `;
 
 const ProjectsTitle = styled.h2`
   text-align: center;
-  font-size: 48px;
-  margin-bottom: 80px;
+  font-size: clamp(28px, 6vw, 40px);
+  margin-bottom: 44px;
   font-family: Garamond, serif;
   font-weight: 100;
   color: white;
@@ -225,31 +529,36 @@ const ProjectsTitle = styled.h2`
     background: rgb(255, 252, 223);
   }
 
-  @media (max-width: 768px) {
-    font-size: 36px;
-    margin-bottom: 60px;
+  @media (min-width: 900px) {
+    font-size: 48px;
+    margin-bottom: 80px;
   }
 `;
 
 const ProjectItem = styled.div`
   display: grid;
-  grid-template-columns: ${props => props.reverse ? '1fr 1.2fr' : '1.2fr 1fr'};
-  gap: 60px;
+  grid-template-columns: 1fr;
+  gap: 22px;
   align-items: center;
-  margin-bottom: 120px;
+  margin-bottom: 72px;
   position: relative;
 
-  @media (max-width: 968px) {
-    grid-template-columns: 1fr;
+  @media (min-width: 600px) {
     gap: 30px;
-    margin-bottom: 80px;
+    margin-bottom: 90px;
+  }
+
+  @media (min-width: 900px) {
+    grid-template-columns: ${({ $reverse }) => ($reverse ? "1fr 1.2fr" : "1.2fr 1fr")};
+    gap: 60px;
+    margin-bottom: 120px;
   }
 `;
 
 const ProjectImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
-  order: ${props => props.reverse ? '1' : '0'};
+  order: 0;
   
   &::after {
     content: '';
@@ -269,7 +578,7 @@ const ProjectImageWrapper = styled.div`
 
   img {
     width: 100%;
-    height: 400px;
+    height: 220px;
     object-fit: cover;
     display: block;
     transition: transform 0.5s ease;
@@ -279,11 +588,17 @@ const ProjectImageWrapper = styled.div`
     transform: scale(1.05);
   }
 
-  @media (max-width: 968px) {
-    order: 0;
-    
+  @media (min-width: 600px) {
     img {
       height: 300px;
+    }
+  }
+  
+  @media (min-width: 900px) {
+    order: ${({ $reverse }) => ($reverse ? "1" : "0")};
+
+    img {
+      height: 400px;
     }
   }
 
@@ -310,23 +625,23 @@ const ProjectImageWrapper = styled.div`
 `;
 
 const ProjectInfo = styled.div`
-  order: ${props => props.reverse ? '0' : '1'};
-  
-  @media (max-width: 968px) {
-    order: 1;
+  order: 1;
+
+  @media (min-width: 900px) {
+    order: ${({ $reverse }) => ($reverse ? "0" : "1")};
   }
 `;
 
 const ProjectName = styled.h3`
-  font-size: 32px;
+  font-size: clamp(22px, 5.4vw, 30px);
   font-family: Garamond, serif;
   font-weight: 100;
   color: white;
   margin-bottom: 15px;
   letter-spacing: 1px;
 
-  @media (max-width: 768px) {
-    font-size: 28px;
+  @media (min-width: 900px) {
+    font-size: 32px;
   }
 `;
 
@@ -359,8 +674,13 @@ const ProjectTechnologies = styled.div`
 
 const ProjectLinks = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 12px;
   align-items: center;
+
+  @media (max-width: 599px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const ProjectLink = styled.a`
@@ -391,7 +711,7 @@ const ProjectLink = styled.a`
 `;
 
 const DivIcons = styled.div`
-  margin-top: 28px;
+  margin-top: 18px;
   margin-bottom: 2px;
 
   display: flex;
@@ -413,9 +733,9 @@ const DivIcons = styled.div`
 
 const TechTitle = styled.h3`
   text-align: center;
-  font-size: 28px;
-  margin-top: 80px;
-  margin-bottom: 60px;
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 36px;
   font-family: Garamond, serif;
   font-weight: 100;
   color: rgba(255, 255, 255, 0.95);
@@ -440,10 +760,55 @@ const TechTitle = styled.h3`
     width: 80px;
   }
 
-  @media (max-width: 768px) {
-    font-size: 24px;
-    margin-top: 60px;
-    margin-bottom: 50px;
+  @media (min-width: 900px) {
+    font-size: 28px;
+    margin-bottom: 46px;
+  }
+`;
+
+const TechCategories = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 54px;
+    row-gap: 34px;
+  }
+`;
+
+const TechCategory = styled.div`
+  text-align: left;
+  align-self: start;
+`;
+
+const TechCategoryTitle = styled.h4`
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-family: "Titillium Web", sans-serif;
+  font-weight: 400;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+`;
+
+const TechItems = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 14px;
+  align-items: start;
+  justify-items: center;
+
+  @media (min-width: 520px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 `;
 
@@ -469,18 +834,25 @@ const DivIconsTec = styled.div`
   }
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.button`
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 6px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
+  width: 104px;
+  min-height: 108px;
+  color: inherit;
 
   &:hover {
-    transform: translateY(-8px);
+    transform: none;
 
     svg {
       transform: scale(1.15);
@@ -510,8 +882,14 @@ const IconWrapper = styled.div`
     opacity: 0;
   }
 
+  &:focus-visible {
+    outline: 2px solid rgba(255, 252, 223, 0.55);
+    outline-offset: 6px;
+    border-radius: 8px;
+  }
+
   svg {
-    font-size: 52px;
+    font-size: 44px;
     transition: all 0.3s ease;
     color: rgba(255, 255, 255, 0.85);
 
@@ -521,29 +899,87 @@ const IconWrapper = styled.div`
   }
 `;
 
+const TechIconSlot = styled.div`
+  width: 52px;
+  height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const TechFallbackIcon = styled.div`
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 252, 223, 0.9);
+  font-family: "Titillium Web", sans-serif;
+  font-weight: 400;
+  letter-spacing: 1px;
+  font-size: 12px;
+  text-transform: uppercase;
+`;
+
 const TechName = styled.span`
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.6);
   font-family: "Titillium Web", sans-serif;
   text-align: center;
   font-weight: 300;
-  letter-spacing: 2px;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
   transition: all 0.3s ease;
+  line-height: 1.25;
+  max-width: 104px;
+  word-break: break-word;
+`;
+
+const SoftSkillsWrap = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+
+  @media (min-width: 520px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+`;
+
+const SoftSkillPill = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.82);
+  font-family: "Titillium Web", sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
+
+  &:hover {
+    background: rgba(255, 252, 223, 0.08);
+    color: rgba(255, 252, 223, 0.95);
+  }
 `;
 
 const DescriptionBox = styled.div`
-  margin-top: 60px;
-  margin-bottom: 40px;
-  min-height: 60px;
+  margin-top: 18px;
+  margin-bottom: 0;
+  min-height: 54px;
   text-align: center;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 15px;
+  font-size: 14px;
   font-family: "Titillium Web", sans-serif;
   font-weight: 300;
   line-height: 1.8;
   letter-spacing: 0.5px;
-  padding: 0 20px;
+  padding: 0 12px;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -551,12 +987,30 @@ const DescriptionBox = styled.div`
   z-index: 1;
   transition: all 0.4s ease;
 
-  @media (max-width: 768px) {
-    font-size: 14px;
-    padding: 0 15px;
-    min-height: 50px;
-    margin-top: 50px;
-    margin-bottom: 30px;
+  @media (min-width: 600px) {
+    padding: 0 16px;
+  }
+
+  @media (min-width: 900px) {
+    font-size: 15px;
+    padding: 0 20px;
+    margin-top: 28px;
+  }
+`;
+
+const TechnologyDescriptionText = styled.p`
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  animation: fadeInSoft 0.35s ease both;
+  @keyframes fadeInSoft {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 `;
 
@@ -730,24 +1184,14 @@ const ProjectsGrid = styled.div`
 
 const ContactSection = styled.section`
   max-width: 1400px;
-  margin: 100px auto;
-  padding: 0 40px;
-
-  @media (max-width: 768px) {
-    padding: 0 20px;
-    margin: 80px auto;
-  }
-
-  @media (max-width: 600px) {
-    padding: 0 15px;
-    margin: 60px auto;
-  }
+  margin: var(--section-y) auto;
+  padding: 0 var(--container-x);
 `;
 
 const ContactTitle = styled.h2`
   text-align: center;
-  font-size: 48px;
-  margin-bottom: 80px;
+  font-size: clamp(28px, 6vw, 40px);
+  margin-bottom: 44px;
   font-family: Garamond, serif;
   font-weight: 100;
   color: white;
@@ -766,26 +1210,20 @@ const ContactTitle = styled.h2`
     background: rgb(255, 252, 223);
   }
 
-  @media (max-width: 768px) {
-    font-size: 36px;
-    margin-bottom: 60px;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 32px;
-    margin-bottom: 50px;
+  @media (min-width: 900px) {
+    font-size: 48px;
+    margin-bottom: 80px;
   }
 `;
 
 const ContactWrapper = styled.div`
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 150px;
+  grid-template-columns: 1fr;
+  gap: 60px;
   align-items: start;
 
-  @media (max-width: 1100px) {
-    grid-template-columns: 260px 1fr;
-    gap: 100px;
+  @media (min-width: 900px) {
+    gap: 70px;
   }
 
   @media (max-width: 968px) {
@@ -799,31 +1237,19 @@ const ContactWrapper = styled.div`
 `;
 
 const ContactInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 26px 60px;
   position: relative;
 
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: -75px;
-    width: 1px;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.15);
-
-    @media (max-width: 1100px) {
-      right: -50px;
-    }
-
-    @media (max-width: 968px) {
-      display: none;
-    }
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+    max-width: 900px;
+    margin: 0 auto;
   }
 
   @media (max-width: 600px) {
-    gap: 30px;
+    gap: 22px;
   }
 `;
 
@@ -1220,7 +1646,7 @@ const ArrowIcon = styled(IoIosArrowDown)`
   font-size: 16px;
   color: #212121;
   transition: transform 0.3s;
-  transform: ${({ isOpen }) => (isOpen ? "rotate(180deg)" : "rotate(0deg)")};
+  transform: ${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "rotate(0deg)")};
 `;
 
 const DropdownMenu = styled.div`
@@ -1231,9 +1657,9 @@ const DropdownMenu = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   min-width: 170px;
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
-  visibility: ${({ isOpen }) => (isOpen ? "visible" : "hidden")};
-  transform: ${({ isOpen }) => (isOpen ? "translate(-50%, 0)" : "translate(-50%, -10px)")};
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
+  transform: ${({ $isOpen }) => ($isOpen ? "translate(-50%, 0)" : "translate(-50%, -10px)")};
   transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
   z-index: 1000;
   overflow: hidden;
@@ -1301,9 +1727,11 @@ const AboutTitle = styled.h1`
 `;
 
 const LandingPage = () => {
+  const { t } = useTranslation();
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedTechnology, setSelectedTechnology] = useState("");
+  const [isTechPinned, setIsTechPinned] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState("");
@@ -1334,49 +1762,121 @@ const LandingPage = () => {
   }, [showDropdown]);
 
   const descriptions = {
-    react: "Desenvolvimento de SPAs e interfaces reativas com componentes reutilizáveis, hooks e gerenciamento de estado eficiente",
-    js: "Domínio completo de ES6+, programação assíncrona, manipulação de DOM e integração com APIs REST",
-    html: "Estruturação semântica, acessibilidade e otimização SEO para experiências web de qualidade",
-    css: "Criação de layouts responsivos com Flexbox, Grid, animações CSS3 e arquiteturas escaláveis",
-    node: "Desenvolvimento de APIs RESTful, autenticação, middlewares e integração com bancos de dados",
-    python: "Automação de processos, scripts, análise de dados e desenvolvimento de aplicações backend",
-    java: "Programação orientada a objetos, estruturas de dados e desenvolvimento de sistemas robustos",
-    springboot: "Arquitetura de microserviços, APIs REST, Spring Security e integração com banco de dados",
-    git: "Controle de versão avançado, Git Flow, resolução de conflitos e colaboração em equipe",
+    react: t("tech.descriptions.react"),
+    reactnative: t("tech.descriptions.reactnative"),
+    js: t("tech.descriptions.js"),
+    typescript: t("tech.descriptions.typescript"),
+    html: t("tech.descriptions.html"),
+    css: t("tech.descriptions.css"),
+    styledcomponents: t("tech.descriptions.styledcomponents"),
+    node: t("tech.descriptions.node"),
+    python: t("tech.descriptions.python"),
+    java: t("tech.descriptions.java"),
+    springboot: t("tech.descriptions.springboot"),
+    sql: t("tech.descriptions.sql"),
+    postgresql: t("tech.descriptions.postgresql"),
+    firebase: t("tech.descriptions.firebase"),
+    restful: t("tech.descriptions.restful"),
+    aws: t("tech.descriptions.aws"),
+    googlecloud: t("tech.descriptions.googlecloud"),
+    stripe: t("tech.descriptions.stripe"),
+    oauth2: t("tech.descriptions.oauth2"),
+    git: t("tech.descriptions.git"),
+    github: t("tech.descriptions.github"),
+    softskills: t("tech.descriptions.softskills"),
   };
 
   const techNames = {
     react: "React",
+    reactnative: "React Native",
+    styledcomponents: "Styled-components",
+    typescript: "TypeScript",
     js: "JavaScript",
     html: "HTML5",
-    css: "CSS3",
+    css: "HTML & CSS",
     node: "Node.js",
     python: "Python",
     java: "Java",
     springboot: "Spring Boot",
+    sql: "SQL",
+    postgresql: "PostgreSQL",
+    firebase: "Firebase",
+    restful: "RESTful APIs",
+    aws: "AWS",
+    googlecloud: "Google Cloud",
+    stripe: "Stripe",
+    oauth2: "OAuth 2.0",
     git: "Git",
+    github: "GitHub",
+    softskills: "Soft Skills",
   };
 
   const icons = {
     react: <FaReactIcon />,
+    reactnative: <SiReact />,
     js: <FaJsIcon />,
+    typescript: <SiTypescript />,
     html: <FaHtmlIcon />,
     css: <FaCssIcon />,
+    styledcomponents: <SiStyledcomponents />,
     node: <FaNodeJsIcon />,
     python: <FaPythonIcon />,
     java: <FaJavaIcon />,
     springboot: <SiSpringbootIcon />,
+    postgresql: <SiPostgresql />,
+    firebase: <SiFirebase />,
+    aws: <SiAmazonwebservices />,
+    googlecloud: <SiGooglecloud />,
+    stripe: <SiStripe />,
+    oauth2: <SiOpenidIcon />,
     git: <SiGitIcon />,
+    github: <FaGithubIcon />,
     docker: <SiDockerIcon />,
     openid: <SiOpenidIcon />,
     jwt: <SiJsonwebtokensIcon />,
   };
 
+  const technologyCategories = [
+    {
+      title: t("tech.categories.frontend"),
+      keys: ["react", "reactnative", "html", "css", "js", "styledcomponents", "typescript"],
+    },
+    {
+      title: t("tech.categories.backend"),
+      keys: ["springboot", "java", "sql", "postgresql"],
+    },
+    {
+      title: t("tech.categories.other"),
+      keys: ["firebase", "restful", "aws", "googlecloud", "stripe", "oauth2", "git", "github"],
+    },
+    {
+      title: t("tech.categories.softSkills"),
+      keys: ["softskills"],
+    },
+  ];
+
+  const softSkillsRaw = t("tech.softSkills.items", { returnObjects: true });
+  const softSkills = Array.isArray(softSkillsRaw) ? softSkillsRaw : [];
+
   const projects = [
+    {
+      name: "Elevate Auth API",
+      image: "https://elevatebr.org/images/elevate-logo.png",
+      descriptionKey: "projects.items.elevateAuthApi.description",
+      logoThumbnail: true,
+      github: "",
+      deploy: "",
+      partner: {
+        name: "Elevate",
+        logo: "https://elevatebr.org/images/elevate-logo.png",
+        url: "https://elevatebr.org/",
+      },
+      technologies: ["java", "springboot", "openid", "jwt", "docker", "git"],
+    },
     {
       name: "SeatHub",
       image: "Logo_seathub.png",
-      description: "Plataforma completa de coworking para reserva de espaços de trabalho. Sistema de gestão com controle de disponibilidade, reservas por hora/dia/mês, dashboard administrativo e integração de pagamentos. Aplicação web e mobile com mapas interativos.",
+      descriptionKey: "projects.items.seatHub.description",
       github: "",
       deploy: "https://seathub.net",
       technologies: ["react", "js", "java", "springboot"],
@@ -1389,7 +1889,7 @@ const LandingPage = () => {
     {
       name: "TapInOut",
       image: "Logo_tapinout.png",
-      description: "Sistema de controle de ponto digital inteligente com biometria facial e GPS em tempo real. Dashboard com IA para alertas de horas extras, gestão de banco de horas e detecção de riscos trabalhistas. Segurança avançada com criptografia AES-256 e OAuth2.",
+      descriptionKey: "projects.items.tapInOut.description",
       github: "",
       deploy: "https://tapinout.com",
       technologies: ["react", "js", "java", "springboot"],
@@ -1402,7 +1902,7 @@ const LandingPage = () => {
     {
       name: "Busca CEP",
       image: "BuscaCep.png",
-      description: "Aplicação web para consulta de CEPs integrada à API ViaCEP. Interface intuitiva que permite buscar endereços completos através do código postal, com validação e tratamento de erros.",
+      descriptionKey: "projects.items.buscaCep.description",
       github: "https://github.com/JoaoZ14/BuscaCep",
       deploy: "https://searcep.netlify.app/",
       technologies: ["react", "js", "css", "html"],
@@ -1410,7 +1910,7 @@ const LandingPage = () => {
     {
       name: "Weather App",
       image: "WeatherApp.png",
-      description: "Aplicação de previsão do tempo em tempo real integrada com API meteorológica. Exibe temperatura, condições climáticas e previsões com design clean e responsivo.",
+      descriptionKey: "projects.items.weatherApp.description",
       github: "https://github.com/JoaoZ14/Weather-App",
       deploy: "https://weatherappjg.netlify.app",
       technologies: ["react", "html", "css", "js"],
@@ -1418,26 +1918,12 @@ const LandingPage = () => {
     {
       name: "Calculadora",
       image: "calculadora.png",
-      description: "Calculadora web moderna e funcional com design minimalista. Realiza operações matemáticas básicas com interface responsiva e experiência de usuário fluida.",
+      descriptionKey: "projects.items.calculator.description",
       github: "https://github.com/JoaoZ14/Calculator",
       deploy: "",
       technologies: ["html", "css", "js"],
     },
-    {
-      name: "Elevate Auth API",
-      image: "https://elevatebr.org/images/elevate-logo.png",
-      description:
-        "Plataforma de autenticação e autorização (Java + Spring Boot) com OAuth2/OpenID Connect e emissão/validação de tokens JWT. Solução multi-tenant por domínio, login customizado por cliente, controle de escopos/permissões e endpoints administrativos, com deploy containerizado via Docker.",
-      logoThumbnail: true,
-      github: "",
-      deploy: "",
-      partner: {
-        name: "Elevate",
-        logo: "https://elevatebr.org/images/elevate-logo.png",
-        url: "https://elevatebr.org/",
-      },
-      technologies: ["java", "springboot", "openid", "jwt", "docker", "git"],
-    },
+    
   ];
 
   const handleDownloadCV = (language) => {
@@ -1528,10 +2014,10 @@ const LandingPage = () => {
         <DivMargin id="home" />
 
         <DivText>
-          <TextFirst>Hello World,</TextFirst>
+          <TextFirst>{t("hero.greeting")}</TextFirst>
           <TextSecond>
-            Meu nome é João Guilherme,
-            <br /> <p>DESENVOLVEDOR FULLSTACK</p>
+            {t("hero.intro")}
+            <br /> <p>{t("hero.role")}</p>
           </TextSecond>
 
           <DivIcons>
@@ -1554,15 +2040,15 @@ const LandingPage = () => {
           
           <ButtonCVContainer ref={dropdownRef}>
             <ButtonCV onClick={toggleDropdown}>
-              Currículo Virtual
-              <ArrowIcon isOpen={showDropdown} />
+              {t("hero.cv")}
+              <ArrowIcon $isOpen={showDropdown} />
             </ButtonCV>
-            <DropdownMenu isOpen={showDropdown}>
+            <DropdownMenu $isOpen={showDropdown}>
               <DropdownItem onClick={() => handleDownloadCV("pt")}>
-                Português
+                {t("hero.portuguese")}
               </DropdownItem>
               <DropdownItem onClick={() => handleDownloadCV("en")}>
-                Inglês
+                {t("hero.english")}
               </DropdownItem>
             </DropdownMenu>
           </ButtonCVContainer>
@@ -1572,61 +2058,191 @@ const LandingPage = () => {
         <SectionProfile>
           <AboutSection data-aos="fade-up">
             <AboutContent>
-              <AboutSectionTitle>Sobre Mim</AboutSectionTitle>
-              <AboutSectionText>
-                Desenvolvedor Fullstack com sólida expertise em arquitetura de aplicações modernas e escaláveis. 
-                Transformo requisitos complexos em soluções elegantes, combinando domínio técnico em React, Node.js, 
-                Java e Spring Boot com visão estratégica de negócio. Meu diferencial está em entregar não apenas código, 
-                mas experiências digitais que geram valor real para usuários e empresas.
-              </AboutSectionText>
-              <AboutSectionText>
-                Especializado em desenvolvimento de interfaces responsivas de alta performance e APIs RESTful robustas. 
-                Pratico Clean Code, design patterns e metodologias ágeis no dia a dia. Tenho facilidade em aprender novas 
-                tecnologias rapidamente e aplicá-las de forma pragmática. Busco constantemente otimizar processos, melhorar 
-                a qualidade do código e contribuir com soluções criativas em ambientes colaborativos.
-              </AboutSectionText>
-              <AboutSectionText>
-                Além das habilidades técnicas, trago proatividade, comunicação efetiva e paixão por resolver problemas 
-                desafiadores. Acredito que tecnologia deve simplificar, conectar e impactar positivamente. Estou preparado 
-                para contribuir desde o primeiro dia, seja em projetos inovadores de startups ou em sistemas enterprise de 
-                larga escala.
-              </AboutSectionText>
-              
-              <SkillsContainer>
-                <SkillCard data-aos="fade-up" data-aos-delay="100">
-                  <h3>Desenvolvimento Frontend</h3>
-                  <p>Criação de interfaces intuitivas e performáticas com React, JavaScript ES6+, HTML5 e CSS3. Experiência em design responsivo, acessibilidade e otimização de performance</p>
-                </SkillCard>
-                <SkillCard data-aos="fade-up" data-aos-delay="200">
-                  <h3>Arquitetura Backend</h3>
-                  <p>Desenvolvimento de APIs RESTful escaláveis e seguras com Node.js, Java e Spring Boot. Conhecimento em bancos de dados, microserviços e integração de sistemas</p>
-                </SkillCard>
-                <SkillCard data-aos="fade-up" data-aos-delay="300">
-                  <h3>Excelência Técnica</h3>
-                  <p>Comprometimento com Clean Code, SOLID, Git Flow e metodologias ágeis. Mentalidade voltada para solução de problemas, aprendizado contínuo e trabalho em equipe</p>
-                </SkillCard>
-              </SkillsContainer>
+              <AboutBlocks>
+                <AboutBlock>
+                  <AboutSectionTitle data-aos="fade-up">{t("about.title")}</AboutSectionTitle>
+                  <AboutSectionText>
+                    {t("about.summary1")}
+                  </AboutSectionText>
+                  <AboutSectionText data-aos="fade-up" data-aos-delay="50">
+                    {t("about.summary2")}
+                  </AboutSectionText>
+                </AboutBlock>
 
-              <TechTitle data-aos="fade-up">Tecnologias</TechTitle>
+                <AboutBlock>
+                  <ExperienceTitle data-aos="fade-up">{t("about.experienceTitle")}</ExperienceTitle>
+                  <CompanyHeader data-aos="fade-up" data-aos-delay="50">
+                    <CompanyLogo
+                      src="https://elevatebr.org/images/elevate-logo.png"
+                      alt="Logo da elevate"
+                    />
+                    <CompanyName>elevate</CompanyName>
+                  </CompanyHeader>
+                  <CompanyDescription data-aos="fade-up" data-aos-delay="100">
+                    {t("experience.elevate.description")}
+                  </CompanyDescription>
 
-              <DivIconsTec>
-                {Object.keys(descriptions).map((key, index) => (
-                  <IconWrapper
-                    key={key}
-                    data-aos="fade-up"
-                    data-aos-delay={index * 50}
-                    onMouseEnter={() => setSelectedTechnology(key)}
-                    onMouseLeave={() => setSelectedTechnology("")}
-                  >
-                    {icons[key]}
-                    <TechName>{techNames[key]}</TechName>
-                  </IconWrapper>
-                ))}
-              </DivIconsTec>
-              
-              <DescriptionBox data-aos="fade-up">
-                {selectedTechnology ? descriptions[selectedTechnology] : "Explore as tecnologias que utilizo para criar soluções digitais"}
-              </DescriptionBox>
+                  <ExperienceTimeline>
+                    <ExperienceTimelineItem data-aos="fade-up" data-aos-delay="50">
+                      <ExperienceCard>
+                        <ExperienceRole>
+                          {t("experience.elevate.roles.junior.title")} —{" "}
+                          <ExperiencePeriod>{t("experience.elevate.roles.junior.period")}</ExperiencePeriod>
+                        </ExperienceRole>
+                      </ExperienceCard>
+                    </ExperienceTimelineItem>
+
+                    <ExperienceTimelineItem data-aos="fade-up" data-aos-delay="100" >
+                      <ExperienceCard>
+                        <ExperienceRole style={{ marginBottom: '25px' }}>
+                          {t("experience.elevate.roles.intern.title")} —{" "}
+                          <ExperiencePeriod>{t("experience.elevate.roles.intern.period")}</ExperiencePeriod>
+                        </ExperienceRole>
+
+                        <ExperienceDivider />
+                        <ExperiencePhrases>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.techLead")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.productEvolution")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.endToEndImprovements")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.architectureBestPractices")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.bugFixes")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.fullCycleDelivery")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.featuresFrontendBackend")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.reviewsDocumentation")}
+                          </ExperiencePhrase>
+                        </ExperiencePhrases>
+                      </ExperienceCard>
+                    </ExperienceTimelineItem>
+                  </ExperienceTimeline>
+                </AboutBlock>
+
+                <AboutBlock>
+                  <ExperienceTitle data-aos="fade-up">{t("skills.title")}</ExperienceTitle>
+                  <SkillsContainer>
+                    <SkillCard data-aos="fade-up" data-aos-delay="100">
+                      <h3>{t("skills.frontend.title")}</h3>
+                      <SkillSummary>
+                        {t("skills.frontend.summary")}
+                      </SkillSummary>
+                      <SkillList>
+                        <SkillListItem>{t("skills.frontend.items.reusableComponents")}</SkillListItem>
+                        <SkillListItem>{t("skills.frontend.items.performanceUx")}</SkillListItem>
+                        <SkillListItem>{t("skills.frontend.items.serviceIntegrations")}</SkillListItem>
+                      </SkillList>
+                    </SkillCard>
+
+                    <SkillCard data-aos="fade-up" data-aos-delay="200">
+                      <h3>{t("skills.backend.title")}</h3>
+                      <SkillSummary>
+                        {t("skills.backend.summary")}
+                      </SkillSummary>
+                      <SkillList>
+                        <SkillListItem>{t("skills.backend.items.endpointsIntegrations")}</SkillListItem>
+                        <SkillListItem>{t("skills.backend.items.businessRules")}</SkillListItem>
+                        <SkillListItem>{t("skills.backend.items.authAccessControl")}</SkillListItem>
+                      </SkillList>
+                    </SkillCard>
+
+                    <SkillCard data-aos="fade-up" data-aos-delay="300">
+                      <h3>{t("skills.excellence.title")}</h3>
+                      <SkillSummary>
+                        {t("skills.excellence.summary")}
+                      </SkillSummary>
+                      <SkillList>
+                        <SkillListItem>{t("skills.excellence.items.codeReview")}</SkillListItem>
+                        <SkillListItem>{t("skills.excellence.items.documentation")}</SkillListItem>
+                        <SkillListItem>{t("skills.excellence.items.teamwork")}</SkillListItem>
+                      </SkillList>
+                    </SkillCard>
+                  </SkillsContainer>
+                </AboutBlock>
+
+                <AboutBlock>
+                  <TechTitle data-aos="fade-up">{t("tech.title")}</TechTitle>
+                  <TechCategories>
+                    {technologyCategories.map((category, categoryIndex) => (
+                      <TechCategory key={category.title} data-aos="fade-up" data-aos-delay={categoryIndex * 80}>
+                        <TechCategoryTitle>{category.title}</TechCategoryTitle>
+                        {category.title === t("tech.categories.softSkills") ? (
+                          <SoftSkillsWrap
+                            onMouseEnter={() => {
+                              if (!isTechPinned) setSelectedTechnology("softskills");
+                            }}
+                            onMouseLeave={() => {
+                              if (!isTechPinned) setSelectedTechnology("");
+                            }}
+                            onClick={() => {
+                              setIsTechPinned((prevPinned) => {
+                                const nextPinned = !(prevPinned && selectedTechnology === "softskills");
+                                setSelectedTechnology(nextPinned ? "softskills" : "");
+                                return nextPinned;
+                              });
+                            }}
+                          >
+                            {softSkills.map((label) => (
+                              <SoftSkillPill key={label}>{label}</SoftSkillPill>
+                            ))}
+                          </SoftSkillsWrap>
+                        ) : (
+                          <TechItems>
+                            {category.keys.map((key, index) => (
+                              <IconWrapper
+                                key={key}
+                                data-aos="fade-up"
+                                data-aos-delay={index * 30}
+                                type="button"
+                                onMouseEnter={() => {
+                                  if (!isTechPinned) setSelectedTechnology(key);
+                                }}
+                                onMouseLeave={() => {
+                                  if (!isTechPinned) setSelectedTechnology("");
+                                }}
+                                onClick={() => {
+                                  setIsTechPinned((prevPinned) => {
+                                    const nextPinned = !(prevPinned && selectedTechnology === key);
+                                    setSelectedTechnology(nextPinned ? key : "");
+                                    return nextPinned;
+                                  });
+                                }}
+                              >
+                              <TechIconSlot>
+                                {icons[key] ? icons[key] : (
+                                  <TechFallbackIcon>{(techNames[key] || key).slice(0, 2)}</TechFallbackIcon>
+                                )}
+                              </TechIconSlot>
+                                <TechName>{techNames[key]}</TechName>
+                              </IconWrapper>
+                            ))}
+                          </TechItems>
+                        )}
+                      </TechCategory>
+                    ))}
+                  </TechCategories>
+
+                  <DescriptionBox data-aos="fade-up">
+                    <TechnologyDescriptionText key={selectedTechnology || "default"}>
+                      {selectedTechnology
+                        ? descriptions[selectedTechnology]
+                        : t("tech.exploreDefault")}
+                    </TechnologyDescriptionText>
+                  </DescriptionBox>
+                </AboutBlock>
+              </AboutBlocks>
             </AboutContent>
           </AboutSection>
         </SectionProfile>
@@ -1635,30 +2251,30 @@ const LandingPage = () => {
         <DivMargin id="projects" />
 
         <ProjectsSection>
-          <ProjectsTitle data-aos="fade-up">Projetos</ProjectsTitle>
+          <ProjectsTitle data-aos="fade-up">{t("projects.title")}</ProjectsTitle>
           
           {projects.map((project, index) => (
             <ProjectItem 
               key={index} 
-              reverse={index % 2 !== 0}
+              $reverse={index % 2 !== 0}
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
-              <ProjectImageWrapper reverse={index % 2 !== 0} $logoThumbnail={project.logoThumbnail}>
+              <ProjectImageWrapper $reverse={index % 2 !== 0} $logoThumbnail={project.logoThumbnail}>
                 <img src={project.image} alt={project.name} />
               </ProjectImageWrapper>
               
-              <ProjectInfo reverse={index % 2 !== 0}>
+              <ProjectInfo $reverse={index % 2 !== 0}>
                 <ProjectName>{project.name}</ProjectName>
                 
                 {project.partner && (
                   <ProjectPartner>
-                    <span>Em colaboração com</span>
+                    <span>{t("projects.inCollaborationWith")}</span>
                     <PartnerLogoLink
                       href={project.partner.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`Visitar site da ${project.partner.name}`}
+                      aria-label={t("projects.visitPartnerSiteAria", { name: project.partner.name })}
                     >
                       <img src={project.partner.logo} alt={project.partner.name} />
                       <span>{project.partner.name}</span>
@@ -1666,7 +2282,7 @@ const LandingPage = () => {
                   </ProjectPartner>
                 )}
                 
-                <ProjectDescription>{project.description}</ProjectDescription>
+                <ProjectDescription>{t(project.descriptionKey)}</ProjectDescription>
                 
                 <ProjectTechnologies>
                   {project.technologies.map((tech) => (
@@ -1681,7 +2297,7 @@ const LandingPage = () => {
                       target="_blank" 
                       rel="noopener noreferrer"
                     >
-                      Ver Site
+                      {t("projects.viewSite")}
                     </ProjectLink>
                   )}
                   {project.github && (
@@ -1690,7 +2306,7 @@ const LandingPage = () => {
                       target="_blank" 
                       rel="noopener noreferrer"
                     >
-                      <FaGithubIcon /> Código
+                      <FaGithubIcon /> {t("projects.code")}
                     </ProjectLink>
                   )}
                 </ProjectLinks>
@@ -1702,131 +2318,38 @@ const LandingPage = () => {
         <Line />
 
         <ContactSection id="contact" data-aos="fade-up">
-          <ContactTitle>Entre em Contato</ContactTitle>
+          <ContactTitle>{t("contact.title")}</ContactTitle>
           
           <ContactWrapper>
             <ContactInfo>
               <ContactItem>
-                <h3>Email</h3>
+                <h3>{t("contact.email")}</h3>
                 <a href="mailto:contato@joaopossidonio.com">
-                  contato@joaopossidonio.com
+                  joaopossidonio.dev@gmail.com
                 </a>
               </ContactItem>
 
               <ContactItem>
-                <h3>WhatsApp</h3>
+                <h3>{t("contact.whatsapp")}</h3>
                 <a href="https://wa.me/5524988685043" target="_blank" rel="noopener noreferrer">
                   <FaWhatsappIcon /> +55 (24) 98868-5043
                 </a>
               </ContactItem>
 
               <ContactItem>
-                <h3>LinkedIn</h3>
+                <h3>{t("contact.linkedin")}</h3>
                 <a href="https://www.linkedin.com/in/joao-possidonio/" target="_blank" rel="noopener noreferrer">
                   <FaLinkedinIcon /> /joao-possidonio
                 </a>
               </ContactItem>
 
               <ContactItem>
-                <h3>GitHub</h3>
-                <a href="https://github.com/JoaoZ14" target="_blank" rel="noopener noreferrer">
+                <h3>{t("contact.github")}</h3>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <a href="https://github.com/JoaoZ14" target="_blank" rel="noopener noreferrer">
                   <FaGithubIcon /> /JoaoZ14
                 </a>
               </ContactItem>
-
-              <ContactItem>
-                <h3>Localização</h3>
-                <p>Resende, Rio de Janeiro, Brasil</p>
-              </ContactItem>
             </ContactInfo>
-
-            <FormWrapper>
-              <ContactForm ref={formRef} onSubmit={handleSubmit}>
-              <FormGroup>
-                <FormLabel htmlFor="name">Nome</FormLabel>
-                <FormInput 
-                  type="text" 
-                  id="name" 
-                  name="name" 
-                  placeholder="Seu nome completo"
-                  required 
-                  disabled={isSubmitting}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <FormLabel htmlFor="email">Email</FormLabel>
-                <FormInput 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  placeholder="seu@email.com"
-                  required 
-                  disabled={isSubmitting}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <FormLabel htmlFor="subject">Assunto</FormLabel>
-                <FormSelect 
-                  id="subject" 
-                  name="subject" 
-                  required
-                  value={selectedSubject}
-                  onChange={(e) => setSelectedSubject(e.target.value)}
-                  disabled={isSubmitting}
-                >
-                  <option value="">Selecione um assunto</option>
-                  <option value="freelance">Projeto Freelance</option>
-                  <option value="job">Oportunidade de Emprego</option>
-                  <option value="collaboration">Colaboração</option>
-                  <option value="question">Dúvida</option>
-                  <option value="other">Outro</option>
-                </FormSelect>
-              </FormGroup>
-
-              {selectedSubject === "job" && (
-                <FormGroup>
-                  <FormLabel htmlFor="company">Nome da Empresa</FormLabel>
-                  <FormInput 
-                    type="text" 
-                    id="company" 
-                    name="company" 
-                    placeholder="Nome da empresa"
-                    required 
-                    disabled={isSubmitting}
-                  />
-                </FormGroup>
-              )}
-
-              <FormGroup>
-                <FormLabel htmlFor="message">Mensagem</FormLabel>
-                <FormTextarea 
-                  id="message" 
-                  name="message" 
-                  placeholder="Escreva sua mensagem aqui..."
-                  required 
-                  disabled={isSubmitting}
-                />
-              </FormGroup>
-
-              <FormButton type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
-              </FormButton>
-
-              {submitStatus === "success" && (
-                <StatusMessage className="success">
-                  ✓ Mensagem enviada com sucesso! Retornarei em breve.
-                </StatusMessage>
-              )}
-
-              {submitStatus === "error" && (
-                <StatusMessage className="error">
-                  ✕ Erro ao enviar mensagem. Por favor, tente novamente ou entre em contato diretamente via email.
-                </StatusMessage>
-              )}
-              </ContactForm>
-            </FormWrapper>
           </ContactWrapper>
         </ContactSection>
 

@@ -23,9 +23,9 @@ const SplashContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  opacity: ${({ isHiding }) => (isHiding ? 0 : 1)};
+  opacity: ${({ $isHiding }) => ($isHiding ? 0 : 1)};
   transition: opacity 1s ease-in-out;
-  pointer-events: ${({ isHiding }) => (isHiding ? "none" : "auto")};
+  pointer-events: ${({ $isHiding }) => ($isHiding ? "none" : "auto")};
   will-change: opacity;
 `;
 
@@ -34,7 +34,7 @@ const LogoImage = styled.img`
   height: auto;
   animation: ${scaleIn} 0.8s ease-out;
   transition: opacity 1s ease-in-out;
-  opacity: ${({ isHiding }) => (isHiding ? 0 : 1)};
+  opacity: ${({ $isHiding }) => ($isHiding ? 0 : 1)};
   
   @media (max-width: 600px) {
     width: 150px;
@@ -61,9 +61,9 @@ const SplashScreen = ({ onFinish }) => {
   }, [imageLoaded, onFinish]);
 
   return (
-    <SplashContainer isHiding={isHiding}>
+    <SplashContainer $isHiding={isHiding}>
       <LogoImage
-        isHiding={isHiding}
+        $isHiding={isHiding}
         src="/Logo/Design sem nome (27)-Photoroom.png"
         alt="Logo"
         onLoad={() => setImageLoaded(true)}
