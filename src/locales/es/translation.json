@@ -119,6 +119,7 @@
       "aws": "Servicios en la nube para despliegue, escalabilidad y operación de aplicaciones",
       "googlecloud": "Servicios en la nube para infraestructura, integraciones y operación de aplicaciones",
       "stripe": "Integración con API Mercado Pago, con foco en confiabilidad y experiencia del usuario",
+      "supabase": "Backend-as-a-service para auth, storage, tiempo real e integraciones rápidas sobre PostgreSQL",
       "oauth2": "Autenticación y autorización con foco en seguridad e integración entre sistemas",
       "git": "Control de versiones avanzado, Git Flow, resolución de conflictos y colaboración en equipo",
       "github": "Colaboración y versionado con foco en calidad, revisiones y organización del trabajo",
@@ -128,9 +129,12 @@
   "projects": {
     "title": "Proyectos",
     "inCollaborationWith": "En colaboración con",
+    "personal": "Proyecto personal",
     "visitPartnerSiteAria": "Visitar el sitio de {{name}}",
     "viewSite": "Ver sitio",
     "code": "Código",
+    "codeFrontend": "Código (FE)",
+    "codeBackend": "Código (BE)",
     "items": {
       "elevateAuthApi": {
         "description": "Plataforma de autenticación y autorización (Java + Spring Boot) con OAuth2/OpenID Connect y emisión/validación de tokens JWT. Solución multi-tenant por dominio, login personalizado por cliente, control de scopes/permisos y endpoints administrativos, con despliegue containerizado vía Docker."
@@ -141,11 +145,20 @@
       "tapInOut": {
         "description": "Sistema inteligente de control de jornada con biometría facial y GPS en tiempo real. Panel con IA para alertas de horas extra, gestión de banco de horas y detección de riesgos laborales. Seguridad avanzada con cifrado AES-256 y OAuth2."
       },
+      "campoLead": {
+        "description": "SaaS mobile en desarrollo enfocado en vendedores de insumos agrícolas: gestión de productores, productos, ventas y visitas en una sola app, con experiencia pensada para uso en campo (incluyendo offline-first). Aplicación construida con React Native (Expo) y navegación optimizada, integrada con backend enfocado en consistencia de datos y sincronización eficiente. El proyecto busca aumentar la productividad comercial en el agro, centralizando información y facilitando el seguimiento de negociaciones en tiempo real.",
+        "statusNote": "Proyecto en desarrollo."
+      },
+      "footballJerseyShop": {
+        "description": "E-commerce full stack especializado en camisetas de fútbol: vitrina con búsqueda y filtros, carrito, flujo de pedidos y experiencia de compra orientada a conversión. API REST en Java con Spring Boot (reglas de negocio, seguridad y consistencia de stock), interfaz en React responsiva y de alto rendimiento. Capa de datos híbrida con PostgreSQL como fuente principal de verdad y Supabase acelerando auth, medios y funciones complementarias. Checkout con Mercado Pago, webhooks y manejo de estados de pago para cerrar el ciclo con confianza.",
+        "inactivityNote": "El sitio puede estar fuera de línea por inactividad del plan gratuito de Supabase."
+      },
       "buscaCep": {
         "description": "Aplicación web para consulta de CEP integrada con la API ViaCEP. Interfaz intuitiva para buscar direcciones completas por código postal, con validación y manejo de errores."
       },
       "weatherApp": {
-        "description": "Aplicación de pronóstico del tiempo en tiempo real integrada con una API meteorológica. Muestra temperatura, condiciones y pronósticos con un diseño limpio y responsivo."
+        "description": "Aplicación de pronóstico del tiempo en tiempo real integrada con una API meteorológica. Muestra temperatura, condiciones y pronósticos con un diseño limpio y responsivo.",
+        "inactivityNote": "El sitio puede estar fuera de línea por inactividad de la API meteorológica."
       },
       "calculator": {
         "description": "Calculadora web moderna y funcional con diseño minimalista. Realiza operaciones matemáticas básicas con interfaz responsiva y experiencia de usuario fluida."

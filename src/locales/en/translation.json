@@ -119,6 +119,7 @@
       "aws": "Cloud services for deployment, scalability, and application operations",
       "googlecloud": "Cloud services for infrastructure, integrations, and application operations",
       "stripe": "Integration with Mercado Pago API, focused on reliability and user experience",
+      "supabase": "Backend-as-a-service for auth, storage, realtime, and fast integrations on top of PostgreSQL",
       "oauth2": "Authentication and authorization focused on security and system integration",
       "git": "Advanced version control, Git Flow, conflict resolution, and team collaboration",
       "github": "Collaboration and versioning focused on quality, reviews, and work organization",
@@ -128,9 +129,12 @@
   "projects": {
     "title": "Projects",
     "inCollaborationWith": "In collaboration with",
+    "personal": "Personal project",
     "visitPartnerSiteAria": "Visit {{name}} website",
     "viewSite": "View Site",
     "code": "Code",
+    "codeFrontend": "Code (FE)",
+    "codeBackend": "Code (BE)",
     "items": {
       "elevateAuthApi": {
         "description": "Authentication and authorization platform (Java + Spring Boot) with OAuth2/OpenID Connect and JWT token issuance/validation. Multi-tenant solution by domain, client-specific custom login, scope/permission control, and administrative endpoints, with containerized deployment via Docker."
@@ -141,11 +145,20 @@
       "tapInOut": {
         "description": "Smart digital time tracking system with facial biometrics and real-time GPS. AI-powered dashboard for overtime alerts, time bank management, and labor risk detection. Advanced security with AES-256 encryption and OAuth2."
       },
+      "campoLead": {
+        "description": "SaaS mobile app in development focused on agricultural input sellers: management of producers, products, sales, and visits in a single app, with an experience designed for field use (including offline-first). Built with React Native (Expo) and optimized navigation, integrated with a backend focused on data consistency and efficient sync. The project aims to increase commercial productivity in agribusiness by centralizing information and facilitating real-time negotiation tracking.",
+        "statusNote": "Project in development."
+      },
+      "footballJerseyShop": {
+        "description": "Full-stack e-commerce focused on football jerseys: catalog with search and filters, cart, order flow, and a purchase journey tuned for conversion. REST API in Java with Spring Boot (business rules, security, and stock consistency), responsive high-performance React UI. Hybrid data layer with PostgreSQL as the system of record and Supabase accelerating auth, media, and complementary features. Mercado Pago checkout with webhooks and payment state handling to close the loop reliably.",
+        "inactivityNote": "Site may be offline due to Supabase free tier inactivity."
+      },
       "buscaCep": {
         "description": "Web app for postal code lookup integrated with the ViaCEP API. Intuitive interface to search full addresses by postal code, with validation and error handling."
       },
       "weatherApp": {
-        "description": "Real-time weather forecast app integrated with a weather API. Displays temperature, conditions, and forecasts with a clean, responsive design."
+        "description": "Real-time weather forecast app integrated with a weather API. Displays temperature, conditions, and forecasts with a clean, responsive design.",
+        "inactivityNote": "Site may be offline due to weather API inactivity."
       },
       "calculator": {
         "description": "Modern, functional web calculator with a minimalist design. Performs basic math operations with a responsive UI and smooth user experience."

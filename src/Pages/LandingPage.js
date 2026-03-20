@@ -10,6 +10,7 @@ import {
   SiReact,
   SiMercadopago,
   SiStyledcomponents,
+  SiSupabase,
   SiTypescript,
 } from "react-icons/si";
 import {
@@ -731,6 +732,26 @@ const ProjectImageWrapper = styled.div`
         transform: none;
       }
     `}
+`;
+
+const ProjectImageNote = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.75);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: center;
+  font-family: "Titillium Web", sans-serif;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
 `;
 
 const ProjectInfo = styled.div`
@@ -1976,6 +1997,7 @@ const LandingPage = () => {
     aws: t("tech.descriptions.aws"),
     googlecloud: t("tech.descriptions.googlecloud"),
     stripe: t("tech.descriptions.stripe"),
+    supabase: t("tech.descriptions.supabase"),
     oauth2: t("tech.descriptions.oauth2"),
     git: t("tech.descriptions.git"),
     github: t("tech.descriptions.github"),
@@ -2001,6 +2023,7 @@ const LandingPage = () => {
     aws: "AWS",
     googlecloud: "Google Cloud",
     stripe: "API Mercado Pago",
+    supabase: "Supabase",
     oauth2: "OAuth 2.0",
     git: "Git",
     github: "GitHub",
@@ -2024,6 +2047,7 @@ const LandingPage = () => {
     aws: <SiAmazonwebservices />,
     googlecloud: <SiGooglecloud />,
     stripe: <SiMercadopago />,
+    supabase: <SiSupabase />,
     oauth2: <SiOpenidIcon />,
     git: <SiGitIcon />,
     github: <FaGithubIcon />,
@@ -2043,7 +2067,7 @@ const LandingPage = () => {
     },
     {
       title: t("tech.categories.other"),
-      keys: ["firebase", "aws", "googlecloud", "stripe", "git", "github"],
+      keys: ["firebase", "supabase", "aws", "googlecloud", "stripe", "git", "github"],
     },
     {
       title: t("tech.categories.softSkills"),
@@ -2096,6 +2120,26 @@ const LandingPage = () => {
       }
     },
     {
+      name: "CampoLead",
+      image: `${process.env.PUBLIC_URL || ""}/Design sem nome (36).png`,
+      descriptionKey: "projects.items.campoLead.description",
+      noteKey: "projects.items.campoLead.statusNote",
+      github: "https://github.com/JoaoZ14/CampoLead",
+      githubBe: "https://github.com/JoaoZ14/CampoLead.be",
+      deploy: "",
+      technologies: ["reactnative", "js", "java", "springboot", "supabase", "restful", "git"],
+    },
+    {
+      name: "Artilheiro Store",
+      image: `${process.env.PUBLIC_URL || ""}/ArtilheiroStore.png`,
+      descriptionKey: "projects.items.footballJerseyShop.description",
+      noteKey: "projects.items.footballJerseyShop.inactivityNote",
+      github: "https://github.com/JoaoZ14/ArtilheiroStore",
+      githubBe: "https://github.com/JoaoZ14/ArtilheiroStore.be",
+      deploy: "https://artilheirostore.netlify.app/",
+      technologies: ["react", "js", "java", "springboot", "postgresql", "supabase", "stripe", "git"],
+    },
+    {
       name: "Busca CEP",
       image: "BuscaCep.png",
       descriptionKey: "projects.items.buscaCep.description",
@@ -2107,6 +2151,7 @@ const LandingPage = () => {
       name: "Weather App",
       image: "WeatherApp.png",
       descriptionKey: "projects.items.weatherApp.description",
+      noteKey: "projects.items.weatherApp.inactivityNote",
       github: "https://github.com/JoaoZ14/Weather-App",
       deploy: "https://weatherappjg.netlify.app",
       technologies: ["react", "html", "css", "js"],
@@ -2459,12 +2504,15 @@ const LandingPage = () => {
             >
               <ProjectImageWrapper $reverse={index % 2 !== 0} $logoThumbnail={project.logoThumbnail}>
                 <img src={project.image} alt={project.name} loading="eager" />
+                {project.noteKey && (
+                  <ProjectImageNote>{t(project.noteKey)}</ProjectImageNote>
+                )}
               </ProjectImageWrapper>
               
               <ProjectInfo $reverse={index % 2 !== 0}>
                 <ProjectName>{project.name}</ProjectName>
                 
-                {project.partner && (
+                {project.partner ? (
                   <ProjectPartner>
                     <span>{t("projects.inCollaborationWith")}</span>
                     <PartnerLogoLink
@@ -2476,6 +2524,10 @@ const LandingPage = () => {
                       <img src={project.partner.logo} alt={project.partner.name} loading="eager" />
                       <span>{project.partner.name}</span>
                     </PartnerLogoLink>
+                  </ProjectPartner>
+                ) : (
+                  <ProjectPartner>
+                    <span>{t("projects.personal")}</span>
                   </ProjectPartner>
                 )}
                 
@@ -2503,7 +2555,16 @@ const LandingPage = () => {
                       target="_blank" 
                       rel="noopener noreferrer"
                     >
-                      <FaGithubIcon /> {t("projects.code")}
+                      <FaGithubIcon /> {project.githubBe ? t("projects.codeFrontend") : t("projects.code")}
+                    </ProjectLink>
+                  )}
+                  {project.githubBe && (
+                    <ProjectLink 
+                      href={project.githubBe} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      <FaGithubIcon /> {t("projects.codeBackend")}
                     </ProjectLink>
                   )}
                 </ProjectLinks>
