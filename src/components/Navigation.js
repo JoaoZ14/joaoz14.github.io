@@ -56,7 +56,7 @@ const Brand = styled.a`
   text-decoration: none;
 
   img {
-    width: 68px;
+    width: 52px;
     height: auto;
     display: block;
     filter: brightness(0);
@@ -69,7 +69,7 @@ const Brand = styled.a`
 
   @media (min-width: 900px) {
     img {
-      width: 92px;
+      width: 72px;
     }
   }
 `;
@@ -386,7 +386,7 @@ const Navigation = () => {
   return (
     <NavBar ref={navRef} $scrolled={scrolled || isOpen}>
       <Brand href="#home" onClick={closeMenu}>
-        <img src="/Logo/Design sem nome (27)-Photoroom.png" alt="Logo João Possidonio" />
+        <img src="/brand/logo-mark.png" alt="Logo João Possidonio" />
       </Brand>
       <Hamburger
         type="button"

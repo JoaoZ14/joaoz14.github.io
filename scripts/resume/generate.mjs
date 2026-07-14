@@ -12,7 +12,7 @@ const require = createRequire(import.meta.url);
 const { resumes } = require("./content.js");
 const { buildResumeHtml } = require("./build-html.js");
 
-const logoPath = path.join(publicDir, "Logo", "Design sem nome (27)-Photoroom.png");
+const logoPath = path.join(publicDir, "brand", "logo-mark.png");
 
 function getLogoDataUri() {
   const buffer = fs.readFileSync(logoPath);

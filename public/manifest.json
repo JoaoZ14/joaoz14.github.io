@@ -1,20 +1,37 @@
 {
   "short_name": "João Guilherme",
-  "name": "João Guilherme - Portfólio",
+  "name": "João Guilherme — Portfólio",
   "icons": [
     {
-      "src": "Logo/Design sem nome (27)-Photoroom.png",
-      "sizes": "192x192",
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "brand/favicon-32.png",
+      "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "Logo/Design sem nome (27)-Photoroom.png",
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
       "sizes": "512x512",
-      "type": "image/png"
+      "purpose": "any"
+    },
+    {
+      "src": "brand/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#212121",
-  "background_color": "#ffffff"
+  "theme_color": "#0a0a0a",
+  "background_color": "#000000"
 }

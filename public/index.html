@@ -2,27 +2,32 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/Logo/Design sem nome (27)-Photoroom.png" sizes="32x32" />
-    <link rel="icon" href="%PUBLIC_URL%/Logo/Design sem nome (27)-Photoroom.png" sizes="16x16" />   
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/brand/favicon-32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/brand/favicon-16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/brand/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#FFFFFF" />
-    <!-- Aplica o tema salvo antes da renderização para evitar flash (FOUC) -->
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="description"
+      content="Portfólio de João Guilherme Possidonio — Desenvolvedor Fullstack especializado em React, Node.js, Java e Spring Boot."
+    />
+    <meta name="author" content="João Guilherme Possidonio" />
+    <link rel="canonical" href="https://joaopossidonio.com/" />
+
+    <!-- Sempre inicia no tema claro (troca manual vale só na sessão). -->
     <script>
       (function () {
         try {
-          var t = localStorage.getItem("theme");
-          if (t !== "light" && t !== "dark") {
-            t = window.matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-          }
-          document.documentElement.setAttribute("data-theme", t);
+          localStorage.removeItem("theme");
+          document.documentElement.setAttribute("data-theme", "light");
           var m = document.querySelector('meta[name="theme-color"]');
-          if (m) m.setAttribute("content", t === "dark" ? "#0a0a0a" : "#ffffff");
-        } catch (e) {}
+          if (m) m.setAttribute("content", "#ffffff");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
       })();
     </script>
-    <meta name="description" content="Portfólio de João Guilherme - Desenvolvedor Fullstack especializado em React, Node.js, Java e Spring Boot" />
 
     <!-- Fontes do design system -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,49 +36,69 @@
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Courier+Prime:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/Logo/Design sem nome (27)-Photoroom.png" />
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://joaopossidonio.com/" />
-    <meta property="og:title" content="João Guilherme - Desenvolvedor Fullstack" />
-    <meta property="og:description" content="Portfólio de João Guilherme - Desenvolvedor Fullstack especializado em React, Node.js, Java e Spring Boot" />
-    <meta property="og:image" content="https://joaopossidonio.com/Logo/Design sem nome (27)-Photoroom.png" />
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://joaopossidonio.com/" />
-    <meta property="twitter:title" content="João Guilherme - Desenvolvedor Fullstack" />
-    <meta property="twitter:description" content="Portfólio de João Guilherme - Desenvolvedor Fullstack especializado em React, Node.js, Java e Spring Boot" />
-    <meta property="twitter:image" content="https://joaopossidonio.com/Logo/Design sem nome (27)-Photoroom.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>João Guilherme</title>
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <title>João Guilherme | Desenvolvedor Fullstack</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="João Guilherme" />
+    <meta property="og:url" content="https://joaopossidonio.com/" />
+    <meta property="og:title" content="João Guilherme | Desenvolvedor Fullstack" />
+    <meta
+      property="og:description"
+      content="Portfólio de João Guilherme Possidonio — Desenvolvedor Fullstack especializado em React, Node.js, Java e Spring Boot."
+    />
+    <meta property="og:image" content="https://joaopossidonio.com/brand/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="João Guilherme — Desenvolvedor Fullstack" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://joaopossidonio.com/" />
+    <meta name="twitter:title" content="João Guilherme | Desenvolvedor Fullstack" />
+    <meta
+      name="twitter:description"
+      content="Portfólio de João Guilherme Possidonio — Desenvolvedor Fullstack especializado em React, Node.js, Java e Spring Boot."
+    />
+    <meta name="twitter:image" content="https://joaopossidonio.com/brand/og-image.png" />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://joaopossidonio.com/#website",
+            "url": "https://joaopossidonio.com/",
+            "name": "João Guilherme",
+            "description": "Portfólio de João Guilherme Possidonio — Desenvolvedor Fullstack especializado em React, Node.js, Java e Spring Boot.",
+            "inLanguage": "pt-BR",
+            "publisher": { "@id": "https://joaopossidonio.com/#person" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://joaopossidonio.com/#person",
+            "name": "João Guilherme Possidonio",
+            "url": "https://joaopossidonio.com/",
+            "jobTitle": "Desenvolvedor Fullstack",
+            "image": "https://joaopossidonio.com/brand/logo.png",
+            "sameAs": [
+              "https://github.com/JoaoZ14",
+              "https://www.linkedin.com/in/joao-possidonio",
+              "https://www.instagram.com/_possidonioj/"
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>

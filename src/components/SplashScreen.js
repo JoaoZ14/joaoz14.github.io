@@ -121,7 +121,7 @@ const SplashScreen = ({ onFinish }) => {
     >
       <LogoImage
         $isHiding={isHiding}
-        src="/Logo/Design sem nome (27)-Photoroom.png"
+        src="/brand/logo-mark.png"
         alt="Logo João Guilherme"
         onLoad={() => setImageLoaded(true)}
         onError={() => setImageLoaded(true)}

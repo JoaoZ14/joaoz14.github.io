@@ -369,7 +369,7 @@ const Footer = () => {
           <IdentityCol>
             <BrandLink href="#home" aria-label="Possidonio">
               <img
-                src="/Logo/Design sem nome (27)-Photoroom.png"
+                src="/brand/logo-mark.png"
                 alt="Logo Possidonio"
               />
             </BrandLink>

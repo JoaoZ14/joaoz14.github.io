@@ -7,33 +7,15 @@ import React, {
   useState,
 } from "react";
 
-const STORAGE_KEY = "theme";
 const META_COLORS = { light: "#ffffff", dark: "#0a0a0a" };
 
 const ThemeContext = createContext(null);
 
 /**
- * Lê o tema inicial na mesma ordem do script anti-flash do index.html:
- * preferência salva > preferência do sistema > claro.
+ * Sempre inicia no tema claro. A troca manual vale só na sessão atual.
  */
 function getInitialTheme() {
-  if (typeof window === "undefined") return "light";
-
-  const attr = document.documentElement.dataset.theme;
-  if (attr === "light" || attr === "dark") return attr;
-
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "light" || stored === "dark") return stored;
-  } catch (e) {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  }
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return "light";
 }
 
 export function ThemeProvider({ children }) {
@@ -44,12 +26,6 @@ export function ThemeProvider({ children }) {
 
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", META_COLORS[theme]);
-
-    try {
-      window.localStorage.setItem(STORAGE_KEY, theme);
-    } catch (e) {
-      return; // ignora falha de persistência (ex.: modo privado)
-    }
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
