@@ -136,12 +136,12 @@ const NavLinks = styled.nav`
     letter-spacing: 0.06em;
     text-transform: uppercase;
     border-bottom: 1px solid var(--line-soft);
-    transition: color 0.15s ease, padding-left 0.15s ease;
+    transition: color 0.15s ease, transform 0.15s var(--ease-out);
   }
 
   a:hover {
     color: var(--ink);
-    padding-left: 12px;
+    transform: translateX(8px);
   }
 
   @media (min-width: 900px) {
@@ -171,7 +171,7 @@ const NavLinks = styled.nav`
     }
 
     a:hover {
-      padding-left: 0;
+      transform: none;
       border-bottom-color: var(--line);
     }
   }

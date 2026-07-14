@@ -1,8 +1,40 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled, { css } from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
+import {
+  HiOutlineBriefcase,
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineCodeBracketSquare,
+  HiOutlineCommandLine,
+  HiOutlineEnvelope,
+  HiOutlineSquare3Stack3D,
+  HiOutlineUser,
+} from "react-icons/hi2";
 import { useTranslation } from "react-i18next";
-import { FaAws } from "react-icons/fa";
+import {
+  FaAws,
+  FaBolt,
+  FaCamera,
+  FaCar,
+  FaCat,
+  FaClock,
+  FaCoffee,
+  FaDumbbell,
+  FaFutbol,
+  FaGamepad,
+  FaHeadphones,
+  FaHorse,
+  FaLaptop,
+  FaMobileAlt,
+  FaMountain,
+  FaMugHot,
+  FaMusic,
+  FaPizzaSlice,
+  FaSeedling,
+  FaTree,
+} from "react-icons/fa";
+import { MdOutdoorGrill } from "react-icons/md";
+import { GiCowboyBoot } from "react-icons/gi";
 import {
   SiFirebase,
   SiGooglecloud,
@@ -33,7 +65,6 @@ import {
 } from "../components/Icons";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import emailjs from "@emailjs/browser";
 
 /* ============================================================
    LAYOUT BASE
@@ -477,17 +508,39 @@ const sectionTitle = css`
   color: var(--ink);
   display: inline-flex;
   align-items: center;
-  gap: 16px;
-
-  &::before {
-    content: "";
-    width: 44px;
-    height: 2px;
-    background: var(--ink);
-  }
+  gap: 14px;
+  text-wrap: balance;
 
   @media (min-width: 900px) {
     margin-bottom: 56px;
+  }
+`;
+
+const SectionLead = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background: var(--bg);
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.6;
+  }
+
+  @media (min-width: 900px) {
+    width: 40px;
+    height: 40px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
 
@@ -525,24 +578,118 @@ const AboutBlocks = styled.div`
 `;
 
 const AboutBlock = styled.div`
+  position: relative;
   text-align: left;
+  scroll-margin-top: 96px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+
+  ${({ $withLifeField }) =>
+    $withLifeField &&
+    css`
+      min-height: 320px;
+      padding-bottom: var(--space-2xl);
+
+      @media (min-width: 900px) {
+        display: grid;
+        grid-template-columns: minmax(0, 48ch) minmax(160px, 1fr);
+        column-gap: clamp(32px, 5vw, 64px);
+        align-items: start;
+      }
+    `}
 `;
 
 const AboutSectionTitle = styled.h2`
   ${sectionTitle}
+  position: relative;
+  z-index: 1;
+
+  ${({ $span }) =>
+    $span &&
+    css`
+      @media (min-width: 900px) {
+        grid-column: 1 / -1;
+      }
+    `}
+`;
+
+const AboutIconFieldRoot = styled.div`
+  display: none;
+
+  @media (min-width: 900px) {
+    display: grid;
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    min-height: 100%;
+    align-self: stretch;
+    grid-column: 2;
+    grid-row: 2;
+    color: var(--ink);
+    opacity: 0.12;
+    pointer-events: none;
+    user-select: none;
+  }
+`;
+
+const AboutIconCell = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+`;
+
+const AboutCopy = styled.div`
+  position: relative;
+  z-index: 1;
+  max-width: 48ch;
+  padding: var(--space-md) var(--space-lg);
+  border-left: 1px solid var(--line);
+  background: transparent;
+
+  @media (min-width: 900px) {
+    grid-column: 1;
+    grid-row: 2;
+    padding: var(--space-md) var(--space-xl);
+  }
 `;
 
 const AboutSectionText = styled.p`
-  font-size: clamp(16px, 1.4vw, 18px);
-  line-height: 1.75;
+  font-size: clamp(15px, 1.35vw, 17px);
+  line-height: 1.85;
   color: var(--text-2);
-  font-family: var(--font-body);
+  font-family: var(--font-editorial);
   margin: 0 0 20px;
-  max-width: 68ch;
+  max-width: 48ch;
+  text-wrap: pretty;
 
   &:last-child {
     margin-bottom: 0;
   }
+
+  ${({ $lead }) =>
+    $lead &&
+    css`
+      &::first-letter {
+        float: left;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 3.35em;
+        line-height: 0.82;
+        letter-spacing: -0.04em;
+        color: var(--ink);
+        padding: 4px 10px 0 0;
+      }
+    `}
 `;
 
 /* ============================================================
@@ -581,11 +728,12 @@ const CompanyName = styled.h3`
 
 const CompanyDescription = styled.p`
   margin: 0 0 var(--space-xl);
-  max-width: 72ch;
-  font-size: 16px;
-  line-height: 1.75;
+  max-width: 62ch;
+  font-size: 15px;
+  line-height: 1.85;
   color: var(--text-2);
-  font-family: var(--font-body);
+  font-family: var(--font-editorial);
+  text-wrap: pretty;
 `;
 
 const ExperienceTimeline = styled.div`
@@ -669,11 +817,12 @@ const ExperiencePhrase = styled.p`
   position: relative;
   margin: 0;
   padding-left: var(--space-md);
-  max-width: 68ch;
-  font-size: 15px;
-  line-height: 1.65;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.8;
   color: var(--text-2);
-  font-family: var(--font-body);
+  font-family: var(--font-editorial);
+  text-wrap: pretty;
 
   &::before {
     content: "";
@@ -686,7 +835,7 @@ const ExperiencePhrase = styled.p`
   }
 
   @media (max-width: 768px) {
-    font-size: 14px;
+    font-size: 13px;
     word-break: break-word;
     overflow-wrap: anywhere;
   }
@@ -704,12 +853,12 @@ const SkillsContainer = styled.div`
 `;
 
 const SkillCard = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-md);
   padding: clamp(24px, 4vw, 40px) 0;
   border-bottom: 1px solid var(--line-soft);
-  align-items: start;
+  align-items: flex-start;
 
   &:last-child {
     border-bottom: none;
@@ -725,11 +874,6 @@ const SkillCard = styled.div`
     letter-spacing: -0.035em;
     text-align: left;
     text-wrap: balance;
-  }
-
-  @media (min-width: 900px) {
-    grid-template-columns: minmax(180px, 260px) 1fr;
-    column-gap: var(--space-2xl);
   }
 `;
 
@@ -819,6 +963,17 @@ const TechCategoryTitle = styled.h4`
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--ink);
+    stroke-width: 1.6;
+  }
 `;
 
 const TechItems = styled.div`
@@ -963,52 +1118,43 @@ const TechTooltip = styled.span`
   }
 `;
 
-const SoftSkillsWrap = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-
-  @media (min-width: 520px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-`;
-
-const SoftSkillsTooltip = styled.span`
-  ${techTooltipBase}
-
-  ${({ $active }) => $active && tooltipVisible}
-
-  @media (hover: hover) and (pointer: fine) {
-    ${SoftSkillsWrap}:hover &,
-    ${SoftSkillsWrap}:focus-within & {
-      ${tooltipVisible}
-    }
-  }
-`;
-
-const SoftSkillPill = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 10px;
-  border: 1px solid var(--line-soft);
-  border-radius: 0;
-  background: var(--bg);
+const SoftSkillsProse = styled.p`
+  margin: 0;
+  max-width: 65ch;
+  font-size: 15px;
+  line-height: 1.7;
   color: var(--text-2);
+  font-family: var(--font-body);
+  text-wrap: pretty;
+`;
+
+const TechToggle = styled.button`
+  margin-top: var(--space-md);
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-size: 12px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  text-align: center;
   cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 
   &:hover {
-    border-color: var(--ink);
-    color: var(--ink);
-    background: var(--hover);
+    background: var(--ink);
+    color: var(--bg);
   }
+`;
+
+const ProjectPrivateNote = styled.p`
+  margin: var(--space-sm) 0 0;
+  max-width: 52ch;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+  line-height: 1.5;
 `;
 
 /* ============================================================
@@ -1317,7 +1463,7 @@ const ProjectDescription = styled.p`
   color: var(--text-2);
   font-family: var(--font-body);
   margin: 0;
-  max-width: 68ch;
+  max-width: 65ch;
   text-wrap: pretty;
 
   @media (max-width: 768px) {
@@ -1574,6 +1720,90 @@ const ContactItem = styled.div`
   }
 `;
 
+const ABOUT_LIFE_ICONS = [
+  FaGamepad,
+  FaDumbbell,
+  FaCar,
+  FaSeedling,
+  FaFutbol,
+  FaHorse,
+  FaMusic,
+  FaCoffee,
+  MdOutdoorGrill,
+  FaPizzaSlice,
+  FaBolt,
+  FaMountain,
+  FaTree,
+  GiCowboyBoot,
+  FaHeadphones,
+  FaLaptop,
+  FaCamera,
+  FaMobileAlt,
+  FaClock,
+  FaCat,
+  FaMugHot,
+];
+
+/** PRNG estável → mesma sequência a cada rebuild da grade. */
+const seededRandom = (seed) => {
+  let s = seed % 2147483647;
+  if (s <= 0) s += 2147483646;
+  return () => {
+    s = (s * 16807) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+};
+
+const ABOUT_ICON_SPACING = 48;
+
+const AboutLifeField = () => {
+  const rootRef = useRef(null);
+  const [grid, setGrid] = useState({ cols: 0, rows: 0, icons: [] });
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+
+    const build = () => {
+      const { width, height } = root.getBoundingClientRect();
+      if (width < 8 || height < 8) return;
+
+      // Preenche a largura (e a altura) inteiras sem sobra nas laterais.
+      const cols = Math.max(1, Math.round(width / ABOUT_ICON_SPACING));
+      const rows = Math.max(1, Math.round(height / ABOUT_ICON_SPACING));
+      const rand = seededRandom(14072026);
+      const icons = Array.from({ length: cols * rows }, () => {
+        const index = Math.floor(rand() * ABOUT_LIFE_ICONS.length);
+        return ABOUT_LIFE_ICONS[index];
+      });
+
+      setGrid({ cols, rows, icons });
+    };
+
+    build();
+    const observer = new ResizeObserver(build);
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <AboutIconFieldRoot
+      ref={rootRef}
+      aria-hidden="true"
+      style={{
+        gridTemplateColumns: grid.cols > 0 ? `repeat(${grid.cols}, 1fr)` : undefined,
+        gridTemplateRows: grid.rows > 0 ? `repeat(${grid.rows}, 1fr)` : undefined,
+      }}
+    >
+      {grid.icons.map((Icon, cellIndex) => (
+        <AboutIconCell key={cellIndex}>
+          <Icon />
+        </AboutIconCell>
+      ))}
+    </AboutIconFieldRoot>
+  );
+};
+
 const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
 const SHOWCASE_QUERY = "(min-width: 900px) and (hover: hover) and (pointer: fine)";
 
@@ -1589,11 +1819,8 @@ const LandingPage = () => {
   );
   const [activeProject, setActiveProject] = useState(0);
   const [openProject, setOpenProject] = useState(0);
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState("");
+  const [showAllTech, setShowAllTech] = useState(false);
   const dropdownRef = useRef(null);
-  const formRef = useRef(null);
 
   useEffect(() => {
     AOS.init({
@@ -1747,15 +1974,15 @@ const LandingPage = () => {
       title: t("tech.categories.other"),
       keys: ["firebase", "supabase", "aws", "googlecloud", "stripe", "git", "github"],
     },
-    {
-      title: t("tech.categories.softSkills"),
-      keys: ["softskills"],
-    },
   ];
 
+  const TECH_PREVIEW_LIMIT = 4;
   const softSkillsRaw = t("tech.softSkills.items", { returnObjects: true });
   const softSkills = Array.isArray(softSkillsRaw) ? softSkillsRaw : [];
-
+  const softSkillsProse = softSkills.join(" · ");
+  const hasHiddenTech = technologyCategories.some(
+    (category) => category.keys.length > TECH_PREVIEW_LIMIT
+  );
   const handleTechClick = (key) => {
     if (canHover) return;
     setActiveTooltip((prev) => (prev === key ? "" : key));
@@ -1900,6 +2127,12 @@ const LandingPage = () => {
 
         <ProjectDescription>{t(project.descriptionKey)}</ProjectDescription>
 
+        {!hasLinks && (
+          <ProjectPrivateNote>
+            {t(project.privateNoteKey || "projects.privateNote")}
+          </ProjectPrivateNote>
+        )}
+
         {(project.technologies.length > 0 || hasLinks) && (
           <ProjectActions>
             {project.technologies.length > 0 && (
@@ -1979,71 +2212,6 @@ const LandingPage = () => {
     setShowDropdown(!showDropdown);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus("");
-
-    try {
-      const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID || "YOUR_SERVICE_ID";
-      const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || "YOUR_TEMPLATE_ID";
-      const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY";
-
-      if (serviceId === "YOUR_SERVICE_ID" || templateId === "YOUR_TEMPLATE_ID" || publicKey === "YOUR_PUBLIC_KEY") {
-        throw new Error("Credenciais do EmailJS não configuradas. Por favor, configure as variáveis de ambiente ou atualize o código.");
-      }
-
-      const formData = new FormData(e.target);
-      const subjectMap = {
-        freelance: "Projeto Freelance",
-        job: "Oportunidade de Emprego",
-        collaboration: "Colaboração",
-        question: "Dúvida",
-        other: "Outro"
-      };
-
-      const templateParams = {
-        from_name: formData.get('name'),
-        from_email: formData.get('email'),
-        subject: subjectMap[formData.get('subject')] || formData.get('subject'),
-        company: formData.get('company') || "Não informado",
-        message: formData.get('message'),
-        to_email: "contato@joaopossidonio.com",
-        reply_to: formData.get('email')
-      };
-
-      await emailjs.send(serviceId, templateId, templateParams, publicKey);
-
-      setSubmitStatus("success");
-      e.target.reset();
-      setSelectedSubject("");
-
-      setTimeout(() => {
-        setSubmitStatus("");
-      }, 5000);
-    } catch (error) {
-      console.error("Erro ao enviar email:", error);
-
-      if (error.text) {
-        if (error.text.includes("insufficient authentication scopes")) {
-          console.error("Erro de autenticação Gmail API. Use SMTP ao invés de OAuth ou verifique os escopos OAuth.");
-        } else if (error.text.includes("Invalid template ID")) {
-          console.error("Template ID inválido. Verifique a configuração do template no EmailJS.");
-        } else if (error.text.includes("Invalid service ID")) {
-          console.error("Service ID inválido. Verifique a configuração do serviço no EmailJS.");
-        }
-      }
-
-      setSubmitStatus("error");
-
-      setTimeout(() => {
-        setSubmitStatus("");
-      }, 5000);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <Wraper>
       <DivPrincipal>
@@ -2062,11 +2230,21 @@ const LandingPage = () => {
             </TextSecond>
 
             <DivIcons>
-              <a href="https://wa.me/5524988685043">
+              <a
+                href="https://wa.me/5524988685043"
+                target="_blank"
+                rel="noreferrer"
+                aria-label={t("contact.whatsapp")}
+              >
                 <FaWhatsappIcon />
               </a>
 
-              <a href="https://github.com/JoaoZ14" target="_blank" rel="noreferrer">
+              <a
+                href="https://github.com/JoaoZ14"
+                target="_blank"
+                rel="noreferrer"
+                aria-label={t("contact.github")}
+              >
                 <FaGithubIcon />
               </a>
 
@@ -2074,6 +2252,7 @@ const LandingPage = () => {
                 href="https://www.linkedin.com/in/joao-possidonio"
                 target="_blank"
                 rel="noreferrer"
+                aria-label={t("contact.linkedin")}
               >
                 <FaLinkedinIcon />
               </a>
@@ -2082,7 +2261,7 @@ const LandingPage = () => {
                 href="https://www.instagram.com/_possidonioj/"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Instagram"
+                aria-label={t("contact.instagram")}
               >
                 <FaInstagramIcon />
               </a>
@@ -2113,18 +2292,27 @@ const LandingPage = () => {
           <AboutSection data-aos="fade-up">
             <AboutContent>
               <AboutBlocks>
-                <AboutBlock>
-                  <AboutSectionTitle data-aos="fade-up">{t("about.title")}</AboutSectionTitle>
-                  <AboutSectionText>
-                    {t("about.summary1")}
-                  </AboutSectionText>
-                  <AboutSectionText data-aos="fade-up" data-aos-delay="50">
-                    {t("about.summary2")}
-                  </AboutSectionText>
+                <AboutBlock $withLifeField>
+                  <AboutSectionTitle $span data-aos="fade-up">
+                    <SectionLead aria-hidden="true"><HiOutlineUser /></SectionLead>
+                    {t("about.title")}
+                  </AboutSectionTitle>
+                  <AboutCopy data-aos="fade-up" data-aos-delay="40">
+                    <AboutSectionText $lead>
+                      {t("about.summary1")}
+                    </AboutSectionText>
+                    <AboutSectionText>
+                      {t("about.summary2")}
+                    </AboutSectionText>
+                  </AboutCopy>
+                  <AboutLifeField />
                 </AboutBlock>
 
-                <AboutBlock>
-                  <ExperienceTitle data-aos="fade-up">{t("about.experienceTitle")}</ExperienceTitle>
+                <AboutBlock id="experience">
+                  <ExperienceTitle data-aos="fade-up">
+                    <SectionLead aria-hidden="true"><HiOutlineBriefcase /></SectionLead>
+                    {t("about.experienceTitle")}
+                  </ExperienceTitle>
                   <CompanyHeader data-aos="fade-up" data-aos-delay="50">
                     <CompanyLogo
                       src="https://elevatebr.org/images/elevate-logo.png"
@@ -2142,6 +2330,22 @@ const LandingPage = () => {
                       <ExperienceCard>
                         <ExperiencePeriod>{t("experience.elevate.roles.junior.period")}</ExperiencePeriod>
                         <ExperienceRole>{t("experience.elevate.roles.junior.title")}</ExperienceRole>
+
+                        <ExperienceDivider />
+                        <ExperiencePhrases>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.productEvolution")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.techLead")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.fullCycleDelivery")}
+                          </ExperiencePhrase>
+                          <ExperiencePhrase>
+                            {t("experience.elevate.bullets.featuresFrontendBackend")}
+                          </ExperiencePhrase>
+                        </ExperiencePhrases>
                       </ExperienceCard>
                     </ExperienceTimelineItem>
 
@@ -2153,12 +2357,6 @@ const LandingPage = () => {
                         <ExperienceDivider />
                         <ExperiencePhrases>
                           <ExperiencePhrase>
-                            {t("experience.elevate.bullets.techLead")}
-                          </ExperiencePhrase>
-                          <ExperiencePhrase>
-                            {t("experience.elevate.bullets.productEvolution")}
-                          </ExperiencePhrase>
-                          <ExperiencePhrase>
                             {t("experience.elevate.bullets.endToEndImprovements")}
                           </ExperiencePhrase>
                           <ExperiencePhrase>
@@ -2166,12 +2364,6 @@ const LandingPage = () => {
                           </ExperiencePhrase>
                           <ExperiencePhrase>
                             {t("experience.elevate.bullets.bugFixes")}
-                          </ExperiencePhrase>
-                          <ExperiencePhrase>
-                            {t("experience.elevate.bullets.fullCycleDelivery")}
-                          </ExperiencePhrase>
-                          <ExperiencePhrase>
-                            {t("experience.elevate.bullets.featuresFrontendBackend")}
                           </ExperiencePhrase>
                           <ExperiencePhrase>
                             {t("experience.elevate.bullets.reviewsDocumentation")}
@@ -2183,7 +2375,10 @@ const LandingPage = () => {
                 </AboutBlock>
 
                 <AboutBlock>
-                  <ExperienceTitle data-aos="fade-up">{t("skills.title")}</ExperienceTitle>
+                  <ExperienceTitle data-aos="fade-up">
+                    <SectionLead aria-hidden="true"><HiOutlineSquare3Stack3D /></SectionLead>
+                    {t("skills.title")}
+                  </ExperienceTitle>
                   <SkillsContainer>
                     <SkillCard data-aos="fade-up" data-aos-delay="100">
                       <h3>{t("skills.frontend.title")}</h3>
@@ -2230,39 +2425,21 @@ const LandingPage = () => {
                 </AboutBlock>
 
                 <AboutBlock>
-                  <TechTitle data-aos="fade-up">{t("tech.title")}</TechTitle>
+                  <TechTitle data-aos="fade-up">
+                    <SectionLead aria-hidden="true"><HiOutlineCommandLine /></SectionLead>
+                    {t("tech.title")}
+                  </TechTitle>
                   <TechCategories>
-                    {technologyCategories.map((category, categoryIndex) => (
-                      <TechCategory key={category.title} data-aos="fade-up" data-aos-delay={categoryIndex * 80}>
-                        <TechCategoryTitle>{category.title}</TechCategoryTitle>
-                        {category.title === t("tech.categories.softSkills") ? (
-                          <SoftSkillsWrap
-                            data-tech-chip
-                            role="button"
-                            tabIndex={0}
-                            aria-describedby="tech-tooltip-softskills"
-                            onClick={() => handleTechClick("softskills")}
-                            onKeyDown={(event) => {
-                              if (event.key === "Enter" || event.key === " ") {
-                                event.preventDefault();
-                                handleTechClick("softskills");
-                              }
-                            }}
-                          >
-                            {softSkills.map((label) => (
-                              <SoftSkillPill key={label}>{label}</SoftSkillPill>
-                            ))}
-                            <SoftSkillsTooltip
-                              id="tech-tooltip-softskills"
-                              role="tooltip"
-                              $active={activeTooltip === "softskills"}
-                            >
-                              {descriptions.softskills}
-                            </SoftSkillsTooltip>
-                          </SoftSkillsWrap>
-                        ) : (
+                    {technologyCategories.map((category, categoryIndex) => {
+                      const visibleKeys = showAllTech
+                        ? category.keys
+                        : category.keys.slice(0, TECH_PREVIEW_LIMIT);
+
+                      return (
+                        <TechCategory key={category.title} data-aos="fade-up" data-aos-delay={categoryIndex * 80}>
+                          <TechCategoryTitle>{category.title}</TechCategoryTitle>
                           <TechItems>
-                            {category.keys.map((key, index) => (
+                            {visibleKeys.map((key, index) => (
                               <IconWrapper
                                 key={key}
                                 data-tech-chip
@@ -2272,11 +2449,11 @@ const LandingPage = () => {
                                 aria-describedby={`tech-tooltip-${key}`}
                                 onClick={() => handleTechClick(key)}
                               >
-                              <TechIconSlot>
-                                {icons[key] ? icons[key] : (
-                                  <TechFallbackIcon>{(techNames[key] || key).slice(0, 2)}</TechFallbackIcon>
-                                )}
-                              </TechIconSlot>
+                                <TechIconSlot>
+                                  {icons[key] ? icons[key] : (
+                                    <TechFallbackIcon>{(techNames[key] || key).slice(0, 2)}</TechFallbackIcon>
+                                  )}
+                                </TechIconSlot>
                                 <TechName>{techNames[key]}</TechName>
                                 <TechTooltip
                                   id={`tech-tooltip-${key}`}
@@ -2288,21 +2465,43 @@ const LandingPage = () => {
                               </IconWrapper>
                             ))}
                           </TechItems>
-                        )}
+                        </TechCategory>
+                      );
+                    })}
+
+                    {softSkillsProse && (
+                      <TechCategory data-aos="fade-up">
+                        <TechCategoryTitle>
+                          <HiOutlineChatBubbleLeftRight aria-hidden="true" />
+                          {t("tech.categories.softSkills")}
+                        </TechCategoryTitle>
+                        <SoftSkillsProse>{softSkillsProse}</SoftSkillsProse>
                       </TechCategory>
-                    ))}
+                    )}
                   </TechCategories>
+
+                  {hasHiddenTech && (
+                    <TechToggle
+                      type="button"
+                      onClick={() => setShowAllTech((prev) => !prev)}
+                      aria-expanded={showAllTech}
+                    >
+                      {showAllTech ? t("tech.showLess") : t("tech.showMore")}
+                    </TechToggle>
+                  )}
                 </AboutBlock>
               </AboutBlocks>
             </AboutContent>
           </AboutSection>
         </SectionProfile>
 
-
-        <DivMargin />
+        <Line />
 
         <ProjectsSection id="projects">
-          <ProjectsTitle data-aos="fade-up">{t("projects.title")}</ProjectsTitle>
+          <ProjectsTitle data-aos="fade-up">
+            <SectionLead aria-hidden="true"><HiOutlineCodeBracketSquare /></SectionLead>
+            {t("projects.title")}
+          </ProjectsTitle>
 
           {projectShowcase ? (
             <ProjectShowcase data-aos="fade-up">
@@ -2367,13 +2566,16 @@ const LandingPage = () => {
         <Line />
 
         <ContactSection id="contact" data-aos="fade-up">
-          <ContactTitle>{t("contact.title")}</ContactTitle>
+          <ContactTitle>
+            <SectionLead aria-hidden="true"><HiOutlineEnvelope /></SectionLead>
+            {t("contact.title")}
+          </ContactTitle>
 
           <ContactWrapper>
             <ContactInfo>
               <ContactItem>
                 <h3>{t("contact.email")}</h3>
-                <a href="mailto:contato@joaopossidonio.com">
+                <a href="mailto:joaopossidonio.dev@gmail.com">
                   joaopossidonio.dev@gmail.com
                 </a>
               </ContactItem>

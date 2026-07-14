@@ -3,9 +3,17 @@ import styled from "styled-components";
 import "./App.css";
 import LandingPage from "./Pages/LandingPage";
 import Navigation from "./components/Navigation";
-import SplashScreen from "./components/SplashScreen";
+import SplashScreen, { SPLASH_SESSION_KEY } from "./components/SplashScreen";
 import Footer from "./components/Footer";
 import { ThemeProvider } from "./context/ThemeContext";
+
+const hasSeenSplash = () => {
+  try {
+    return sessionStorage.getItem(SPLASH_SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+};
 
 const AppDiv = styled.div`
   background-color: var(--bg);
@@ -28,17 +36,17 @@ const ContentWrapper = styled.div`
 `;
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
-  const [contentVisible, setContentVisible] = useState(false);
+  const skipSplash = hasSeenSplash();
+  const [showSplash, setShowSplash] = useState(!skipSplash);
+  const [contentVisible, setContentVisible] = useState(skipSplash);
   const isScrollLockedRef = useRef(false);
   const scrollYRef = useRef(0);
 
   const handleSplashFinish = () => {
     setShowSplash(false);
-    // Aguarda 500ms antes de mostrar o conteúdo
     setTimeout(() => {
       setContentVisible(true);
-    }, 500);
+    }, 80);
   };
 
   // Trava a rolagem durante o Splash/entrada do conteúdo.

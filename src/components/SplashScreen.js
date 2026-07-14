@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
+
+export const SPLASH_SESSION_KEY = "splash-seen";
+
+const HOLD_MS = 700;
+const FADE_MS = 350;
 
 const scaleIn = keyframes`
   from {
@@ -17,18 +22,23 @@ const SplashContainer = styled.div`
   inset: 0;
   background-color: var(--bg);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 28px;
   z-index: var(--z-splash);
   box-sizing: border-box;
   opacity: ${({ $isHiding }) => ($isHiding ? 0 : 1)};
-  transition: opacity 1s ease-in-out;
+  transition: opacity ${FADE_MS}ms var(--ease-out);
   pointer-events: ${({ $isHiding }) => ($isHiding ? "none" : "auto")};
   will-change: opacity;
-
-  /* Grid técnico sutil ao fundo */
+  cursor: pointer;
   background-image: radial-gradient(var(--line-soft) 1px, transparent 1px);
   background-size: 22px 22px;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 const LogoImage = styled.img`
@@ -39,13 +49,13 @@ const LogoImage = styled.img`
   max-height: 70vh;
   object-fit: contain;
   filter: brightness(0);
-  animation: ${scaleIn} 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  animation: ${scaleIn} 0.6s var(--ease-out);
 
   [data-theme="dark"] & {
     filter: brightness(0) invert(1);
   }
 
-  transition: opacity 1s ease-in-out;
+  transition: opacity ${FADE_MS}ms var(--ease-out);
   opacity: ${({ $isHiding }) => ($isHiding ? 0 : 1)};
   transform-origin: center;
 
@@ -58,36 +68,67 @@ const LogoImage = styled.img`
   }
 `;
 
+const SkipHint = styled.p`
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+`;
+
 const SplashScreen = ({ onFinish }) => {
   const [isHiding, setIsHiding] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const finishingRef = useRef(false);
+
+  const finish = useCallback(() => {
+    if (finishingRef.current) return;
+    finishingRef.current = true;
+    try {
+      sessionStorage.setItem(SPLASH_SESSION_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+    setIsHiding(true);
+    window.setTimeout(() => onFinish(), FADE_MS);
+  }, [onFinish]);
 
   useEffect(() => {
-    // Aguarda a imagem carregar e depois espera um tempo mínimo antes de esconder
-    if (imageLoaded) {
-      const timer = setTimeout(() => {
-        setIsHiding(true);
-        // Aguarda a animação de fade out terminar antes de chamar onFinish
-        setTimeout(() => {
-          onFinish();
-        }, 1000); // Tempo da animação fadeOut
-      }, 1500); // Tempo mínimo que a splash screen fica visível (1.5 segundos)
+    if (!imageLoaded) return undefined;
+    const timer = window.setTimeout(finish, HOLD_MS);
+    return () => window.clearTimeout(timer);
+  }, [imageLoaded, finish]);
 
-      return () => clearTimeout(timer);
-    }
-  }, [imageLoaded, onFinish]);
+  useEffect(() => {
+    const onKey = (event) => {
+      if (event.key === "Escape" || event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        finish();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [finish]);
 
   return (
-    <SplashContainer $isHiding={isHiding}>
+    <SplashContainer
+      $isHiding={isHiding}
+      onClick={finish}
+      role="dialog"
+      aria-label="Introdução"
+      aria-modal="true"
+    >
       <LogoImage
         $isHiding={isHiding}
         src="/Logo/Design sem nome (27)-Photoroom.png"
-        alt="Logo"
+        alt="Logo João Guilherme"
         onLoad={() => setImageLoaded(true)}
+        onError={() => setImageLoaded(true)}
       />
+      <SkipHint>Toque ou Esc para pular</SkipHint>
     </SplashContainer>
   );
 };
 
 export default SplashScreen;
-

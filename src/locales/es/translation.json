@@ -99,6 +99,8 @@
   },
   "tech": {
     "title": "Tecnologías",
+    "showMore": "Ver todas",
+    "showLess": "Ver menos",
     "categories": {
       "frontend": "Frontend",
       "backend": "Backend",
@@ -154,6 +156,7 @@
     "code": "Código",
     "codeFrontend": "Código (FE)",
     "codeBackend": "Código (BE)",
+    "privateNote": "Código privado · proyecto interno",
     "items": {
       "elevateAuthApi": {
         "description": "Plataforma de autenticación y autorización (Java + Spring Boot) con OAuth2/OpenID Connect y emisión/validación de tokens JWT. Solución multi-tenant por dominio, login personalizado por cliente, control de scopes/permisos y endpoints administrativos, con despliegue containerizado vía Docker."

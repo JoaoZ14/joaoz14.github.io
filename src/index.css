@@ -30,9 +30,11 @@
   --on-ink-strong: rgba(255, 255, 255, 0.82);
 
   /* Tipografia */
-  --font-display: "Archivo", system-ui, -apple-system, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+  --font-body: "Schibsted Grotesk", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  /* Prosa editorial — Sobre / Experiência */
+  --font-editorial: "Courier Prime", "Courier New", Courier, monospace;
 
   /* Layout */
   --container-max: 1240px;
@@ -74,7 +76,7 @@
   --ink: #ffffff;
   --text: #ededed;
   --text-2: #a8a8a8;
-  --text-3: #6f6f6f;
+  --text-3: #9a9a9a;
   --graphite: #d0d0d0;
   --line: #ffffff;
   --line-soft: #2a2a2a;
