@@ -113,7 +113,25 @@ const DivText = styled.section`
   }
 `;
 
-const HeroInner = styled.div`
+const HeroParallaxLayer = styled.div`
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+
+  @media (prefers-reduced-motion: reduce) {
+    will-change: auto;
+    transform: none !important;
+  }
+`;
+
+const HeroDotsLayer = styled(HeroParallaxLayer)`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+`;
+
+const HeroInner = styled(HeroParallaxLayer)`
   position: relative;
   z-index: 1;
   flex: 1;
@@ -325,7 +343,7 @@ const HeroDotField = () => {
   return <HeroCanvas ref={canvasRef} aria-hidden="true" />;
 };
 
-const HeroWatermark = styled.span`
+const HeroWatermark = styled(HeroParallaxLayer)`
   position: absolute;
   left: var(--container-x);
   bottom: 4%;
@@ -339,7 +357,7 @@ const HeroWatermark = styled.span`
   pointer-events: none;
   user-select: none;
   white-space: normal;
-  max-width: 100%;
+  max-width: min(100%, calc(100% - var(--container-x) * 2));
 `;
 
 const TextFirst = styled.h1`
@@ -574,22 +592,29 @@ const AboutBlocks = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: clamp(64px, 9vw, 112px);
+  gap: clamp(72px, 11vw, 96px);
+
+  @media (min-width: 900px) {
+    gap: clamp(64px, 9vw, 112px);
+  }
 `;
 
 const AboutBlock = styled.div`
   position: relative;
   text-align: left;
   scroll-margin-top: 96px;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0;
+  will-change: transform;
+  backface-visibility: hidden;
 
   ${({ $withLifeField }) =>
     $withLifeField &&
     css`
+      overflow: hidden;
       min-height: 320px;
       padding-bottom: var(--space-2xl);
 
@@ -600,6 +625,30 @@ const AboutBlock = styled.div`
         align-items: start;
       }
     `}
+
+  ${({ $spaceBefore }) =>
+    $spaceBefore &&
+    css`
+      margin-top: clamp(32px, 7vw, 56px);
+      padding-top: clamp(32px, 7vw, 56px);
+      border-top: 1px solid var(--line-soft);
+
+      @media (min-width: 900px) {
+        margin-top: clamp(40px, 6vw, 80px);
+        padding-top: clamp(40px, 6vw, 72px);
+      }
+    `}
+
+  @media (prefers-reduced-motion: reduce) {
+    will-change: auto;
+    transform: none !important;
+  }
+
+  /* Mobile: sem translate de parallax — seções em fluxo não podem se sobrepor */
+  @media (max-width: 899px) {
+    will-change: auto;
+    transform: none !important;
+  }
 `;
 
 const AboutSectionTitle = styled.h2`
@@ -617,22 +666,16 @@ const AboutSectionTitle = styled.h2`
 `;
 
 const AboutIconFieldRoot = styled.div`
-  display: none;
-
-  @media (min-width: 900px) {
-    display: grid;
-    position: relative;
-    z-index: 0;
-    width: 100%;
-    min-height: 100%;
-    align-self: stretch;
-    grid-column: 2;
-    grid-row: 2;
-    color: var(--ink);
-    opacity: 0.12;
-    pointer-events: none;
-    user-select: none;
-  }
+  display: grid;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--ink);
+  opacity: 0.14;
+  pointer-events: none;
+  user-select: none;
 `;
 
 const AboutIconCell = styled.span`
@@ -645,6 +688,50 @@ const AboutIconCell = styled.span`
   svg {
     width: 13px;
     height: 13px;
+  }
+`;
+
+const AboutMedia = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-xl);
+  min-height: 280px;
+  padding: var(--space-lg) 0 var(--space-md);
+
+  @media (min-width: 900px) {
+    margin-top: 0;
+    padding: 0;
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 320px;
+  }
+`;
+
+const AboutPortrait = styled.div`
+  position: relative;
+  z-index: 1;
+  width: min(72%, 260px);
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  overflow: hidden;
+  box-shadow: 8px 8px 0 0 var(--ink);
+
+  @media (min-width: 900px) {
+    width: min(94%, 340px);
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Face / boné; corta espelho, placa e celular. */
+    object-position: 50% 22%;
   }
 `;
 
@@ -981,6 +1068,7 @@ const TechItems = styled.div`
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
+  overflow: visible;
 
   @media (min-width: 520px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1013,6 +1101,7 @@ const techTooltipBase = css`
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
+  box-sizing: border-box;
 
   &::after {
     content: "";
@@ -1022,6 +1111,19 @@ const techTooltipBase = css`
     transform: translateX(-50%);
     border: 6px solid transparent;
     border-top-color: var(--ink);
+  }
+
+  /* Mobile: mesma largura do card da tech */
+  @media (max-width: 899px) {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: none;
+    transform: none;
+
+    &::after {
+      left: 50%;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1050,10 +1152,19 @@ const IconWrapper = styled.button`
   cursor: pointer;
   color: var(--ink);
   min-height: 104px;
+  overflow: visible;
   transition: border-color 0.2s ease, background-color 0.2s ease,
     transform 0.2s ease;
 
-  &:hover {
+  ${({ $raised }) =>
+    $raised &&
+    css`
+      z-index: 3;
+    `}
+
+  &:hover,
+  &:focus-visible {
+    z-index: 3;
     border-color: var(--ink);
     background: var(--hover);
   }
@@ -1167,6 +1278,18 @@ const ProjectsSection = styled.section`
   padding: var(--section-y) var(--container-x);
   scroll-margin-top: 96px;
   box-sizing: border-box;
+  will-change: transform;
+  backface-visibility: hidden;
+
+  @media (prefers-reduced-motion: reduce) {
+    will-change: auto;
+    transform: none !important;
+  }
+
+  @media (max-width: 899px) {
+    will-change: auto;
+    transform: none !important;
+  }
 `;
 
 const ProjectsTitle = styled.h2`
@@ -1645,6 +1768,18 @@ const ContactSection = styled.section`
   padding: var(--section-y) var(--container-x);
   scroll-margin-top: 96px;
   box-sizing: border-box;
+  will-change: transform;
+  backface-visibility: hidden;
+
+  @media (prefers-reduced-motion: reduce) {
+    will-change: auto;
+    transform: none !important;
+  }
+
+  @media (max-width: 899px) {
+    will-change: auto;
+    transform: none !important;
+  }
 `;
 
 const ContactTitle = styled.h2`
@@ -1829,6 +1964,63 @@ const LandingPage = () => {
       once: true,
       offset: 40,
     });
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (media.matches) return undefined;
+
+    let frame = 0;
+    const narrowQuery = window.matchMedia("(max-width: 899px)");
+
+    const update = () => {
+      frame = 0;
+      const mid = window.innerHeight * 0.5;
+      const isNarrow = narrowQuery.matches;
+
+      document.querySelectorAll("[data-parallax]").forEach((el) => {
+        const speed = Number(el.getAttribute("data-parallax"));
+        if (!Number.isFinite(speed) || speed === 0) return;
+
+        // No mobile, só camadas decorativas (absolute) — nunca seções em fluxo.
+        if (isNarrow && el.getAttribute("data-parallax-layer") !== "decor") {
+          el.style.removeProperty("transform");
+          return;
+        }
+
+        const prevY = Number(el.dataset.parallaxY) || 0;
+        const rect = el.getBoundingClientRect();
+        const untransformedCenter = rect.top - prevY + rect.height * 0.5;
+
+        if (
+          untransformedCenter + rect.height < -160 ||
+          untransformedCenter - rect.height > window.innerHeight + 160
+        ) {
+          return;
+        }
+
+        const y = (mid - untransformedCenter) * speed;
+        el.dataset.parallaxY = String(y);
+        el.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0)`;
+      });
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    narrowQuery.addEventListener("change", onScroll);
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      narrowQuery.removeEventListener("change", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
@@ -2218,11 +2410,13 @@ const LandingPage = () => {
         <DivMargin id="home" />
 
         <DivText>
-          <HeroDotField />
-          <HeroInner>
-            <HeroWatermark aria-hidden="true">
-              João<br />Possidonio
-            </HeroWatermark>
+          <HeroDotsLayer data-parallax="0.22" data-parallax-layer="decor">
+            <HeroDotField />
+          </HeroDotsLayer>
+          <HeroWatermark data-parallax="0.38" data-parallax-layer="decor" aria-hidden="true">
+            João<br />Possidonio
+          </HeroWatermark>
+          <HeroInner data-parallax="0.08">
             <TextFirst>{t("hero.greeting")}</TextFirst>
             <TextSecond>
               {t("hero.intro")}
@@ -2289,15 +2483,15 @@ const LandingPage = () => {
 
         <Line id="about" />
         <SectionProfile>
-          <AboutSection data-aos="fade-up">
+          <AboutSection>
             <AboutContent>
               <AboutBlocks>
-                <AboutBlock $withLifeField>
-                  <AboutSectionTitle $span data-aos="fade-up">
+                <AboutBlock $withLifeField data-parallax="0.1">
+                  <AboutSectionTitle $span>
                     <SectionLead aria-hidden="true"><HiOutlineUser /></SectionLead>
                     {t("about.title")}
                   </AboutSectionTitle>
-                  <AboutCopy data-aos="fade-up" data-aos-delay="40">
+                  <AboutCopy>
                     <AboutSectionText $lead>
                       {t("about.summary1")}
                     </AboutSectionText>
@@ -2305,15 +2499,25 @@ const LandingPage = () => {
                       {t("about.summary2")}
                     </AboutSectionText>
                   </AboutCopy>
-                  <AboutLifeField />
+                  <AboutMedia>
+                    <AboutLifeField />
+                    <AboutPortrait>
+                      <img
+                        src={`${process.env.PUBLIC_URL || ""}/joao-portrait.jpeg`}
+                        alt="João Guilherme Possidonio"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </AboutPortrait>
+                  </AboutMedia>
                 </AboutBlock>
 
-                <AboutBlock id="experience">
-                  <ExperienceTitle data-aos="fade-up">
+                <AboutBlock id="experience" data-parallax="0.12">
+                  <ExperienceTitle>
                     <SectionLead aria-hidden="true"><HiOutlineBriefcase /></SectionLead>
                     {t("about.experienceTitle")}
                   </ExperienceTitle>
-                  <CompanyHeader data-aos="fade-up" data-aos-delay="50">
+                  <CompanyHeader>
                     <CompanyLogo
                       src="https://elevatebr.org/images/elevate-logo.png"
                       alt="Logo da elevate"
@@ -2321,12 +2525,12 @@ const LandingPage = () => {
                     />
                     <CompanyName>elevate</CompanyName>
                   </CompanyHeader>
-                  <CompanyDescription data-aos="fade-up" data-aos-delay="100">
+                  <CompanyDescription>
                     {t("experience.elevate.description")}
                   </CompanyDescription>
 
                   <ExperienceTimeline>
-                    <ExperienceTimelineItem data-aos="fade-up" data-aos-delay="50">
+                    <ExperienceTimelineItem>
                       <ExperienceCard>
                         <ExperiencePeriod>{t("experience.elevate.roles.junior.period")}</ExperiencePeriod>
                         <ExperienceRole>{t("experience.elevate.roles.junior.title")}</ExperienceRole>
@@ -2349,7 +2553,7 @@ const LandingPage = () => {
                       </ExperienceCard>
                     </ExperienceTimelineItem>
 
-                    <ExperienceTimelineItem data-aos="fade-up" data-aos-delay="100">
+                    <ExperienceTimelineItem>
                       <ExperienceCard>
                         <ExperiencePeriod>{t("experience.elevate.roles.intern.period")}</ExperiencePeriod>
                         <ExperienceRole>{t("experience.elevate.roles.intern.title")}</ExperienceRole>
@@ -2374,13 +2578,13 @@ const LandingPage = () => {
                   </ExperienceTimeline>
                 </AboutBlock>
 
-                <AboutBlock>
-                  <ExperienceTitle data-aos="fade-up">
+                <AboutBlock data-parallax="0.11" $spaceBefore>
+                  <ExperienceTitle>
                     <SectionLead aria-hidden="true"><HiOutlineSquare3Stack3D /></SectionLead>
                     {t("skills.title")}
                   </ExperienceTitle>
                   <SkillsContainer>
-                    <SkillCard data-aos="fade-up" data-aos-delay="100">
+                    <SkillCard>
                       <h3>{t("skills.frontend.title")}</h3>
                       <SkillBody>
                         <SkillSummary>
@@ -2394,7 +2598,7 @@ const LandingPage = () => {
                       </SkillBody>
                     </SkillCard>
 
-                    <SkillCard data-aos="fade-up" data-aos-delay="200">
+                    <SkillCard>
                       <h3>{t("skills.backend.title")}</h3>
                       <SkillBody>
                         <SkillSummary>
@@ -2408,7 +2612,7 @@ const LandingPage = () => {
                       </SkillBody>
                     </SkillCard>
 
-                    <SkillCard data-aos="fade-up" data-aos-delay="300">
+                    <SkillCard>
                       <h3>{t("skills.excellence.title")}</h3>
                       <SkillBody>
                         <SkillSummary>
@@ -2424,8 +2628,8 @@ const LandingPage = () => {
                   </SkillsContainer>
                 </AboutBlock>
 
-                <AboutBlock>
-                  <TechTitle data-aos="fade-up">
+                <AboutBlock data-parallax="0.13">
+                  <TechTitle>
                     <SectionLead aria-hidden="true"><HiOutlineCommandLine /></SectionLead>
                     {t("tech.title")}
                   </TechTitle>
@@ -2436,16 +2640,15 @@ const LandingPage = () => {
                         : category.keys.slice(0, TECH_PREVIEW_LIMIT);
 
                       return (
-                        <TechCategory key={category.title} data-aos="fade-up" data-aos-delay={categoryIndex * 80}>
+                        <TechCategory key={category.title}>
                           <TechCategoryTitle>{category.title}</TechCategoryTitle>
                           <TechItems>
-                            {visibleKeys.map((key, index) => (
+                            {visibleKeys.map((key) => (
                               <IconWrapper
                                 key={key}
                                 data-tech-chip
-                                data-aos="fade-up"
-                                data-aos-delay={index * 30}
                                 type="button"
+                                $raised={activeTooltip === key}
                                 aria-describedby={`tech-tooltip-${key}`}
                                 onClick={() => handleTechClick(key)}
                               >
@@ -2470,7 +2673,7 @@ const LandingPage = () => {
                     })}
 
                     {softSkillsProse && (
-                      <TechCategory data-aos="fade-up">
+                      <TechCategory>
                         <TechCategoryTitle>
                           <HiOutlineChatBubbleLeftRight aria-hidden="true" />
                           {t("tech.categories.softSkills")}
@@ -2497,14 +2700,14 @@ const LandingPage = () => {
 
         <Line />
 
-        <ProjectsSection id="projects">
-          <ProjectsTitle data-aos="fade-up">
+        <ProjectsSection id="projects" data-parallax="0.12">
+          <ProjectsTitle>
             <SectionLead aria-hidden="true"><HiOutlineCodeBracketSquare /></SectionLead>
             {t("projects.title")}
           </ProjectsTitle>
 
           {projectShowcase ? (
-            <ProjectShowcase data-aos="fade-up">
+            <ProjectShowcase>
               <ProjectIndexList>
                 {projects.map((project, index) => (
                   <li key={project.name}>
@@ -2531,7 +2734,7 @@ const LandingPage = () => {
               </ProjectPreview>
             </ProjectShowcase>
           ) : (
-            <ProjectIndexList as="div" data-aos="fade-up">
+            <ProjectIndexList as="div">
               {projects.map((project, index) => {
                 const open = openProject === index;
 
@@ -2565,7 +2768,7 @@ const LandingPage = () => {
 
         <Line />
 
-        <ContactSection id="contact" data-aos="fade-up">
+        <ContactSection id="contact" data-parallax="0.1">
           <ContactTitle>
             <SectionLead aria-hidden="true"><HiOutlineEnvelope /></SectionLead>
             {t("contact.title")}

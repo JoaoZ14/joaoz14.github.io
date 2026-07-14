@@ -41,6 +41,20 @@ const Watermark = styled.span`
   user-select: none;
 `;
 
+const WatermarkParallax = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  will-change: transform;
+
+  @media (prefers-reduced-motion: reduce) {
+    will-change: auto;
+    transform: none !important;
+  }
+`;
+
 const FooterInner = styled.div`
   position: relative;
   z-index: 1;
@@ -57,6 +71,17 @@ const Cta = styled.div`
   gap: clamp(20px, 3vw, 28px);
   padding-bottom: clamp(48px, 6vw, 80px);
   border-bottom: 1px solid var(--on-ink-line);
+  will-change: transform;
+
+  @media (prefers-reduced-motion: reduce) {
+    will-change: auto;
+    transform: none !important;
+  }
+
+  @media (max-width: 899px) {
+    will-change: auto;
+    transform: none !important;
+  }
 `;
 
 const CtaKicker = styled.span`
@@ -326,10 +351,12 @@ const Footer = () => {
 
   return (
     <FooterWrap>
-      <Watermark aria-hidden="true">Possidonio</Watermark>
+      <WatermarkParallax data-parallax="0.28" data-parallax-layer="decor" aria-hidden="true">
+        <Watermark>Possidonio</Watermark>
+      </WatermarkParallax>
 
       <FooterInner>
-        <Cta>
+        <Cta data-parallax="0.1">
           <CtaKicker>{t("footer.ctaKicker")}</CtaKicker>
           <CtaTitle>{t("footer.ctaTitle")}</CtaTitle>
           <CtaAction href="#contact">
