@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { FiArrowRight, FiArrowUp } from "react-icons/fi";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa6";
 
 const FooterWrap = styled.footer`
@@ -381,6 +381,13 @@ const Footer = () => {
                 rel="noreferrer"
               >
                 <FaWhatsapp aria-hidden="true" /> WhatsApp
+              </a>
+              <a
+                href="https://www.instagram.com/_possidonioj/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FaInstagram aria-hidden="true" /> Instagram
               </a>
             </LinkList>
           </Col>

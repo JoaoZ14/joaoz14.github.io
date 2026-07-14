@@ -1,6 +1,7 @@
 import { FaWhatsapp } from "react-icons/fa6";
 import {
   FaGithub,
+  FaInstagram,
   FaLinkedin,
   FaReact,
   FaJs,
@@ -26,6 +27,11 @@ export const FaGithubIcon = styled(FaGithub)`
 `;
 
 export const FaLinkedinIcon = styled(FaLinkedin)`
+  color: var(--ink);
+  font-size: 26px;
+`;
+
+export const FaInstagramIcon = styled(FaInstagram)`
   color: var(--ink);
   font-size: 26px;
 `;

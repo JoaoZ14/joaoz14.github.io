@@ -17,6 +17,7 @@ import {
   FaCssIcon,
   FaGithubIcon,
   FaHtmlIcon,
+  FaInstagramIcon,
   FaJavaIcon,
   FaJsIcon,
   FaLinkedinIcon,
@@ -2076,6 +2077,15 @@ const LandingPage = () => {
               >
                 <FaLinkedinIcon />
               </a>
+
+              <a
+                href="https://www.instagram.com/_possidonioj/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+              >
+                <FaInstagramIcon />
+              </a>
             </DivIcons>
 
             <ButtonCVContainer ref={dropdownRef}>
@@ -2386,6 +2396,17 @@ const LandingPage = () => {
                 <h3>{t("contact.github")}</h3>
                 <a href="https://github.com/JoaoZ14" target="_blank" rel="noopener noreferrer">
                   <FaGithubIcon /> /JoaoZ14
+                </a>
+              </ContactItem>
+
+              <ContactItem>
+                <h3>{t("contact.instagram")}</h3>
+                <a
+                  href="https://www.instagram.com/_possidonioj/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaInstagramIcon /> @_possidonioj
                 </a>
               </ContactItem>
             </ContactInfo>
