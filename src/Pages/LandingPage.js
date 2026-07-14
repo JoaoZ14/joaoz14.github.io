@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import styled, { css } from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import { useTranslation } from "react-i18next";
+import { FaAws } from "react-icons/fa";
 import {
-  SiAmazonwebservices,
   SiFirebase,
   SiGooglecloud,
   SiPostgresql,
@@ -34,517 +34,720 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import emailjs from "@emailjs/browser";
 
-const AboutSection = styled.section`
+/* ============================================================
+   LAYOUT BASE
+   ============================================================ */
+const Wraper = styled.div`
+  background: var(--bg);
+  width: 100%;
+  overflow-x: clip;
+`;
+
+const DivPrincipal = styled.div`
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding: var(--section-y) var(--container-x) calc(var(--section-y) + 28px);
-  background: linear-gradient(180deg, #2c2c2c 0%, #212121 100%);
-  color: white;
+  overflow-x: clip;
+  height: auto;
+`;
+
+const DivMargin = styled.div`
+  height: 1px;
+  scroll-margin-top: 96px;
+`;
+
+const Line = styled.div`
   width: 100%;
+  height: 1px;
+  background-color: var(--line);
+  scroll-margin-top: 96px;
+`;
+
+/* ============================================================
+   HERO
+   ============================================================ */
+const DivText = styled.section`
   position: relative;
+  width: 100%;
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 252, 223, 0.03) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @media (min-width: 900px) {
-    padding: 80px 40px 120px;
+  @media (max-width: 900px) {
+    min-height: 100svh;
   }
 `;
 
-const AboutContent = styled.div`
-  max-width: 1400px;
-  width: 100%;
-  text-align: center;
+const HeroInner = styled.div`
   position: relative;
   z-index: 1;
-  padding: 0 20px;
-  overflow: visible;
-
-  @media (max-width: 768px) {
-    padding: 0 24px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0 18px;
-  }
-`;
-
-const AboutBlocks = styled.div`
-  max-width: 1100px;
+  flex: 1;
   width: 100%;
+  max-width: var(--container-max);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 70px;
-  padding-top: 10px;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 22px;
+  padding: 128px var(--container-x) 88px;
+  box-sizing: border-box;
+
+  @media (max-width: 900px) {
+    padding: 112px var(--container-x) 64px;
+    gap: 18px;
+  }
 `;
 
-const AboutBlock = styled.div`
-  text-align: center;
-`;
-
-const AboutHighlights = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0 auto;
-  max-width: 900px;
+/* Campo de pontos interativo do hero — "ímã ao contrário":
+   os pontos fogem do cursor e voltam suave à origem ao afastar. */
+const HeroCanvas = styled.canvas`
+  position: absolute;
+  inset: 0;
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+`;
+
+const HeroDotField = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const SPACING = 24; // mesmo espaçamento do grid CSS anterior
+    const DOT_RADIUS = 1.1;
+    const INFLUENCE = 130; // raio de ação do cursor (px)
+    const MAX_PUSH = 28; // deslocamento máximo por ponto (px)
+    const EASE = 0.15; // suavização do retorno
+    // Cores lidas do design system para acompanhar o tema (claro/escuro):
+    // BASE = --line-soft (ponto em repouso), NEAR = --ink (ponto sob o cursor).
+    let BASE = { r: 226, g: 226, b: 226 };
+    let NEAR = { r: 0, g: 0, b: 0 };
+
+    const hexToRgb = (hex) => {
+      const v = (hex || "").trim().replace("#", "");
+      if (v.length === 3) {
+        return {
+          r: Number.parseInt(v[0] + v[0], 16),
+          g: Number.parseInt(v[1] + v[1], 16),
+          b: Number.parseInt(v[2] + v[2], 16),
+        };
+      }
+      if (v.length >= 6) {
+        return {
+          r: Number.parseInt(v.slice(0, 2), 16),
+          g: Number.parseInt(v.slice(2, 4), 16),
+          b: Number.parseInt(v.slice(4, 6), 16),
+        };
+      }
+      return null;
+    };
+
+    const readThemeColors = () => {
+      const cs = getComputedStyle(document.documentElement);
+      BASE = hexToRgb(cs.getPropertyValue("--line-soft")) || BASE;
+      NEAR = hexToRgb(cs.getPropertyValue("--ink")) || NEAR;
+    };
+
+    readThemeColors();
+
+    let dots = [];
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let rafId = null;
+    const mouse = { x: -9999, y: -9999, active: false };
+
+    const buildDots = () => {
+      dots = [];
+      const cols = Math.ceil(width / SPACING);
+      const rows = Math.ceil(height / SPACING);
+      const offsetX = (width - cols * SPACING) / 2 + SPACING / 2;
+      const offsetY = (height - rows * SPACING) / 2 + SPACING / 2;
+      for (let r = 0; r <= rows; r++) {
+        for (let c = 0; c <= cols; c++) {
+          const hx = offsetX + c * SPACING;
+          const hy = offsetY + r * SPACING;
+          dots.push({ hx, hy, x: hx, y: hy });
+        }
+      }
+    };
+
+    const drawStatic = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = `rgb(${BASE.r}, ${BASE.g}, ${BASE.b})`;
+      for (const d of dots) {
+        ctx.beginPath();
+        ctx.arc(d.hx, d.hy, DOT_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      let moving = false;
+
+      for (const d of dots) {
+        let tx = d.hx;
+        let ty = d.hy;
+        let strength = 0;
+
+        if (mouse.active) {
+          const dx = d.hx - mouse.x;
+          const dy = d.hy - mouse.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < INFLUENCE && dist > 0.0001) {
+            strength = 1 - dist / INFLUENCE;
+            const push = strength * MAX_PUSH;
+            tx = d.hx + (dx / dist) * push;
+            ty = d.hy + (dy / dist) * push;
+          }
+        }
+
+        d.x += (tx - d.x) * EASE;
+        d.y += (ty - d.y) * EASE;
+
+        if (Math.abs(tx - d.x) > 0.1 || Math.abs(ty - d.y) > 0.1) {
+          moving = true;
+        }
+
+        const r = Math.round(BASE.r + (NEAR.r - BASE.r) * strength);
+        const g = Math.round(BASE.g + (NEAR.g - BASE.g) * strength);
+        const b = Math.round(BASE.b + (NEAR.b - BASE.b) * strength);
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, DOT_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      rafId = moving || mouse.active ? requestAnimationFrame(draw) : null;
+    };
+
+    const requestTick = () => {
+      if (rafId == null) rafId = requestAnimationFrame(draw);
+    };
+
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      if (!width || !height) return;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildDots();
+      if (prefersReduced) drawStatic();
+      else requestTick();
+    };
+
+    const onMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      mouse.active = x >= 0 && y >= 0 && x <= rect.width && y <= rect.height;
+      if (mouse.active) {
+        mouse.x = x;
+        mouse.y = y;
+      }
+      requestTick();
+    };
+
+    resize();
+
+    if (!prefersReduced) {
+      window.addEventListener("mousemove", onMove, { passive: true });
+    }
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    // Reage à troca de tema: recarrega as cores e redesenha.
+    const themeObserver = new MutationObserver(() => {
+      readThemeColors();
+      if (prefersReduced) drawStatic();
+      else requestTick();
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      ro.disconnect();
+      themeObserver.disconnect();
+      if (rafId != null) cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  return <HeroCanvas ref={canvasRef} aria-hidden="true" />;
+};
+
+const HeroWatermark = styled.span`
+  position: absolute;
+  left: var(--container-x);
+  bottom: 4%;
+  z-index: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(64px, 17vw, 228px);
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+  color: var(--watermark);
+  pointer-events: none;
+  user-select: none;
+  white-space: normal;
+  max-width: 100%;
+`;
+
+const TextFirst = styled.h1`
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(48px, 9vw, 104px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+`;
+
+const TextSecond = styled.h2`
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  max-width: 46ch;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(22px, 3.4vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--text-2);
+
+  p {
+    margin: 18px 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: clamp(12px, 1.6vw, 14px);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  p::before {
+    content: "";
+    width: 40px;
+    height: 1px;
+    background: var(--ink);
+  }
+`;
+
+const DivIcons = styled.div`
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  a:hover {
+    background: var(--hover);
+    transform: translateY(-2px);
+  }
 
   @media (max-width: 600px) {
     gap: 8px;
+    a {
+      width: 44px;
+      height: 44px;
+    }
   }
 `;
 
-const AboutHighlightItem = styled.li`
-  text-align: left;
-  padding: 0 0 0 18px;
-  background: transparent;
-  border-radius: 0;
-  color: rgba(255, 255, 255, 0.85);
-  font-family: "Titillium Web", sans-serif;
-  font-size: 15px;
-  line-height: 1.6;
-
+/* Botão Currículo — primary (preto sólido, hover invertido) */
+const ButtonCVContainer = styled.div`
   position: relative;
+  z-index: 2;
+  display: inline-block;
+  margin-top: 8px;
+`;
+
+const ButtonCV = styled.button`
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 22px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: var(--bg);
+    color: var(--ink);
+  }
+`;
+
+const ArrowIcon = styled(IoIosArrowDown)`
+  font-size: 16px;
+  color: currentColor;
+  transition: transform 0.3s ease;
+  transform: ${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "rotate(0deg)")};
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  min-width: 180px;
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
+  transform: ${({ $isOpen }) => ($isOpen ? "translateY(0)" : "translateY(-8px)")};
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  z-index: 1000;
+`;
+
+const DropdownItem = styled.button`
+  width: 100%;
+  padding: 13px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: var(--hover);
+  }
+
+  &:first-child {
+    border-bottom: 1px solid var(--line-soft);
+  }
+`;
+
+/* ============================================================
+   SEÇÕES DE CONTEÚDO — títulos
+   ============================================================ */
+const sectionTitle = css`
+  position: relative;
+  margin: 0 0 40px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 5vw, 46px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
 
   &::before {
     content: "";
-    position: absolute;
-    left: 0;
-    top: 9px;
-    width: 8px;
+    width: 44px;
     height: 2px;
-    border-radius: 2px;
-    background: rgb(255, 252, 223);
-    opacity: 0.85;
-  }
-`;
-
-const AboutSectionTitle = styled.h2`
-  font-size: clamp(28px, 6vw, 40px);
-  margin-bottom: 20px;
-  font-family: Garamond, serif;
-  font-weight: 100;
-  color: white;
-  position: relative;
-  display: inline-block;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background: rgb(255, 252, 223);
-    transition: width 0.3s ease;
-  }
-
-  &:hover::after {
-    width: 100px;
+    background: var(--ink);
   }
 
   @media (min-width: 900px) {
-    font-size: 48px;
-    margin-bottom: 30px;
+    margin-bottom: 56px;
   }
 `;
 
+const SectionProfile = styled.section`
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const AboutSection = styled.section`
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--section-y) var(--container-x);
+  box-sizing: border-box;
+  background: var(--bg);
+  color: var(--text);
+  position: relative;
+`;
+
+const AboutContent = styled.div`
+  width: 100%;
+  position: relative;
+  z-index: 1;
+`;
+
+const AboutBlocks = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(64px, 9vw, 112px);
+`;
+
+const AboutBlock = styled.div`
+  text-align: left;
+`;
+
+const AboutSectionTitle = styled.h2`
+  ${sectionTitle}
+`;
+
 const AboutSectionText = styled.p`
-  font-size: 16px;
-  line-height: 1.9;
-  color: rgba(255, 255, 255, 0.8);
-  font-family: "Titillium Web", sans-serif;
-  margin-bottom: 20px;
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  transition: color 0.3s ease;
+  font-size: clamp(16px, 1.4vw, 18px);
+  line-height: 1.75;
+  color: var(--text-2);
+  font-family: var(--font-body);
+  margin: 0 0 20px;
+  max-width: 68ch;
 
-  &:hover {
-    color: rgba(255, 255, 255, 0.95);
+  &:last-child {
+    margin-bottom: 0;
   }
+`;
 
-  @media (max-width: 768px) {
-    font-size: 16px;
-    line-height: 1.8;
-    margin-bottom: 20px;
-    padding: 0 4px;
-  }
+/* ============================================================
+   EXPERIÊNCIA
+   ============================================================ */
+const ExperienceTitle = styled.h3`
+  ${sectionTitle}
 `;
 
 const CompanyHeader = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 14px;
+  gap: var(--space-sm);
   flex-wrap: wrap;
-  margin: 0 0 16px;
-
-  @media (max-width: 768px) {
-    gap: 10px;
-    margin: 0 0 12px;
-  }
+  margin: 0 0 var(--space-md);
 `;
 
 const CompanyLogo = styled.img`
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
-  filter: brightness(1.05);
+  border: 1px solid var(--line);
+  padding: var(--space-xs);
+  background: var(--bg);
 `;
 
 const CompanyName = styled.h3`
-  font-size: 34px;
+  font-size: clamp(24px, 3vw, 32px);
   margin: 0;
-  font-family: Garamond, serif;
-  font-weight: 100;
-  color: rgb(255, 252, 223);
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--ink);
   text-transform: lowercase;
-  letter-spacing: 1px;
-
-  @media (max-width: 768px) {
-    font-size: 28px;
-  }
+  letter-spacing: -0.03em;
 `;
 
 const CompanyDescription = styled.p`
-  margin-bottom: 50px;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 820px;
+  margin: 0 0 var(--space-xl);
+  max-width: 72ch;
   font-size: 16px;
-  line-height: 1.9;
-  color: rgba(255, 255, 255, 0.8);
-  font-family: "Titillium Web", sans-serif;
+  line-height: 1.75;
+  color: var(--text-2);
+  font-family: var(--font-body);
+`;
+
+const ExperienceTimeline = styled.div`
+  --exp-pad: var(--space-lg);
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding-left: var(--exp-pad);
+  border-left: 1px solid var(--line-soft);
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
-    padding: 0 4px;
-    margin-bottom: 34px;
-    font-size: 15px;
-    line-height: 1.75;
+    --exp-pad: var(--space-md);
   }
 `;
 
-const ExperienceTitle = styled.h3`
-  font-size: 28px;
-  margin: 0 0 24px;
-  font-family: Garamond, serif;
-  font-weight: 100;
-  color: rgb(255, 252, 223);
-  text-align: center;
+const ExperienceTimelineItem = styled.div`
+  position: relative;
+  margin-bottom: var(--space-xl);
 
-  @media (max-width: 768px) {
-    font-size: 22px;
-    margin: 40px 0 20px;
+  /* Nó sólido ancorado no eixo da timeline (minimal-brutal, radius 0) */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: calc(-1 * var(--exp-pad) - 5px);
+    width: 9px;
+    height: 9px;
+    background: var(--ink);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
 const ExperienceCard = styled.div`
   text-align: left;
   width: 100%;
-  padding: 0;
-  background: transparent;
-  border-radius: 0;
-
-  transition: none;
-
-  &:hover {
-    transform: none;
-    background: transparent;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 10px;
-    box-shadow: none;
-  }
 `;
 
 const ExperienceRole = styled.div`
-  font-size: 22px;
+  font-size: clamp(17px, 2vw, 20px);
   font-weight: 700;
-  color: white;
-  font-family: "Titillium Web", sans-serif;
-  margin-bottom: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
 
   @media (max-width: 768px) {
-    font-size: 17px;
-    line-height: 1.5;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-  }
-`;
-
-const ExperienceMeta = styled.div`
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 12px;
-  font-family: "Titillium Web", sans-serif;
-`;
-
-const ExperienceImpact = styled.p`
-  margin: 0 0 14px;
-  font-size: 15px;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.85);
-  font-family: "Titillium Web", sans-serif;
-`;
-
-const ExperiencePhrases = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 0;
-
-  @media (max-width: 768px) {
-    gap: 10px;
-    margin-top: 0;
-  }
-`;
-
-const ExperiencePhrase = styled.p`
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.85);
-  font-family: "Titillium Web", sans-serif;
-
-  @media (max-width: 768px) {
-    font-size: 14px;
-    line-height: 1.68;
-    padding-right: 6px;
+    line-height: 1.4;
     word-break: break-word;
     overflow-wrap: anywhere;
   }
 `;
 
 const ExperiencePeriod = styled.span`
-  font-size: 0.72em;
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 12px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.78);
-
-  @media (max-width: 768px) {
-    font-size: 0.74em;
-    line-height: 1.4;
-  }
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
 `;
 
 const ExperienceDivider = styled.div`
   width: 100%;
   height: 1px;
-  background: rgba(255, 252, 223, 0.25);
-  margin: 8px 0 4px;
-
-  @media (max-width: 768px) {
-    margin: 8px 0 6px;
-    background: rgba(255, 252, 223, 0.25);
-  }
+  background: var(--line-soft);
+  margin: var(--space-md) 0;
 `;
 
-const ExperienceList = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
+const ExperiencePhrases = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  font-size: 15px;
-  font-family: "Titillium Web", sans-serif;
-
-  li {
-    position: relative;
-    padding-left: 18px;
-    line-height: 1.6;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.82);
-  }
-
-  li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 9px;
-    width: 8px;
-    height: 2px;
-    border-radius: 2px;
-    background: rgb(255, 252, 223);
-    opacity: 0.85;
-  }
+  gap: var(--space-sm);
 `;
 
-const ExperienceTimeline = styled.div`
+const ExperiencePhrase = styled.p`
   position: relative;
-  max-width: 900px;
-  width: 100%;
-  margin: 0 auto;
-  padding-left: 34px;
+  margin: 0;
+  padding-left: var(--space-md);
+  max-width: 68ch;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-2);
+  font-family: var(--font-body);
 
   &::before {
     content: "";
     position: absolute;
-    left: 14px;
-    top: 16px;
-    bottom: 16px;
-    width: 2px;
-    background: rgba(255, 252, 223, 0.35);
-    border-radius: 2px;
+    left: 0;
+    top: 10px;
+    width: 8px;
+    height: 1px;
+    background: var(--ink);
   }
 
   @media (max-width: 768px) {
-    padding-left: 0;
-    padding-right: 4px;
-
-    &::before {
-      display: none;
-    }
+    font-size: 14px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 `;
 
-const ExperienceTimelineItem = styled.div`
-  position: relative;
-  margin-bottom: 16px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  @media (max-width: 768px) {
-    margin-bottom: 12px;
-  }
-`;
-
-const ExperienceTimelineDot = styled.div`
-  position: absolute;
-  left: -20px;
-  top: 26px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(255, 252, 223, 0.28);
-`;
-
+/* ============================================================
+   HABILIDADES
+   ============================================================ */
+/* Faixas editoriais: label à esquerda, conteúdo à direita */
 const SkillsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 26px;
-  margin-top: 0;
-  margin-bottom: 0;
-  max-width: 100%;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    margin-top: 0;
-    padding: 0 14px;
-  }
-
-  @media (min-width: 1020px) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-  }
+  border-top: 1px solid var(--line);
 `;
 
 const SkillCard = styled.div`
-  padding: 0;
-  background: transparent;
-  border-radius: 0;
-  transition: none;
-  position: relative;
-  cursor: default;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  padding: clamp(24px, 4vw, 40px) 0;
+  border-bottom: 1px solid var(--line-soft);
+  align-items: start;
 
-  &:hover {
-    transform: none;
-    background: transparent;
+  &:last-child {
+    border-bottom: none;
   }
 
+  h3 {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(20px, 2.4vw, 26px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-align: left;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 900px) {
+    grid-template-columns: minmax(180px, 260px) 1fr;
+    column-gap: var(--space-2xl);
+  }
+`;
+
+/* Coluna de conteúdo (resumo + lista) da faixa */
+const SkillBody = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  padding: 0;
-
-  h3 {
-    font-size: 22px;
-    margin: 0;
-    color: rgba(255, 255, 255, 0.9);
-    font-family: Garamond, serif;
-    font-weight: 100;
-    text-align: left;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0 6px;
-  }
-
-  @media (min-width: 1020px) {
-    padding: 0 26px;
-
-    &:nth-child(1),
-    &:nth-child(2) {
-      border-right: 1px solid rgba(255, 252, 223, 0.22);
-    }
-  }
-`;
-
-const SkillCategoryPill = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 252, 223, 0.08);
-  color: rgba(255, 252, 223, 0.95);
-  font-family: "Titillium Web", sans-serif;
-  font-size: 12px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-
-  align-self: flex-start;
+  gap: var(--space-md);
 `;
 
 const SkillSummary = styled.p`
-  margin: 0 0 14px;
-  font-size: 14px;
+  margin: 0;
+  font-size: clamp(15px, 1.3vw, 16px);
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.75);
-  font-family: "Titillium Web", sans-serif;
+  color: var(--text);
+  font-family: var(--font-body);
   text-align: left;
-
-  @media (max-width: 768px) {
-    padding-inline: 4px;
-  }
+  max-width: 60ch;
 `;
 
 const SkillList = styled.ul`
@@ -553,107 +756,439 @@ const SkillList = styled.ul`
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-
-  @media (max-width: 768px) {
-    padding-inline: 4px;
-  }
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 60ch;
 `;
 
 const SkillListItem = styled.li`
   position: relative;
-  padding-left: 18px;
+  padding-left: 22px;
   text-align: left;
-  font-size: 14px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.82);
-  font-family: "Titillium Web", sans-serif;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: var(--text-2);
 
   &::before {
     content: "";
     position: absolute;
     left: 0;
     top: 9px;
-    width: 8px;
-    height: 2px;
-    border-radius: 2px;
-    background: rgba(255, 252, 223, 0.9);
-    opacity: 0.85;
+    width: 12px;
+    height: 1px;
+    background: var(--ink);
   }
 `;
 
-const ProjectsSection = styled.section`
-  max-width: 1200px;
-  margin: var(--section-y) auto;
-  padding: 0 var(--container-x);
-  width: 100%;
+/* ============================================================
+   TECNOLOGIAS
+   ============================================================ */
+const TechTitle = styled.h3`
+  ${sectionTitle}
+`;
 
-  @media (max-width: 768px) {
-    padding: 0;
-    display: flex;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: auto;
-    width: 300px;
+const TechCategories = styled.div`
+  width: 100%;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 48px;
+    row-gap: 44px;
+  }
+`;
+
+const TechCategory = styled.div`
+  text-align: left;
+  align-self: start;
+`;
+
+const TechCategoryTitle = styled.h4`
+  margin: 0 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text);
+`;
+
+const TechItems = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+
+  @media (min-width: 520px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   @media (min-width: 900px) {
-    margin: 80px auto;
-    padding: 0 40px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+`;
+
+const techTooltipBase = css`
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(240px, 72vw);
+  padding: 10px 12px;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: normal;
+  text-wrap: pretty;
+  z-index: var(--z-tooltip);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`;
+
+const tooltipVisible = css`
+  opacity: 1;
+  visibility: visible;
+`;
+
+/* Chip quadrado com borda */
+const IconWrapper = styled.button`
+  position: relative;
+  appearance: none;
+  border: 1px solid var(--line-soft);
+  background: var(--bg);
+  border-radius: 0;
+  padding: 14px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--ink);
+  min-height: 104px;
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    border-color: var(--ink);
+    background: var(--hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  svg {
+    font-size: 34px;
+    color: var(--ink);
+  }
+`;
+
+const TechIconSlot = styled.div`
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+`;
+
+const TechFallbackIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-size: 12px;
+  text-transform: uppercase;
+`;
+
+const TechName = styled.span`
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-2);
+  text-align: center;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  max-width: 104px;
+  word-break: break-word;
+`;
+
+const TechTooltip = styled.span`
+  ${techTooltipBase}
+
+  ${({ $active }) => $active && tooltipVisible}
+
+  @media (hover: hover) and (pointer: fine) {
+    ${IconWrapper}:hover &,
+    ${IconWrapper}:focus-visible & {
+      ${tooltipVisible}
+    }
+  }
+`;
+
+const SoftSkillsWrap = styled.div`
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  @media (min-width: 520px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+`;
+
+const SoftSkillsTooltip = styled.span`
+  ${techTooltipBase}
+
+  ${({ $active }) => $active && tooltipVisible}
+
+  @media (hover: hover) and (pointer: fine) {
+    ${SoftSkillsWrap}:hover &,
+    ${SoftSkillsWrap}:focus-within & {
+      ${tooltipVisible}
+    }
+  }
+`;
+
+const SoftSkillPill = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 0;
+  background: var(--bg);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--hover);
+  }
+`;
+
+/* ============================================================
+   PROJETOS — layout editorial
+   ============================================================ */
+const ProjectsSection = styled.section`
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--section-y) var(--container-x);
+  scroll-margin-top: 96px;
+  box-sizing: border-box;
 `;
 
 const ProjectsTitle = styled.h2`
-  text-align: center;
-  font-size: clamp(28px, 6vw, 40px);
-  margin-bottom: 44px;
-  font-family: Garamond, serif;
-  font-weight: 100;
-  color: white;
-  position: relative;
-  display: inline-block;
-  width: 100%;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background: rgb(255, 252, 223);
-  }
+  ${sectionTitle}
+  margin-bottom: var(--space-xl);
 
   @media (min-width: 900px) {
-    font-size: 48px;
-    margin-bottom: 80px;
+    margin-bottom: var(--space-2xl);
   }
 `;
 
-const ProjectItem = styled.div`
+const ProjectShowcase = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 22px;
-  align-items: center;
-  margin-bottom: 72px;
-  position: relative;
-
- 
-
-  @media (max-width: 768px) {
-    gap: 14px;
-    margin-bottom: 22px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-  }
+  gap: var(--space-xl);
 
   @media (min-width: 900px) {
-    grid-template-columns: ${({ $reverse }) => ($reverse ? "1fr 1.2fr" : "1.2fr 1fr")};
-    gap: 60px;
-    margin-bottom: 120px;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(40px, 5vw, 72px);
+    align-items: start;
+  }
+`;
+
+const ProjectIndexList = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+
+  li {
+    list-style: none;
+  }
+`;
+
+const ProjectRowMarker = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--text-3);
+  transition: transform 0.25s var(--ease-out), color 0.25s var(--ease-out);
+`;
+
+const ProjectRowIndexNum = styled.span`
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: inherit;
+  opacity: 0.65;
+`;
+
+const ProjectRowName = styled.span`
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 3.4vw, 40px);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: inherit;
+  text-wrap: balance;
+  transition: transform 0.25s var(--ease-out);
+`;
+
+const ProjectIndexRow = styled.button`
+  appearance: none;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: var(--space-md);
+  padding: clamp(16px, 2.2vw, 24px) 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-3);
+  transition: color 0.25s var(--ease-out);
+
+  &:hover,
+  &[aria-current="true"],
+  &[aria-expanded="true"] {
+    color: var(--ink);
+  }
+
+  &:hover ${ProjectRowMarker},
+  &[aria-current="true"] ${ProjectRowMarker},
+  &[aria-expanded="true"] ${ProjectRowMarker} {
+    color: var(--ink);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover ${ProjectRowName},
+    &[aria-current="true"] ${ProjectRowName} {
+      transform: translateX(var(--space-sm));
+    }
+
+    &:hover ${ProjectRowMarker},
+    &[aria-current="true"] ${ProjectRowMarker} {
+      transform: translateX(4px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ${ProjectRowName},
+    ${ProjectRowMarker} {
+      transition: color 0.25s var(--ease-out);
+      transform: none;
+    }
+  }
+`;
+
+const ProjectPreview = styled.div`
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+`;
+
+const ProjectPreviewFade = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  animation: projectFade 0.4s var(--ease-out) both;
+
+  @keyframes projectFade {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`;
+
+const ProjectAccordionPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-md) 0 var(--space-xl);
+  animation: projectFade 0.35s var(--ease-out) both;
+
+  @keyframes projectFade {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 `;
 
@@ -661,54 +1196,31 @@ const ProjectImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
   order: 0;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  &:hover::after {
-    opacity: 1;
-  }
+  border: 1px solid var(--line);
+  background: var(--surface);
 
   img {
     width: 100%;
-    height: 220px;
+    height: clamp(240px, 35vw, 380px);
     object-fit: cover;
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform 0.45s var(--ease-out);
   }
 
   &:hover img {
-    transform: scale(1.05);
+    transform: scale(1.03);
   }
 
-  @media (min-width: 600px) {
-    img {
-      height: 300px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    img {
-      height: 180px;
-    }
-
-    border-radius: 12px;
-  }
-  
   @media (min-width: 900px) {
     order: ${({ $reverse }) => ($reverse ? "1" : "0")};
+  }
 
+  @media (prefers-reduced-motion: reduce) {
     img {
-      height: 400px;
+      transition: none;
+    }
+    &:hover img {
+      transform: none;
     }
   }
 
@@ -718,14 +1230,15 @@ const ProjectImageWrapper = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
+      background: var(--bg-2);
+      min-height: clamp(200px, 28vw, 280px);
 
       img {
         width: auto;
         height: auto;
-        max-width: 52%;
-        max-height: 62%;
+        max-width: 50%;
+        max-height: 60%;
         object-fit: contain;
-        transition: none;
       }
 
       &:hover img {
@@ -739,1040 +1252,27 @@ const ProjectImageNote = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 10px 14px;
-  background: rgba(0, 0, 0, 0.75);
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 12px;
-  font-weight: 400;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
   line-height: 1.4;
-  text-align: center;
-  font-family: "Titillium Web", sans-serif;
-
-  @media (max-width: 768px) {
-    font-size: 11px;
-    padding: 8px 12px;
-  }
-`;
-
-const ProjectInfo = styled.div`
-  order: 1;
-
-  @media (max-width: 768px) {
-    text-align: left;
-  }
-
-  @media (min-width: 900px) {
-    order: ${({ $reverse }) => ($reverse ? "0" : "1")};
-  }
-`;
-
-const ProjectName = styled.h3`
-  font-size: clamp(22px, 5.4vw, 30px);
-  font-family: Garamond, serif;
-  font-weight: 100;
-  color: white;
-  margin-bottom: 15px;
-  letter-spacing: 1px;
-
-  @media (max-width: 768px) {
-    font-size: 22px;
-    margin-bottom: 10px;
-  }
-
-  @media (min-width: 900px) {
-    font-size: 32px;
-  }
-`;
-
-const ProjectDescription = styled.p`
-  font-size: 16px;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.7);
-  font-family: "Titillium Web", sans-serif;
-  margin-bottom: 25px;
-  font-weight: 300;
-
-  @media (max-width: 768px) {
-    font-size: 14px;
-    line-height: 1.65;
-    margin-bottom: 18px;
-    text-align: left;
-  }
-`;
-
-const ProjectTechnologies = styled.div`
-  display: flex;
-  gap: 15px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-
-  @media (max-width: 768px) {
-    justify-content: flex-start;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  svg {
-    font-size: 28px;
-    color: rgba(255, 255, 255, 0.8);
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-3px);
-      color: rgb(255, 252, 223);
-    }
-  }
-
-  @media (max-width: 768px) {
-    svg {
-      font-size: 22px;
-    }
-  }
-`;
-
-const ProjectLinks = styled.div`
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-
-  @media (max-width: 599px) {
-    display: grid;
-    grid-template-columns: 1fr;
-    width: 100%;
-  }
-`;
-
-const ProjectLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: none;
-  font-family: "Titillium Web", sans-serif;
-  font-size: 14px;
-  font-weight: 300;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-
-  svg {
-    font-size: 18px;
-  }
-
-  &:hover {
-    border-color: rgb(255, 252, 223);
-    color: rgb(255, 252, 223);
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 768px) {
-    font-size: 13px;
-    padding: 11px 16px;
-    justify-content: center;
-    width: 100%;
-    box-sizing: border-box;
-  }
-`;
-
-const DivIcons = styled.div`
-  margin-top: 14px;
-  margin-bottom: 2px;
-
-  display: flex;
-  gap: 14px;
-
-  @media (max-width: 600px) {
-    margin-top: 10px;
-    gap: 12px;
-  }
-
-  a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.25s ease, opacity 0.25s ease;
-    opacity: 0.9;
-
-    &:hover {
-      transform: translateY(-2px);
-      opacity: 1;
-    }
-  }
-`;
-
-const TechTitle = styled.h3`
-  text-align: center;
-  font-size: 24px;
-  margin-top: 0;
-  margin-bottom: 36px;
-  font-family: Garamond, serif;
-  font-weight: 100;
-  color: rgba(255, 255, 255, 0.95);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 1;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 1px;
-    background: rgb(255, 252, 223);
-    transition: width 0.3s ease;
-  }
-
-  &:hover::after {
-    width: 80px;
-  }
-
-  @media (min-width: 900px) {
-    font-size: 28px;
-    margin-bottom: 46px;
-  }
-`;
-
-const TechCategories = styled.div`
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 54px;
-    row-gap: 34px;
-  }
-`;
-
-const TechCategory = styled.div`
   text-align: left;
-  align-self: start;
-
-  @media (max-width: 899px) {
-    padding: 0 0 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  }
-
-  @media (max-width: 899px) {
-    &:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-  }
-
-  @media (min-width: 900px) {
-    padding: 0 18px 18px 0;
-  }
-
-  @media (min-width: 900px) {
-    &:nth-child(1) {
-      border-right: 1px solid rgba(255, 255, 255, 0.18);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-    }
-
-    &:nth-child(2) {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-    }
-
-    &:nth-child(3) {
-      border-right: 1px solid rgba(255, 255, 255, 0.18);
-    }
-  }
-`;
-
-const TechCategoryTitle = styled.h4`
-  margin: 0 0 14px;
-  font-size: 13px;
-  font-family: "Titillium Web", sans-serif;
-  font-weight: 400;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.65);
-
-  @media (max-width: 899px) {
-    text-align: center;
-    margin-bottom: 16px;
-  }
-`;
-
-const TechItems = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 14px;
-  align-items: start;
-  justify-items: center;
-
-  @media (min-width: 520px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-`;
-
-const DivIconsTec = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 60px;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-  padding: 20px 0;
-
-  @media (max-width: 768px) {
-    gap: 40px;
-    padding: 20px;
-  }
-
-  @media (max-width: 600px) {
-    gap: 30px;
-  }
-`;
-
-const IconWrapper = styled.button`
-  appearance: none;
-  border: none;
-  background: transparent;
-  padding: 6px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-  width: 104px;
-  min-height: 108px;
-  color: inherit;
-
-  &:hover {
-    transform: none;
-
-    svg {
-      transform: scale(1.15);
-      filter: brightness(1.2);
-    }
-
-    span {
-      color: rgb(255, 252, 223);
-    }
-
-    &::after {
-      width: 40px;
-      opacity: 1;
-    }
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 1px;
-    background: rgb(255, 252, 223);
-    transition: all 0.3s ease;
-    opacity: 0;
-  }
-
-  &:focus-visible {
-    outline: 2px solid rgba(255, 252, 223, 0.55);
-    outline-offset: 6px;
-    border-radius: 8px;
-  }
-
-  svg {
-    font-size: 44px;
-    transition: all 0.3s ease;
-    color: rgba(255, 255, 255, 0.85);
-
-    @media (max-width: 768px) {
-      font-size: 44px;
-    }
-  }
-`;
-
-const TechIconSlot = styled.div`
-  width: 52px;
-  height: 52px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const TechFallbackIcon = styled.div`
-  width: 46px;
-  height: 46px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 252, 223, 0.9);
-  font-family: "Titillium Web", sans-serif;
-  font-weight: 400;
-  letter-spacing: 1px;
-  font-size: 12px;
-  text-transform: uppercase;
-`;
-
-const TechName = styled.span`
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  font-family: "Titillium Web", sans-serif;
-  text-align: center;
-  font-weight: 300;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  line-height: 1.25;
-  max-width: 104px;
-  word-break: break-word;
-`;
-
-const SoftSkillsWrap = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 12px;
-
-  @media (min-width: 520px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-`;
-
-const SoftSkillPill = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.82);
-  font-family: "Titillium Web", sans-serif;
-  font-size: 13px;
-  font-weight: 300;
-  letter-spacing: 0.4px;
-  cursor: pointer;
-  transition: background-color 0.25s ease, color 0.25s ease;
-
-  &:hover {
-    background: rgba(255, 252, 223, 0.08);
-    color: rgba(255, 252, 223, 0.95);
-  }
-`;
-
-const DescriptionBox = styled.div`
-  margin-top: 18px;
-  margin-bottom: 0;
-  min-height: 54px;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  font-family: "Titillium Web", sans-serif;
-  font-weight: 300;
-  line-height: 1.8;
-  letter-spacing: 0.5px;
-  padding: 0 12px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  z-index: 1;
-  transition: all 0.4s ease;
-
-  @media (min-width: 600px) {
-    padding: 0 16px;
-  }
-
-  @media (min-width: 900px) {
-    font-size: 15px;
-    padding: 0 20px;
-    margin-top: 28px;
-  }
-`;
-
-const TechnologyDescriptionText = styled.p`
-  margin: 0;
-  color: rgba(255, 255, 255, 0.72);
-  animation: fadeInSoft 0.35s ease both;
-  @keyframes fadeInSoft {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`;
-
-const Description = styled.p`
-  margin-top: 10px;
-  font-size: 14px;
-  color: silver;
-  text-align: center;
-  position: absolute;
-  bottom: -40px; /* Ajusta a posição abaixo do ícone */
-  left: 50%;
-  transform: translateX(-50%) translateY(10px); /* Inicia com deslocamento */
-  opacity: 0;
-  transition: opacity 0.3s, transform 0.3s;
-  pointer-events: none; /* Impede interação com o texto */
-
-
-`;
-const Wraper = styled.div`
-  background-color: #212121;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  overflow-x: hidden;
-  overflow-y: visible;
-`;
-
-const DivPrincipal = styled.div`
-  text-align: center;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  overflow-y: visible;
-  height: auto;
-`;
-
-const DivMargin = styled.div`
-  height: 1px;
-`;
-
-const DivText = styled.div`
-  width: min(100%, 960px);
-  max-width: 100%;
-  min-height: 86vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  flex-direction: column;
-  gap: 16px;
-  padding: 100px 24px 64px;
-
-  @media (max-width: 900px) {
-    min-height: 100svh;
-    padding: 96px 24px 56px;
-    gap: 12px;
-  }
-
-  @media (max-width: 600px) {
-    width: 100%;
-    max-width: 100vw;
-    min-height: 100svh;
-    padding: 88px 16px 44px;
-    gap: 10px;
-  }
-`;
-
-const TextFirst = styled.h1`
-  font-family: Garamond, serif;
-  font-size: clamp(52px, 8vw, 84px);
-  font-weight: 100;
-  margin: 0;
-  line-height: 0.95;
-  letter-spacing: 0.5px;
-
-  @media (max-width: 600px) {
-    font-size: 46px;
-  }
-`;
-
-const TextSecond = styled.h2`
-  margin: 0;
-  font-family: Garamond, serif;
-  font-size: clamp(28px, 4.4vw, 44px);
-  font-weight: 100;
-  line-height: 1.2;
-  max-width: 820px;
-
-  @media (max-width: 600px) {
-    font-size: 28px;
-  }
-
-  p {
-    margin-top: 14px;
-    font-size: clamp(14px, 1.8vw, 18px);
-    letter-spacing: 3px;
-    font-family: "Titillium Web", sans-serif;
-    font-weight: 300;
-    color: rgba(255, 255, 255, 0.85);
-
-    @media (max-width: 600px) {
-      font-size: 13px;
-      letter-spacing: 2px;
-    }
-  }
-`;
-
-
-const Section = styled.section`
-  margin: 50px 0;
-  text-align: center;
-
-  h2 {
-    font-size: 30px;
-    margin-bottom: 20px;
-    font-family: Garamond, serif;
-  }
-
-  @media (max-width: 768px) {
-    padding: 10px;
-  }
-`;
-
-const SectionProfile = styled.section`
-  margin: 50px 0;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  flex-direction: column;
-  width: 100%;
-  max-width: 100%;
-
-  @media (max-width: 600px) {
-    padding: 0 20px;
-    margin-bottom: 100px;
-    }
-  
-`;
-
-const ProjectsGrid = styled.div`
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  @media (max-width: 600px) {
-    flex-wrap: wrap;
-    }
-
-  div {
-    text-align: center;
-
-    img {
-      width: 300px;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    a {
-      display: block;
-      margin-top: 10px;
-      text-decoration: none;
-      color: white;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-`;
-
-const ContactSection = styled.section`
-  max-width: 1400px;
-  margin: var(--section-y) auto;
-  padding: 0 var(--container-x);
-`;
-
-const ContactTitle = styled.h2`
-  text-align: center;
-  font-size: clamp(28px, 6vw, 40px);
-  margin-bottom: 44px;
-  font-family: Garamond, serif;
-  font-weight: 100;
-  color: white;
-  position: relative;
-  display: inline-block;
-  width: 100%;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background: rgb(255, 252, 223);
-  }
-
-  @media (min-width: 900px) {
-    font-size: 48px;
-    margin-bottom: 80px;
-  }
-`;
-
-const ContactWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 60px;
-  align-items: start;
-
-  @media (min-width: 900px) {
-    gap: 70px;
-  }
-
-  @media (max-width: 968px) {
-    grid-template-columns: 1fr;
-    gap: 60px;
-  }
-
-  @media (max-width: 600px) {
-    gap: 40px;
-  }
-`;
-
-const ContactInfo = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 26px 60px;
-  position: relative;
-
-  @media (min-width: 900px) {
-    grid-template-columns: 1fr 1fr;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 600px) {
-    gap: 22px;
-  }
-`;
-
-const ContactItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-
-  h3 {
-    font-size: 13px;
-    font-family: "Titillium Web", sans-serif;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.5);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin: 0;
-
-    @media (max-width: 600px) {
-      font-size: 12px;
-    }
-  }
-
-  a {
-    font-size: 16px;
-    font-family: "Titillium Web", sans-serif;
-    font-weight: 300;
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    word-break: break-word;
-
-    svg {
-      font-size: 18px;
-      color: rgb(255, 252, 223);
-      flex-shrink: 0;
-    }
-
-    &:hover {
-      color: rgb(255, 252, 223);
-      transform: translateX(5px);
-    }
-
-    @media (max-width: 600px) {
-      font-size: 14px;
-
-      svg {
-        font-size: 16px;
-      }
-    }
-  }
-
-  p {
-    font-size: 16px;
-    font-family: "Titillium Web", sans-serif;
-    font-weight: 300;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    svg {
-      font-size: 18px;
-      color: rgb(255, 252, 223);
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 600px) {
-      font-size: 14px;
-
-      svg {
-        font-size: 16px;
-      }
-    }
-  }
-`;
-
-const FormWrapper = styled.div`
-  width: 100%;
-  max-width: 100%;
-`;
-
-const ContactForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  width: 100%;
-
-  @media (max-width: 600px) {
-    gap: 20px;
-  }
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-
-  @media (max-width: 600px) {
-    gap: 8px;
-  }
-`;
-
-const FormLabel = styled.label`
-  font-size: 13px;
-  font-family: "Titillium Web", sans-serif;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-
-  @media (max-width: 600px) {
-    font-size: 12px;
-  }
-`;
-
-const FormInput = styled.input`
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 12px 0;
-  font-size: 16px;
-  font-family: "Titillium Web", sans-serif;
-  color: rgba(255, 255, 255, 0.9);
-  transition: all 0.3s ease;
-  width: 100%;
-
-  &:focus {
-    outline: none;
-    border-bottom-color: rgb(255, 252, 223);
-  }
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 14px;
-    padding: 10px 0;
-  }
-`;
-
-const FormSelect = styled.select`
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 12px 0;
-  font-size: 16px;
-  font-family: "Titillium Web", sans-serif;
-  color: rgba(255, 255, 255, 0.9);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  width: 100%;
-
-  &:focus {
-    outline: none;
-    border-bottom-color: rgb(255, 252, 223);
-  }
-
-  option {
-    background: #2c2c2c;
-    color: white;
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 14px;
-    padding: 10px 0;
-  }
-`;
-
-const FormTextarea = styled.textarea`
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 12px 0;
-  font-size: 16px;
-  font-family: "Titillium Web", sans-serif;
-  color: rgba(255, 255, 255, 0.9);
-  min-height: 120px;
-  resize: vertical;
-  transition: all 0.3s ease;
-  width: 100%;
-
-  &:focus {
-    outline: none;
-    border-bottom-color: rgb(255, 252, 223);
-  }
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 14px;
-    padding: 10px 0;
-    min-height: 100px;
-  }
-`;
-
-const FormButton = styled.button`
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 15px 40px;
-  font-size: 14px;
-  font-family: "Titillium Web", sans-serif;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  align-self: flex-start;
-
-  &:hover:not(:disabled) {
-    border-color: rgb(255, 252, 223);
-    color: rgb(255, 252, 223);
-    transform: translateY(-2px);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: 600px) {
-    width: 100%;
-    padding: 12px 30px;
-    font-size: 13px;
-    letter-spacing: 1.5px;
-  }
-`;
-
-const StatusMessage = styled.div`
-  padding: 15px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-family: "Titillium Web", sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.5px;
-  margin-top: 20px;
-  animation: fadeIn 0.3s ease;
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  &.success {
-    background: rgba(76, 175, 80, 0.2);
-    border: 1px solid rgba(76, 175, 80, 0.5);
-    color: #4caf50;
-  }
-
-  &.error {
-    background: rgba(244, 67, 54, 0.2);
-    border: 1px solid rgba(244, 67, 54, 0.5);
-    color: #f44336;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 13px;
-    padding: 12px 16px;
-    margin-top: 15px;
-  }
 `;
 
 const ProjectPartner = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: var(--space-sm);
   flex-wrap: wrap;
 
   span {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
-    font-family: "Titillium Web", sans-serif;
-    font-weight: 300;
-    letter-spacing: 1px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-2);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 `;
@@ -1780,175 +1280,314 @@ const ProjectPartner = styled.div`
 const PartnerLogoLink = styled.a`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  opacity: 0.7;
+  gap: var(--space-xs);
+  transition: opacity 0.2s var(--ease-out);
+  opacity: 0.8;
   text-decoration: none;
+  border-radius: 0;
 
   &:hover {
     opacity: 1;
-    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
   }
 
   img {
-    height: 24px;
+    height: 20px;
     width: auto;
-    filter: brightness(0.9);
-    transition: filter 0.3s ease;
   }
 
   span {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-2);
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+`;
+
+const ProjectDescription = styled.p`
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-2);
+  font-family: var(--font-body);
+  margin: 0;
+  max-width: 68ch;
+  text-wrap: pretty;
+
+  @media (max-width: 768px) {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
-    font-family: "Titillium Web", sans-serif;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
-  }
-
-  &:hover img {
-    filter: brightness(1.2);
-  }
-
-  &:hover span {
-    color: rgba(255, 255, 255, 0.9);
   }
 `;
-const TextSecondDigit = styled.h2`
-  margin-top: -40px;
-  font-family: Garamond, serif;
-  font-size: 30px; // define o tamanho da fonte como 5% do viewport
-  font-weight: 100;
-  letter-spacing: 5px;
+
+const ProjectActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+  width: 100%;
+`;
+
+const ProjectTechLabel = styled.span`
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  display: flex;
-  text-align: center;
-  justify-content: center;
-`;
-const ButtonCVContainer = styled.div`
-  position: relative;
-  display: inline-block;
-  margin-top: 14px;
-
-  @media (max-width: 600px) {
-    margin-top: 10px;
-  }
+  color: var(--text-3);
 `;
 
-const ButtonCV = styled.button`
-  background-color: white;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #212121;
-  font-weight: 400;
-  padding: 10px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: "Titillium Web", sans-serif;
-  letter-spacing: 0.4px;
+const ProjectTechnologies = styled.div`
   display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+`;
+
+const ProjectTechIcon = styled.span`
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-  
-  &:hover {
-    background-color: rgb(255, 252, 223);
-    transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--ink);
+
+  svg {
+    font-size: 20px;
+    color: currentColor;
+    transition: transform 0.2s var(--ease-out);
+  }
+
+  ${TechFallbackIcon} {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+
+  &:hover svg {
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+
+    svg {
+      font-size: 18px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    svg {
+      transition: none;
+    }
+
+    &:hover svg {
+      transform: none;
+    }
   }
 `;
 
-const ArrowIcon = styled(IoIosArrowDown)`
-  font-size: 16px;
-  color: #212121;
-  transition: transform 0.3s;
-  transform: ${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "rotate(0deg)")};
+const ProjectLinks = styled.div`
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  flex-wrap: wrap;
+
+  @media (max-width: 599px) {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: var(--space-sm);
+
+    ${({ $dualCode }) =>
+      $dualCode &&
+      css`
+        grid-template-columns: 1fr 1fr;
+      `}
+  }
 `;
 
-const DropdownMenu = styled.div`
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 50%;
-  background-color: #2c2c2c;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  min-width: 170px;
-  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
-  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
-  transform: ${({ $isOpen }) => ($isOpen ? "translate(-50%, 0)" : "translate(-50%, -10px)")};
-  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
-  z-index: 1000;
-  overflow: hidden;
+const ProjectLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-height: 44px;
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out),
+    transform 0.15s var(--ease-out);
+
+  svg {
+    font-size: 16px;
+    color: currentColor;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  ${({ $primary }) =>
+    $primary
+      ? css`
+          background: var(--ink);
+          color: var(--bg);
+
+          &:hover {
+            background: var(--bg);
+            color: var(--ink);
+          }
+        `
+      : css`
+          background: transparent;
+          color: var(--text);
+
+          &:hover {
+            background: var(--ink);
+            color: var(--bg);
+          }
+        `}
+
+  ${({ $spanFull }) =>
+    $spanFull &&
+    css`
+      @media (max-width: 599px) {
+        grid-column: 1 / -1;
+      }
+    `}
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding: var(--space-sm) var(--space-md);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+
+    &:active {
+      transform: none;
+    }
+  }
 `;
 
-const DropdownItem = styled.button`
+/* ============================================================
+   CONTATO
+   ============================================================ */
+const ContactSection = styled.section`
   width: 100%;
-  padding: 11px 16px;
-  border: none;
-  background-color: transparent;
-  color: white;
-  text-align: left;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: "Titillium Web", sans-serif;
-  transition: background-color 0.25s ease;
-  
-  &:hover {
-    background-color: #3c3c3c;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--section-y) var(--container-x);
+  scroll-margin-top: 96px;
+  box-sizing: border-box;
+`;
+
+const ContactTitle = styled.h2`
+  ${sectionTitle}
+`;
+
+const ContactWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: start;
+`;
+
+const ContactInfo = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border-top: 1px solid var(--line);
+
+  @media (min-width: 760px) {
+    grid-template-columns: 1fr 1fr;
   }
-  
-  &:first-child {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const ContactItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line-soft);
+
+  h3 {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  a {
+    font-size: clamp(16px, 2vw, 20px);
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    word-break: break-word;
+    letter-spacing: -0.02em;
+
+    svg {
+      font-size: 18px;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+
+  @media (min-width: 760px) {
+    padding: 24px;
+
+    &:nth-child(odd) {
+      border-right: 1px solid var(--line-soft);
+    }
   }
 `;
 
-const LineLateral = styled.div`
-  width: 100px;
-  height: 2px;
-  background-color: silver;
-`;
-
-const Line = styled.div`
-  width: 90%;
-  height: 2px;
-  background-color: silver;
-`;
-
-const AboutDiv = styled.div`
-  position: relative;
-  width: 1000px;
-  max-width: 100%;
-  height: 200px;
-`;
-
-const AboutText = styled.p`
-  text-align: center; /* Centraliza o texto */
-  font-size: 25px;
-  z-index: 11;
-  margin-top: -100px;
-`;
-
-const AboutTitle = styled.h1`
-  margin-top: -20px;
-  text-align: center; /* Centraliza o texto */
-  font-family: "Playfair Display", serif;
-  font-optical-sizing: auto;
-  font-size: 300px;
-  color: rgba(100, 100, 100, 0.5);
-  font-style: normal;
-  font-weight: 200;
-  position: relative;
-  width: 100%;
-  height: 0px;
-`;
+const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
+const SHOWCASE_QUERY = "(min-width: 900px) and (hover: hover) and (pointer: fine)";
 
 const LandingPage = () => {
   const { t } = useTranslation();
-  const [selectedIcon, setSelectedIcon] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedTechnology, setSelectedTechnology] = useState("");
-  const [isTechPinned, setIsTechPinned] = useState(false);
+  const [activeTooltip, setActiveTooltip] = useState("");
+  const [canHover, setCanHover] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia(FINE_POINTER_QUERY).matches
+  );
+  const [projectShowcase, setProjectShowcase] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia(SHOWCASE_QUERY).matches
+  );
+  const [activeProject, setActiveProject] = useState(0);
+  const [openProject, setOpenProject] = useState(0);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState("");
@@ -1957,10 +1596,48 @@ const LandingPage = () => {
 
   useEffect(() => {
     AOS.init({
-      duration: 1000, // Duração da animação em milissegundos
-      once: true, // Executa a animação apenas uma vez ao rolar
+      duration: 700,
+      easing: "ease-out",
+      once: true,
+      offset: 40,
     });
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(FINE_POINTER_QUERY);
+    const handleChange = (event) => {
+      setCanHover(event.matches);
+      if (event.matches) setActiveTooltip("");
+    };
+
+    setCanHover(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(SHOWCASE_QUERY);
+    const handleChange = (event) => setProjectShowcase(event.matches);
+
+    setProjectShowcase(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (!activeTooltip) return undefined;
+
+    const handleCloseTooltip = (event) => {
+      if (!event.target.closest("[data-tech-chip]")) {
+        setActiveTooltip("");
+      }
+    };
+
+    document.addEventListener("click", handleCloseTooltip);
+    return () => document.removeEventListener("click", handleCloseTooltip);
+  }, [activeTooltip]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -2044,7 +1721,7 @@ const LandingPage = () => {
     springboot: <SiSpringbootIcon />,
     postgresql: <SiPostgresql />,
     firebase: <SiFirebase />,
-    aws: <SiAmazonwebservices />,
+    aws: <FaAws />,
     googlecloud: <SiGooglecloud />,
     stripe: <SiMercadopago />,
     supabase: <SiSupabase />,
@@ -2077,6 +1754,14 @@ const LandingPage = () => {
 
   const softSkillsRaw = t("tech.softSkills.items", { returnObjects: true });
   const softSkills = Array.isArray(softSkillsRaw) ? softSkillsRaw : [];
+
+  const handleTechClick = (key) => {
+    if (canHover) return;
+    setActiveTooltip((prev) => (prev === key ? "" : key));
+  };
+
+  const hasProjectLinks = (project) =>
+    Boolean(project.deploy || project.github || project.githubBe);
 
   const projects = [
     {
@@ -2164,16 +1849,128 @@ const LandingPage = () => {
       deploy: "",
       technologies: ["html", "css", "js"],
     },
-    
+
   ];
 
-  const handleDownloadCV = (language) => {
-    const cvPath =
-      language === "pt"
-        ? "/Curriculo%20Jo%C3%A3o%20Guilherme-PORTUGUES.pdf"
-        : "/Curriculo%20Jo%C3%A3o%20Guilherme-ENGLISH.pdf";
+  const activeProjectData = projects[activeProject] || projects[0];
 
-    window.open(`${process.env.PUBLIC_URL}${cvPath}`, "_blank");
+  const renderProjectDetails = (project, index) => {
+    const hasLinks = hasProjectLinks(project);
+    const hasDualCode = Boolean(project.github && project.githubBe);
+
+    return (
+      <>
+        <ProjectImageWrapper $logoThumbnail={project.logoThumbnail}>
+          <img
+            src={project.image}
+            alt={project.name}
+            loading={index < 2 ? "eager" : "lazy"}
+            decoding="async"
+          />
+          {project.noteKey && (
+            <ProjectImageNote>{t(project.noteKey)}</ProjectImageNote>
+          )}
+        </ProjectImageWrapper>
+
+        {project.partner ? (
+          <ProjectPartner>
+            <span>{t("projects.inCollaborationWith")}</span>
+            <PartnerLogoLink
+              href={project.partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t("projects.visitPartnerSiteAria", { name: project.partner.name })}
+            >
+              <img
+                src={project.partner.logo}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+              />
+              <span>{project.partner.name}</span>
+            </PartnerLogoLink>
+          </ProjectPartner>
+        ) : (
+          <ProjectPartner>
+            <span>{t("projects.personal")}</span>
+          </ProjectPartner>
+        )}
+
+        <ProjectDescription>{t(project.descriptionKey)}</ProjectDescription>
+
+        {(project.technologies.length > 0 || hasLinks) && (
+          <ProjectActions>
+            {project.technologies.length > 0 && (
+              <div>
+                <ProjectTechLabel>{t("projects.stack")}</ProjectTechLabel>
+                <ProjectTechnologies>
+                  {project.technologies.map((tech) => (
+                    <ProjectTechIcon
+                      key={tech}
+                      role="img"
+                      aria-label={techNames[tech] || tech}
+                      title={techNames[tech] || tech}
+                    >
+                      {icons[tech] ? icons[tech] : (
+                        <TechFallbackIcon>{(techNames[tech] || tech).slice(0, 2)}</TechFallbackIcon>
+                      )}
+                    </ProjectTechIcon>
+                  ))}
+                </ProjectTechnologies>
+              </div>
+            )}
+
+            {hasLinks && (
+              <ProjectLinks $dualCode={hasDualCode}>
+                {project.deploy && (
+                  <ProjectLink
+                    $primary
+                    $spanFull={hasDualCode}
+                    href={project.deploy}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t("projects.viewSiteAria", { name: project.name })}
+                  >
+                    {t("projects.viewSite")}
+                  </ProjectLink>
+                )}
+                {project.github && (
+                  <ProjectLink
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t("projects.viewCodeAria", { name: project.name })}
+                  >
+                    <FaGithubIcon aria-hidden="true" /> {project.githubBe ? t("projects.codeFrontend") : t("projects.code")}
+                  </ProjectLink>
+                )}
+                {project.githubBe && (
+                  <ProjectLink
+                    href={project.githubBe}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t("projects.viewCodeAria", { name: project.name })}
+                  >
+                    <FaGithubIcon aria-hidden="true" /> {t("projects.codeBackend")}
+                  </ProjectLink>
+                )}
+              </ProjectLinks>
+            )}
+          </ProjectActions>
+        )}
+      </>
+    );
+  };
+
+  const handleDownloadCV = (language) => {
+    const cvPaths = {
+      pt: "/Curriculo%20Jo%C3%A3o%20Guilherme-PORTUGUES.pdf",
+      en: "/Curriculo%20Jo%C3%A3o%20Guilherme-ENGLISH.pdf",
+      es: "/Curriculo%20Jo%C3%A3o%20Guilherme-ESPANHOL.pdf",
+    };
+
+    window.open(`${process.env.PUBLIC_URL}${cvPaths[language]}`, "_blank");
     setShowDropdown(false);
   };
 
@@ -2187,12 +1984,10 @@ const LandingPage = () => {
     setSubmitStatus("");
 
     try {
-      // Configurações do EmailJS - use variáveis de ambiente ou substitua diretamente
       const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID || "YOUR_SERVICE_ID";
       const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || "YOUR_TEMPLATE_ID";
       const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY";
 
-      // Verifica se as credenciais foram configuradas
       if (serviceId === "YOUR_SERVICE_ID" || templateId === "YOUR_TEMPLATE_ID" || publicKey === "YOUR_PUBLIC_KEY") {
         throw new Error("Credenciais do EmailJS não configuradas. Por favor, configure as variáveis de ambiente ou atualize o código.");
       }
@@ -2217,18 +2012,17 @@ const LandingPage = () => {
       };
 
       await emailjs.send(serviceId, templateId, templateParams, publicKey);
-      
+
       setSubmitStatus("success");
       e.target.reset();
       setSelectedSubject("");
-      
+
       setTimeout(() => {
         setSubmitStatus("");
       }, 5000);
     } catch (error) {
       console.error("Erro ao enviar email:", error);
-      
-      // Log detalhado do erro para debug
+
       if (error.text) {
         if (error.text.includes("insufficient authentication scopes")) {
           console.error("Erro de autenticação Gmail API. Use SMTP ao invés de OAuth ou verifique os escopos OAuth.");
@@ -2238,9 +2032,9 @@ const LandingPage = () => {
           console.error("Service ID inválido. Verifique a configuração do serviço no EmailJS.");
         }
       }
-      
+
       setSubmitStatus("error");
-      
+
       setTimeout(() => {
         setSubmitStatus("");
       }, 5000);
@@ -2255,44 +2049,53 @@ const LandingPage = () => {
         <DivMargin id="home" />
 
         <DivText>
-          <TextFirst>{t("hero.greeting")}</TextFirst>
-          <TextSecond>
-            {t("hero.intro")}
-            <br /> <p>{t("hero.role")}</p>
-          </TextSecond>
+          <HeroDotField />
+          <HeroInner>
+            <HeroWatermark aria-hidden="true">
+              João<br />Possidonio
+            </HeroWatermark>
+            <TextFirst>{t("hero.greeting")}</TextFirst>
+            <TextSecond>
+              {t("hero.intro")}
+              <br /> <p>{t("hero.role")}</p>
+            </TextSecond>
 
-          <DivIcons>
-            <a href="https://wa.me/5524988685043">
-              <FaWhatsappIcon />
-            </a>
+            <DivIcons>
+              <a href="https://wa.me/5524988685043">
+                <FaWhatsappIcon />
+              </a>
 
-            <a href="https://github.com/JoaoZ14" target="_blank" rel="noreferrer">
-              <FaGithubIcon />
-            </a>
+              <a href="https://github.com/JoaoZ14" target="_blank" rel="noreferrer">
+                <FaGithubIcon />
+              </a>
 
-            <a
-              href="http://www.linkedin.com/in/joao-possidonio"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FaLinkedinIcon />
-            </a>
-          </DivIcons>
-          
-          <ButtonCVContainer ref={dropdownRef}>
-            <ButtonCV onClick={toggleDropdown}>
-              {t("hero.cv")}
-              <ArrowIcon $isOpen={showDropdown} />
-            </ButtonCV>
-            <DropdownMenu $isOpen={showDropdown}>
-              <DropdownItem onClick={() => handleDownloadCV("pt")}>
-                {t("hero.portuguese")}
-              </DropdownItem>
-              <DropdownItem onClick={() => handleDownloadCV("en")}>
-                {t("hero.english")}
-              </DropdownItem>
-            </DropdownMenu>
-          </ButtonCVContainer>
+              <a
+                href="https://www.linkedin.com/in/joao-possidonio"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FaLinkedinIcon />
+              </a>
+            </DivIcons>
+
+            <ButtonCVContainer ref={dropdownRef}>
+              <ButtonCV onClick={toggleDropdown}>
+                {t("hero.cv")}
+                <ArrowIcon $isOpen={showDropdown} />
+              </ButtonCV>
+              <DropdownMenu $isOpen={showDropdown}>
+                <DropdownItem onClick={() => handleDownloadCV("pt")}>
+                  {t("hero.portuguese")}
+                </DropdownItem>
+                <DropdownItem onClick={() => handleDownloadCV("en")}>
+                  {t("hero.english")}
+                </DropdownItem>
+                <DropdownItem onClick={() => handleDownloadCV("es")}>
+                  {t("hero.spanish")}
+                </DropdownItem>
+              </DropdownMenu>
+            </ButtonCVContainer>
+          </HeroInner>
         </DivText>
 
         <Line id="about" />
@@ -2327,19 +2130,15 @@ const LandingPage = () => {
                   <ExperienceTimeline>
                     <ExperienceTimelineItem data-aos="fade-up" data-aos-delay="50">
                       <ExperienceCard>
-                        <ExperienceRole>
-                          {t("experience.elevate.roles.junior.title")} —{" "}
-                          <ExperiencePeriod>{t("experience.elevate.roles.junior.period")}</ExperiencePeriod>
-                        </ExperienceRole>
+                        <ExperiencePeriod>{t("experience.elevate.roles.junior.period")}</ExperiencePeriod>
+                        <ExperienceRole>{t("experience.elevate.roles.junior.title")}</ExperienceRole>
                       </ExperienceCard>
                     </ExperienceTimelineItem>
 
-                    <ExperienceTimelineItem data-aos="fade-up" data-aos-delay="100" >
+                    <ExperienceTimelineItem data-aos="fade-up" data-aos-delay="100">
                       <ExperienceCard>
-                        <ExperienceRole style={{ marginBottom: '16px' }}>
-                          {t("experience.elevate.roles.intern.title")} —{" "}
-                          <ExperiencePeriod>{t("experience.elevate.roles.intern.period")}</ExperiencePeriod>
-                        </ExperienceRole>
+                        <ExperiencePeriod>{t("experience.elevate.roles.intern.period")}</ExperiencePeriod>
+                        <ExperienceRole>{t("experience.elevate.roles.intern.title")}</ExperienceRole>
 
                         <ExperienceDivider />
                         <ExperiencePhrases>
@@ -2378,38 +2177,44 @@ const LandingPage = () => {
                   <SkillsContainer>
                     <SkillCard data-aos="fade-up" data-aos-delay="100">
                       <h3>{t("skills.frontend.title")}</h3>
-                      <SkillSummary>
-                        {t("skills.frontend.summary")}
-                      </SkillSummary>
-                      <SkillList>
-                        <SkillListItem>{t("skills.frontend.items.reusableComponents")}</SkillListItem>
-                        <SkillListItem>{t("skills.frontend.items.performanceUx")}</SkillListItem>
-                        <SkillListItem>{t("skills.frontend.items.serviceIntegrations")}</SkillListItem>
-                      </SkillList>
+                      <SkillBody>
+                        <SkillSummary>
+                          {t("skills.frontend.summary")}
+                        </SkillSummary>
+                        <SkillList>
+                          <SkillListItem>{t("skills.frontend.items.reusableComponents")}</SkillListItem>
+                          <SkillListItem>{t("skills.frontend.items.performanceUx")}</SkillListItem>
+                          <SkillListItem>{t("skills.frontend.items.serviceIntegrations")}</SkillListItem>
+                        </SkillList>
+                      </SkillBody>
                     </SkillCard>
 
                     <SkillCard data-aos="fade-up" data-aos-delay="200">
                       <h3>{t("skills.backend.title")}</h3>
-                      <SkillSummary>
-                        {t("skills.backend.summary")}
-                      </SkillSummary>
-                      <SkillList>
-                        <SkillListItem>{t("skills.backend.items.endpointsIntegrations")}</SkillListItem>
-                        <SkillListItem>{t("skills.backend.items.businessRules")}</SkillListItem>
-                        <SkillListItem>{t("skills.backend.items.authAccessControl")}</SkillListItem>
-                      </SkillList>
+                      <SkillBody>
+                        <SkillSummary>
+                          {t("skills.backend.summary")}
+                        </SkillSummary>
+                        <SkillList>
+                          <SkillListItem>{t("skills.backend.items.endpointsIntegrations")}</SkillListItem>
+                          <SkillListItem>{t("skills.backend.items.businessRules")}</SkillListItem>
+                          <SkillListItem>{t("skills.backend.items.authAccessControl")}</SkillListItem>
+                        </SkillList>
+                      </SkillBody>
                     </SkillCard>
 
                     <SkillCard data-aos="fade-up" data-aos-delay="300">
                       <h3>{t("skills.excellence.title")}</h3>
-                      <SkillSummary>
-                        {t("skills.excellence.summary")}
-                      </SkillSummary>
-                      <SkillList>
-                        <SkillListItem>{t("skills.excellence.items.codeReview")}</SkillListItem>
-                        <SkillListItem>{t("skills.excellence.items.documentation")}</SkillListItem>
-                        <SkillListItem>{t("skills.excellence.items.teamwork")}</SkillListItem>
-                      </SkillList>
+                      <SkillBody>
+                        <SkillSummary>
+                          {t("skills.excellence.summary")}
+                        </SkillSummary>
+                        <SkillList>
+                          <SkillListItem>{t("skills.excellence.items.codeReview")}</SkillListItem>
+                          <SkillListItem>{t("skills.excellence.items.documentation")}</SkillListItem>
+                          <SkillListItem>{t("skills.excellence.items.teamwork")}</SkillListItem>
+                        </SkillList>
+                      </SkillBody>
                     </SkillCard>
                   </SkillsContainer>
                 </AboutBlock>
@@ -2422,45 +2227,40 @@ const LandingPage = () => {
                         <TechCategoryTitle>{category.title}</TechCategoryTitle>
                         {category.title === t("tech.categories.softSkills") ? (
                           <SoftSkillsWrap
-                            onMouseEnter={() => {
-                              if (!isTechPinned) setSelectedTechnology("softskills");
-                            }}
-                            onMouseLeave={() => {
-                              if (!isTechPinned) setSelectedTechnology("");
-                            }}
-                            onClick={() => {
-                              setIsTechPinned((prevPinned) => {
-                                const nextPinned = !(prevPinned && selectedTechnology === "softskills");
-                                setSelectedTechnology(nextPinned ? "softskills" : "");
-                                return nextPinned;
-                              });
+                            data-tech-chip
+                            role="button"
+                            tabIndex={0}
+                            aria-describedby="tech-tooltip-softskills"
+                            onClick={() => handleTechClick("softskills")}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                handleTechClick("softskills");
+                              }
                             }}
                           >
                             {softSkills.map((label) => (
                               <SoftSkillPill key={label}>{label}</SoftSkillPill>
                             ))}
+                            <SoftSkillsTooltip
+                              id="tech-tooltip-softskills"
+                              role="tooltip"
+                              $active={activeTooltip === "softskills"}
+                            >
+                              {descriptions.softskills}
+                            </SoftSkillsTooltip>
                           </SoftSkillsWrap>
                         ) : (
                           <TechItems>
                             {category.keys.map((key, index) => (
                               <IconWrapper
                                 key={key}
+                                data-tech-chip
                                 data-aos="fade-up"
                                 data-aos-delay={index * 30}
                                 type="button"
-                                onMouseEnter={() => {
-                                  if (!isTechPinned) setSelectedTechnology(key);
-                                }}
-                                onMouseLeave={() => {
-                                  if (!isTechPinned) setSelectedTechnology("");
-                                }}
-                                onClick={() => {
-                                  setIsTechPinned((prevPinned) => {
-                                    const nextPinned = !(prevPinned && selectedTechnology === key);
-                                    setSelectedTechnology(nextPinned ? key : "");
-                                    return nextPinned;
-                                  });
-                                }}
+                                aria-describedby={`tech-tooltip-${key}`}
+                                onClick={() => handleTechClick(key)}
                               >
                               <TechIconSlot>
                                 {icons[key] ? icons[key] : (
@@ -2468,6 +2268,13 @@ const LandingPage = () => {
                                 )}
                               </TechIconSlot>
                                 <TechName>{techNames[key]}</TechName>
+                                <TechTooltip
+                                  id={`tech-tooltip-${key}`}
+                                  role="tooltip"
+                                  $active={activeTooltip === key}
+                                >
+                                  {descriptions[key]}
+                                </TechTooltip>
                               </IconWrapper>
                             ))}
                           </TechItems>
@@ -2475,14 +2282,6 @@ const LandingPage = () => {
                       </TechCategory>
                     ))}
                   </TechCategories>
-
-                  <DescriptionBox data-aos="fade-up">
-                    <TechnologyDescriptionText key={selectedTechnology || "default"}>
-                      {selectedTechnology
-                        ? descriptions[selectedTechnology]
-                        : t("tech.exploreDefault")}
-                    </TechnologyDescriptionText>
-                  </DescriptionBox>
                 </AboutBlock>
               </AboutBlocks>
             </AboutContent>
@@ -2490,94 +2289,76 @@ const LandingPage = () => {
         </SectionProfile>
 
 
-        <DivMargin id="projects" />
+        <DivMargin />
 
-        <ProjectsSection>
+        <ProjectsSection id="projects">
           <ProjectsTitle data-aos="fade-up">{t("projects.title")}</ProjectsTitle>
-          
-          {projects.map((project, index) => (
-            <ProjectItem 
-              key={index} 
-              $reverse={index % 2 !== 0}
-              data-aos="fade-up"
-              data-aos-delay={index * 100}
-            >
-              <ProjectImageWrapper $reverse={index % 2 !== 0} $logoThumbnail={project.logoThumbnail}>
-                <img src={project.image} alt={project.name} loading="eager" />
-                {project.noteKey && (
-                  <ProjectImageNote>{t(project.noteKey)}</ProjectImageNote>
-                )}
-              </ProjectImageWrapper>
-              
-              <ProjectInfo $reverse={index % 2 !== 0}>
-                <ProjectName>{project.name}</ProjectName>
-                
-                {project.partner ? (
-                  <ProjectPartner>
-                    <span>{t("projects.inCollaborationWith")}</span>
-                    <PartnerLogoLink
-                      href={project.partner.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={t("projects.visitPartnerSiteAria", { name: project.partner.name })}
+
+          {projectShowcase ? (
+            <ProjectShowcase data-aos="fade-up">
+              <ProjectIndexList>
+                {projects.map((project, index) => (
+                  <li key={project.name}>
+                    <ProjectIndexRow
+                      type="button"
+                      aria-current={activeProject === index}
+                      aria-label={project.name}
+                      onMouseEnter={() => setActiveProject(index)}
+                      onFocus={() => setActiveProject(index)}
+                      onClick={() => setActiveProject(index)}
                     >
-                      <img src={project.partner.logo} alt={project.partner.name} loading="eager" />
-                      <span>{project.partner.name}</span>
-                    </PartnerLogoLink>
-                  </ProjectPartner>
-                ) : (
-                  <ProjectPartner>
-                    <span>{t("projects.personal")}</span>
-                  </ProjectPartner>
-                )}
-                
-                <ProjectDescription>{t(project.descriptionKey)}</ProjectDescription>
-                
-                <ProjectTechnologies>
-                  {project.technologies.map((tech) => (
-                    <div key={tech}>{icons[tech]}</div>
-                  ))}
-                </ProjectTechnologies>
-                
-                <ProjectLinks>
-                  {project.deploy && (
-                    <ProjectLink 
-                      href={project.deploy} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
+                      <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
+                      <ProjectRowName>{project.name}</ProjectRowName>
+                      <ProjectRowMarker aria-hidden="true">→</ProjectRowMarker>
+                    </ProjectIndexRow>
+                  </li>
+                ))}
+              </ProjectIndexList>
+
+              <ProjectPreview aria-live="polite">
+                <ProjectPreviewFade key={activeProjectData.name}>
+                  {renderProjectDetails(activeProjectData, activeProject)}
+                </ProjectPreviewFade>
+              </ProjectPreview>
+            </ProjectShowcase>
+          ) : (
+            <ProjectIndexList as="div" data-aos="fade-up">
+              {projects.map((project, index) => {
+                const open = openProject === index;
+
+                return (
+                  <div key={project.name}>
+                    <ProjectIndexRow
+                      type="button"
+                      aria-expanded={open}
+                      aria-controls={`project-panel-${index}`}
+                      onClick={() => setOpenProject(open ? -1 : index)}
                     >
-                      {t("projects.viewSite")}
-                    </ProjectLink>
-                  )}
-                  {project.github && (
-                    <ProjectLink 
-                      href={project.github} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                    >
-                      <FaGithubIcon /> {project.githubBe ? t("projects.codeFrontend") : t("projects.code")}
-                    </ProjectLink>
-                  )}
-                  {project.githubBe && (
-                    <ProjectLink 
-                      href={project.githubBe} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                    >
-                      <FaGithubIcon /> {t("projects.codeBackend")}
-                    </ProjectLink>
-                  )}
-                </ProjectLinks>
-              </ProjectInfo>
-            </ProjectItem>
-          ))}
+                      <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
+                      <ProjectRowName>{project.name}</ProjectRowName>
+                      <ProjectRowMarker aria-hidden="true">{open ? "−" : "+"}</ProjectRowMarker>
+                    </ProjectIndexRow>
+                    {open && (
+                      <ProjectAccordionPanel
+                        id={`project-panel-${index}`}
+                        role="region"
+                        aria-label={project.name}
+                      >
+                        {renderProjectDetails(project, index)}
+                      </ProjectAccordionPanel>
+                    )}
+                  </div>
+                );
+              })}
+            </ProjectIndexList>
+          )}
         </ProjectsSection>
 
         <Line />
 
         <ContactSection id="contact" data-aos="fade-up">
           <ContactTitle>{t("contact.title")}</ContactTitle>
-          
+
           <ContactWrapper>
             <ContactInfo>
               <ContactItem>
@@ -2603,7 +2384,7 @@ const LandingPage = () => {
 
               <ContactItem>
                 <h3>{t("contact.github")}</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <a href="https://github.com/JoaoZ14" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/JoaoZ14" target="_blank" rel="noopener noreferrer">
                   <FaGithubIcon /> /JoaoZ14
                 </a>
               </ContactItem>

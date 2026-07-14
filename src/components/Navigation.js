@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { HiBars3, HiXMark } from "react-icons/hi2";
+import { FiMoon, FiSun } from "react-icons/fi";
+import { useTheme } from "../context/ThemeContext";
 
 const flagSrc = {
   pt: "/flags/br.svg",
@@ -9,133 +11,84 @@ const flagSrc = {
   es: "/flags/es.svg",
 };
 
-const NavBar = styled.div`
-  text-align: center;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
+const NavBar = styled.header`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 64px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(33, 33, 33, 0.95);
-  z-index: 1000 !important;
   box-sizing: border-box;
   padding: 0 var(--container-x);
-  overflow: visible;
+  z-index: var(--z-nav);
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    backdrop-filter 0.3s ease;
+
+  background-color: ${({ $scrolled }) =>
+    $scrolled ? "var(--nav-bg-scrolled)" : "transparent"};
+  backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(12px)" : "none")};
+  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(12px)" : "none")};
+  border-bottom: 1px solid
+    ${({ $scrolled }) => ($scrolled ? "var(--line)" : "transparent")};
+
+  /* No mobile a barra é sempre sólida com borda dura: sem conteúdo do hero
+     vazando por trás. O topo transparente/vidro fica só no desktop. */
+  @media (max-width: 899px) {
+    background-color: var(--bg);
+    border-bottom-color: var(--line);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 
   @media (min-width: 900px) {
     height: 80px;
-    justify-content: space-around;
   }
 `;
 
-const Logo = styled.h1`
-  font-family: Georgia, serif;
-  font-size: 40px;
-  margin: 0;
+const Brand = styled.a`
+  position: relative;
+  z-index: var(--z-nav-top);
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 
   img {
-    width: 72px;
+    width: 68px;
     height: auto;
     display: block;
+    filter: brightness(0);
+    transition: filter 0.3s ease;
+  }
+
+  [data-theme="dark"] & img {
+    filter: brightness(0) invert(1);
   }
 
   @media (min-width: 900px) {
     img {
-      width: 100px;
+      width: 92px;
     }
-  }
-`;
-
-const NavLinks = styled.ul`
-  list-style: none;
-  display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
-  flex-direction: column;
-  gap: 6px;
-  font-family: Times, Times New Roman, serif;
-  text-align: center;
-  font-size: 15px;
-  font-weight: 100;
-  align-items: stretch;
-  margin: 0;
-  padding: 14px 12px 18px;
-
-  a {
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.95);
-    opacity: 1;
-    transition: opacity 120ms ease, transform 120ms ease;
-    display: block;
-    width: 100%;
-    padding: 12px 10px; /* hit-area */
-    border-radius: 10px;
-    box-sizing: border-box;
-  }
-
-  a:hover {
-    opacity: 1;
-    transform: translateY(-1px);
-  }
-
-  position: fixed;
-  top: 64px;
-  left: 0;
-  right: 0;
-  background-color: rgba(33, 33, 33, 0.98);
-  width: 100vw;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 5000;
-  min-height: 180px;
-
-  li {
-    margin: 0;
-  }
-
-  @media (min-width: 900px) {
-    display: flex;
-    flex-direction: row;
-    position: static;
-    width: auto;
-    min-height: 0;
-    padding: 0;
-    border-top: none;
-    border-bottom: none;
-    backdrop-filter: none;
-    z-index: auto;
-    gap: 36px;
-    font-size: 16px;
-    align-items: center;
-
-    li {
-      margin: 0;
-    }
-  }
-
-  @media (max-width: 899px) and (min-height: 700px) {
-    min-height: 220px;
   }
 `;
 
 const Hamburger = styled.button`
   display: inline-flex;
   background: transparent;
-  border: none;
+  border: 1px solid var(--line);
+  border-radius: 0;
   padding: 8px;
   margin-left: auto;
-  z-index: 1002;
-  flex-direction: column;
+  z-index: var(--z-nav-top);
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: var(--ink);
 
   @media (min-width: 900px) {
-    display: none; /* Esconde o botão de hambúrguer no desktop */
+    display: none;
   }
 `;
 
@@ -143,71 +96,177 @@ const HamburgerIcon = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1;
+`;
+
+const NavLinks = styled.nav`
+  display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
+  position: fixed;
+  inset: 0;
+  padding: 96px var(--container-x) 48px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 4px;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--line-soft) 1px, transparent 1px);
+  background-size: 22px 22px;
+  z-index: var(--z-nav-overlay);
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  a {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 18px 4px;
+    text-decoration: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line-soft);
+    transition: color 0.15s ease, padding-left 0.15s ease;
+  }
+
+  a:hover {
+    color: var(--ink);
+    padding-left: 12px;
+  }
+
+  @media (min-width: 900px) {
+    display: flex;
+    position: static;
+    inset: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 32px;
+    padding: 0;
+    background: none;
+    z-index: auto;
+
+    ul {
+      flex-direction: row;
+      align-items: center;
+      gap: 32px;
+      width: auto;
+    }
+
+    a {
+      width: auto;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid transparent;
+    }
+
+    a:hover {
+      padding-left: 0;
+      border-bottom-color: var(--line);
+    }
+  }
+`;
+
+/* CTA sólido preto com hover invertido */
+const CtaLink = styled.a`
+  &&& {
+    color: var(--bg);
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 18px 4px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  &&&:hover {
+    color: var(--ink);
+    background: var(--bg);
+  }
+
+  @media (min-width: 900px) {
+    &&& {
+      padding: 10px 18px;
+      font-size: 13px;
+    }
+    &&&:hover {
+      color: var(--ink);
+      background: var(--bg);
+    }
+  }
 `;
 
 const LanguageSwitcher = styled.div`
   display: inline-flex;
-  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 0;
-  border-radius: 999px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  backdrop-filter: none;
+  margin-top: 24px;
+  align-self: center;
 
-  @media (max-width: 899px) {
-    margin-top: 10px;
-    margin-left: auto;
-    margin-right: auto;
+  @media (min-width: 900px) {
+    margin-top: 0;
+    margin-left: 8px;
+    align-self: auto;
+  }
+`;
+
+const ThemeDivider = styled.span`
+  flex-shrink: 0;
+  width: 1px;
+  height: 18px;
+  margin: 0 4px;
+  background: color-mix(in srgb, var(--ink) 28%, var(--bg));
+
+  @media (min-width: 900px) {
+    height: 16px;
+    margin: 0 2px;
   }
 `;
 
 const FlagButton = styled.button`
-  width: 22px;
-  height: 22px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.02);
-  color: white;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 0;
+  border: 1px solid ${({ $active }) => ($active ? "var(--ink)" : "var(--line-soft)")};
+  background: var(--bg);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
-  font-size: 15px;
-  padding: 0;
-  user-select: none;
-  transform: translateY(0);
-  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+  padding: 3px;
 
-  ${({ $active }) =>
-    $active
-      ? `
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
-  `
-      : `
-    opacity: 0.78;
-  `}
+  /* Amplia a área de toque para ~44px sem inflar o visual */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+  }
+  opacity: ${({ $active }) => ($active ? 1 : 0.55)};
+  filter: ${({ $active }) => ($active ? "none" : "grayscale(1)")};
+  transition: opacity 0.15s ease, border-color 0.15s ease, filter 0.15s ease;
 
   &:hover {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.22);
+    filter: none;
+    border-color: var(--ink);
   }
 
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18);
+  @media (min-width: 900px) {
+    width: 26px;
+    height: 26px;
   }
 `;
 
@@ -215,14 +274,80 @@ const FlagImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 999px;
   display: block;
+`;
+
+/* Switch claro/escuro — track retangular + knob quadrado que desliza */
+const ThemeToggle = styled.button`
+  position: relative;
+  flex-shrink: 0;
+  width: 52px;
+  height: 30px;
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--ink) 42%, var(--bg));
+  background: var(--bg-2);
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.15s ease, background-color 0.3s ease;
+
+  /* Amplia a área de toque para ~44px sem inflar o visual */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+  }
+
+  &:hover {
+    border-color: var(--ink);
+    background: var(--hover);
+  }
+
+  @media (min-width: 900px) {
+    width: 46px;
+    height: 26px;
+  }
+`;
+
+const ThemeThumb = styled.span`
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: var(--bg);
+  pointer-events: none;
+  transform: translateX(${({ $on }) => ($on ? "24px" : "0")});
+  transition: transform 0.35s var(--ease-out);
+
+  svg {
+    font-size: 12px;
+  }
+
+  @media (min-width: 900px) {
+    width: 18px;
+    height: 18px;
+    transform: translateX(${({ $on }) => ($on ? "22px" : "0")});
+
+    svg {
+      font-size: 11px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navRef = useRef(null);
   const { t, i18n } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
 
   const handleClickOutside = (event) => {
     if (navRef.current && !navRef.current.contains(event.target)) {
@@ -232,77 +357,105 @@ const Navigation = () => {
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Trava a rolagem do fundo enquanto o menu mobile está aberto.
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  const toggleMenu = () => setIsOpen((prev) => !prev);
 
   const currentLang = (i18n.resolvedLanguage || i18n.language || "pt").split("-")[0];
   const setLang = (next) => i18n.changeLanguage(next);
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <NavBar ref={navRef}>
-      <Logo>
-        <a href="#home">
-          <img src="../Logo/Design sem nome (27)-Photoroom.png" alt="Logo" />
-        </a>
-      </Logo>
+    <NavBar ref={navRef} $scrolled={scrolled || isOpen}>
+      <Brand href="#home" onClick={closeMenu}>
+        <img src="/Logo/Design sem nome (27)-Photoroom.png" alt="Logo João Possidonio" />
+      </Brand>
       <Hamburger
         type="button"
         aria-label={isOpen ? "Fechar menu de navegação" : "Abrir menu de navegação"}
+        aria-expanded={isOpen}
         onClick={toggleMenu}
       >
-        <HamburgerIcon>
-          {isOpen ? <HiXMark /> : <HiBars3 />}
-        </HamburgerIcon>
+        <HamburgerIcon>{isOpen ? <HiXMark /> : <HiBars3 />}</HamburgerIcon>
       </Hamburger>
-      <NavLinks $isOpen={isOpen}>
-        <li>
-          <a href="#about" onClick={closeMenu}>{t("nav.about")}</a>
-        </li>
-        <li>
-          <a href="#projects" onClick={closeMenu}>{t("nav.projects")}</a>
-        </li>
-        <li>
-          <a href="#contact" onClick={closeMenu}>{t("nav.contact")}</a>
-        </li>
-        <li>
-          <LanguageSwitcher aria-label={t("nav.language")}>
-            <FlagButton
-              type="button"
-              aria-label="Português"
-              title="Português"
-              $active={currentLang === "pt"}
-              onClick={() => setLang("pt")}
-            >
-              <FlagImage src={flagSrc.pt} alt="Bandeira do Brasil" />
-            </FlagButton>
-            <FlagButton
-              type="button"
-              aria-label="English"
-              title="English"
-              $active={currentLang === "en"}
-              onClick={() => setLang("en")}
-            >
-              <FlagImage src={flagSrc.en} alt="Flag of the United States" />
-            </FlagButton>
-            <FlagButton
-              type="button"
-              aria-label="Español"
-              title="Español"
-              $active={currentLang === "es"}
-              onClick={() => setLang("es")}
-            >
-              <FlagImage src={flagSrc.es} alt="Bandera de España" />
-            </FlagButton>
-          </LanguageSwitcher>
-        </li>
+      <NavLinks $isOpen={isOpen} aria-label={t("nav.label")}>
+        <ul>
+          <li>
+            <a href="#about" onClick={closeMenu}>
+              {t("nav.about")}
+            </a>
+          </li>
+          <li>
+            <a href="#projects" onClick={closeMenu}>
+              {t("nav.projects")}
+            </a>
+          </li>
+          <li>
+            <CtaLink as="a" href="#contact" onClick={closeMenu}>
+              {t("nav.contact")}
+            </CtaLink>
+          </li>
+        </ul>
+        <LanguageSwitcher aria-label={t("nav.language")}>
+          <ThemeToggle
+            type="button"
+            role="switch"
+            aria-checked={theme === "dark"}
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? t("nav.themeToLight") : t("nav.themeToDark")}
+            title={theme === "dark" ? t("nav.themeToLight") : t("nav.themeToDark")}
+          >
+            <ThemeThumb $on={theme === "dark"}>
+              {theme === "dark" ? <FiSun /> : <FiMoon />}
+            </ThemeThumb>
+          </ThemeToggle>
+          <ThemeDivider aria-hidden="true" />
+          <FlagButton
+            type="button"
+            aria-label="Português"
+            title="Português"
+            $active={currentLang === "pt"}
+            onClick={() => setLang("pt")}
+          >
+            <FlagImage src={flagSrc.pt} alt="Bandeira do Brasil" />
+          </FlagButton>
+          <FlagButton
+            type="button"
+            aria-label="English"
+            title="English"
+            $active={currentLang === "en"}
+            onClick={() => setLang("en")}
+          >
+            <FlagImage src={flagSrc.en} alt="Flag of the United States" />
+          </FlagButton>
+          <FlagButton
+            type="button"
+            aria-label="Español"
+            title="Español"
+            $active={currentLang === "es"}
+            onClick={() => setLang("es")}
+          >
+            <FlagImage src={flagSrc.es} alt="Bandera de España" />
+          </FlagButton>
+        </LanguageSwitcher>
       </NavLinks>
     </NavBar>
   );

@@ -14,84 +14,85 @@ import { SiDocker, SiGit, SiJsonwebtokens, SiOpenid, SiSpringboot } from "react-
 import styled from "styled-components";
 import { IoMdCloseCircle } from "react-icons/io";
 
-
+/* Ícones sociais — monocromáticos */
 export const FaWhatsappIcon = styled(FaWhatsapp)`
-  color: white;
-  font-size: 30px;
+  color: var(--ink);
+  font-size: 26px;
 `;
 
 export const FaGithubIcon = styled(FaGithub)`
-  color: white;
-  font-size: 30px;
+  color: var(--ink);
+  font-size: 26px;
 `;
 
 export const FaLinkedinIcon = styled(FaLinkedin)`
-  color: white;
-  font-size: 30px;
+  color: var(--ink);
+  font-size: 26px;
 `;
 
+/* Ícones de tecnologia — monocromáticos (herdam o preto do contexto) */
 export const FaReactIcon = styled(FaReact)`
-  color: #61dafb; /* React blue */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const FaJsIcon = styled(FaJs)`
-  color: #f7df1e; /* JavaScript yellow */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const FaHtmlIcon = styled(FaHtml5)`
-  color: #e34f26; /* HTML5 red-orange */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const FaCssIcon = styled(FaCss3Alt)`
-  color: #1572b6; /* CSS3 blue */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const FaNodeJsIcon = styled(FaNodeJs)`
-  color: #339933; /* Node.js green */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const FaPythonIcon = styled(FaPython)`
-  color: #3776ab; /* Python blue */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const FaJavaIcon = styled(FaJava)`
-  color: #007396; /* Java blue */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const SiSpringbootIcon = styled(SiSpringboot)`
-  color: #6db33f; /* Spring Boot green */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const SiGitIcon = styled(SiGit)`
-  color: #f34f29; /* Git orange */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const SiDockerIcon = styled(SiDocker)`
-  color: #2496ed; /* Docker blue */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const SiOpenidIcon = styled(SiOpenid)`
-  color: rgba(255, 255, 255, 0.9);
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const SiJsonwebtokensIcon = styled(SiJsonwebtokens)`
-  color: #7e57c2; /* Purple tone for tokens */
+  color: currentColor;
   font-size: 60px;
 `;
 
 export const IconCloseCircle = styled(IoMdCloseCircle)`
-  color: red;
+  color: var(--ink);
   cursor: pointer;
   font-size: 20px;
   position: absolute;

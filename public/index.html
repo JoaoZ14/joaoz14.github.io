@@ -5,8 +5,32 @@
     <link rel="icon" href="%PUBLIC_URL%/Logo/Design sem nome (27)-Photoroom.png" sizes="32x32" />
     <link rel="icon" href="%PUBLIC_URL%/Logo/Design sem nome (27)-Photoroom.png" sizes="16x16" />   
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#212121" />
+    <meta name="theme-color" content="#FFFFFF" />
+    <!-- Aplica o tema salvo antes da renderização para evitar flash (FOUC) -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t !== "light" && t !== "dark") {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute("content", t === "dark" ? "#0a0a0a" : "#ffffff");
+        } catch (e) {}
+      })();
+    </script>
     <meta name="description" content="Portfólio de João Guilherme - Desenvolvedor Fullstack especializado em React, Node.js, Java e Spring Boot" />
+
+    <!-- Fontes do design system -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/Logo/Design sem nome (27)-Photoroom.png" />
     
     <!-- Open Graph / Facebook -->

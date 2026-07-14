@@ -1,112 +1,202 @@
+/* ============================================================
+   DESIGN SYSTEM — minimal-brutal monocromático
+   ============================================================ */
+:root {
+  color-scheme: light;
+
+  /* Paleta — tema claro (padrão) */
+  --bg: #ffffff;
+  --bg-2: #f4f4f4;
+  --surface: #fafafa;
+  --ink: #000000;
+  --text: #0a0a0a;
+  --text-2: #4b4b4b;
+  --text-3: #8a8a8a;
+  --graphite: #1a1a1a;
+  --line: #000000;
+  --line-soft: #e2e2e2;
+  --hover: #efefef;
+  --radius: 0px;
+
+  /* Watermark sobre o fundo da página */
+  --watermark: rgba(10, 10, 10, 0.045);
+
+  /* Cores de conteúdo sobre superfície "ink" (ex.: footer).
+     Acompanham o tema: claro = branco translúcido; escuro = preto translúcido. */
+  --on-ink-faint: rgba(255, 255, 255, 0.045);
+  --on-ink-line: rgba(255, 255, 255, 0.12);
+  --on-ink-soft: rgba(255, 255, 255, 0.45);
+  --on-ink-muted: rgba(255, 255, 255, 0.6);
+  --on-ink-strong: rgba(255, 255, 255, 0.82);
+
+  /* Tipografia */
+  --font-display: "Archivo", system-ui, -apple-system, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* Layout */
+  --container-max: 1240px;
+  --container-x: clamp(20px, 4vw, 48px);
+  --section-y: clamp(72px, 9vw, 128px);
+
+  /* Escala de espaçamento (4pt) */
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Camadas (escala semântica de z-index) */
+  --z-tooltip: 50;
+  --z-nav: 1000;
+  --z-nav-overlay: 1010;
+  --z-nav-top: 1020;
+  --z-splash: 2000;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Navbar */
+  --nav-bg-scrolled: rgba(255, 255, 255, 0.72);
+}
+
+/* ===== Tema escuro =====
+   Inverte a base monocromática mantendo o contraste brutalista.
+   Aplicado via [data-theme="dark"] no <html> (definido antes do React
+   para evitar flash). */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0a0a0a;
+  --bg-2: #151515;
+  --surface: #121212;
+  --ink: #ffffff;
+  --text: #ededed;
+  --text-2: #a8a8a8;
+  --text-3: #6f6f6f;
+  --graphite: #d0d0d0;
+  --line: #ffffff;
+  --line-soft: #2a2a2a;
+  --hover: #1a1a1a;
+
+  --watermark: rgba(255, 255, 255, 0.05);
+
+  /* Sobre superfície "ink" (agora branca): conteúdo preto translúcido. */
+  --on-ink-faint: rgba(0, 0, 0, 0.05);
+  --on-ink-line: rgba(0, 0, 0, 0.14);
+  --on-ink-soft: rgba(0, 0, 0, 0.45);
+  --on-ink-muted: rgba(0, 0, 0, 0.62);
+  --on-ink-strong: rgba(0, 0, 0, 0.85);
+
+  --nav-bg-scrolled: rgba(10, 10, 10, 0.72);
+}
+
 /* ===== UM ÚNICO SCROLL =====
-   Apenas o html rola. Nenhum wrapper interno pode ter barra própria. */
+   Só o documento (viewport) rola. Não definimos overflow no html: forçar
+   overflow-y (ou overflow-x, que faz o y virar auto) cria um contêiner de
+   scroll no próprio html e gera a barra "dupla"/interna. O corte horizontal
+   fica no body, que propaga a rolagem vertical correta para o viewport. */
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  width: 100%;
-  max-width: 100vw;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #212121;
-  color: #fff;
+  background-color: var(--bg);
+  color: var(--text);
   font-size: 16px;
   line-height: 1.5;
-  overflow: hidden !important;
-  width: 100%;
-  max-width: 100vw;
-  height: auto !important;
-  min-height: 0;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* #root e toda a árvore do app: sem altura fixa, sem overflow-y que crie scroll */
-#root {
-  overflow: visible !important;
-  overflow-x: hidden;
-  overflow-y: visible !important;
-  height: auto !important;
-  min-height: 0;
-}
-
-/* Todos os wrappers principais: sem scroll próprio (só o html rola) */
-#root > *,
-#root > * > *,
-#root > * > * > *,
-#root > * > * > * > *,
-#root > * > * > * > * > * {
-  overflow-x: hidden;
-  overflow-y: visible !important;
-  height: auto !important;
-  max-height: none !important;
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: var(--font-mono);
 }
 
-/* Tipografia base: mobile-first */
-:root {
-  --container-x: 16px;
-  --section-y: 56px;
-  --radius: 16px;
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.05;
+  font-family: var(--font-display);
+  color: var(--text);
+  transition: color 0.3s ease;
 }
 
-@media (min-width: 600px) {
-  :root {
-    --container-x: 20px;
-    --section-y: 72px;
-  }
+/* ===== Utilitários do design system ===== */
+
+/* Grid técnico sutil (dot pattern) para áreas de destaque */
+.dot-grid {
+  background-image: radial-gradient(var(--line-soft) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
-@media (min-width: 900px) {
-  :root {
-    --container-x: 40px;
-    --section-y: 90px;
-  }
+/* Kicker técnico mono com traço antes */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-2);
 }
 
-h1, h2, h3 {
-  line-height: 1.15;
-}
-
-/* Evita fontes gigantes no mobile por default */
-h2 {
-  font-size: clamp(24px, 4.8vw, 36px);
-  margin-bottom: 16px;
-  font-family: Garamond, serif;
-}
-
-/* Estilo minimalista para a barra de rolagem */
+/* ===== Barra de rolagem minimalista ===== */
 ::-webkit-scrollbar {
-  width: 5px; /* Largura da barra */
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888; /* Cor da barra */
-  border-radius: 4px; /* Borda arredondada */
+  background: var(--ink);
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Cor ao passar o mouse */
+  background: var(--graphite);
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; /* Cor do trilho */
-  border-radius: 4px;
+  background: var(--bg-2);
 }
 
-/* AOS: mostrar tudo imediatamente (sem revelar conforme rola) */
-[data-aos] {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
+::selection {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+/* ===== Foco acessível padrão ===== */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* ===== Motion: entrada AOS ativa; desligada para reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

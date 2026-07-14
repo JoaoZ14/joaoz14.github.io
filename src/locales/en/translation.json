@@ -3,7 +3,10 @@
     "about": "About",
     "projects": "Projects",
     "contact": "Contact",
-    "language": "Language"
+    "language": "Language",
+    "label": "Main navigation",
+    "themeToDark": "Enable dark theme",
+    "themeToLight": "Enable light theme"
   },
   "hero": {
     "greeting": "Hello World,",
@@ -11,12 +14,13 @@
     "role": "FULLSTACK DEVELOPER",
     "cv": "Virtual Resume",
     "portuguese": "Portuguese",
-    "english": "English"
+    "english": "English",
+    "spanish": "Spanish"
   },
   "about": {
     "title": "About Me",
-    "summary1": "Fullstack developer with experience in React/JavaScript and Java/Spring Boot, focused on quality, collaboration, and impactful deliveries.",
-    "summary2": "I work across frontend and backend, from requirements to delivery, keeping a strong focus on quality and consistency. I follow Clean Code and engineering patterns, support well-grounded technical decisions, reviews, and clear priorities. I bring a collaborative mindset, direct communication, and a commitment to continuous growth within the team.",
+    "summary1": "I'm a fullstack developer, Information Systems student, and I enjoy building things that actually work. Day to day, I move between the interface and what runs behind it, looking after both ends.",
+    "summary2": "I like owning a problem end to end: interface, API, review, tweak. I prefer clean code and clear decisions over sounding smart and delivering little. I want something another person can maintain, that won't break the next day, and that the team can keep improving together. I say what I think, ask for help when I need it, and I'm always learning something new.",
     "experienceTitle": "Professional Experience"
   },
   "contact": {
@@ -25,6 +29,17 @@
     "whatsapp": "WhatsApp",
     "linkedin": "LinkedIn",
     "github": "GitHub"
+  },
+  "footer": {
+    "ctaKicker": "Let's work together",
+    "ctaTitle": "Let's build something real.",
+    "ctaAction": "Start a conversation",
+    "navTitle": "Navigation",
+    "socialTitle": "Social",
+    "contactTitle": "Contact",
+    "location": "Brazil · Remote",
+    "backToTop": "Top",
+    "rights": "All rights reserved"
   },
   "experience": {
     "elevate": {
@@ -131,6 +146,9 @@
     "inCollaborationWith": "In collaboration with",
     "personal": "Personal project",
     "visitPartnerSiteAria": "Visit {{name}} website",
+    "stack": "Stack",
+    "viewSiteAria": "View {{name}} project site (opens in a new tab)",
+    "viewCodeAria": "View {{name}} project code on GitHub (opens in a new tab)",
     "viewSite": "View Site",
     "code": "Code",
     "codeFrontend": "Code (FE)",

@@ -4,11 +4,12 @@ import "./App.css";
 import LandingPage from "./Pages/LandingPage";
 import Navigation from "./components/Navigation";
 import SplashScreen from "./components/SplashScreen";
+import Footer from "./components/Footer";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const AppDiv = styled.div`
-  background-color: #212121;
-  overflow-x: hidden;
-  overflow-y: visible;
+  background-color: var(--bg);
+  overflow-x: clip;
   width: 100%;
   max-width: 100vw;
 `;
@@ -16,10 +17,14 @@ const AppDiv = styled.div`
 const ContentWrapper = styled.div`
   opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
   transform: ${({ $isVisible }) => ($isVisible ? "translateY(0)" : "translateY(20px)")};
-  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
-  overflow-x: hidden;
-  overflow-y: visible;
+  transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow-x: clip;
   height: auto;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 function App() {
@@ -36,11 +41,12 @@ function App() {
     }, 500);
   };
 
-  // Evita "scrollbar duplicada" durante o Splash/entrada do conteúdo.
-  // Também garante que a rolagem volte ao normal depois do splash.
+  // Trava a rolagem durante o Splash/entrada do conteúdo.
+  // O lock é no body (não no html), para não recriar um contêiner de scroll
+  // no html — que era a origem da barra duplicada/interna.
   useEffect(() => {
     const shouldLockScroll = showSplash || !contentVisible;
-    const html = document.documentElement;
+    const body = document.body;
 
     if (shouldLockScroll) {
       // Bloqueia somente na transição para não ficar reexecutando.
@@ -49,29 +55,31 @@ function App() {
         isScrollLockedRef.current = true;
       }
 
-      html.style.overflowY = "hidden";
+      body.style.overflow = "hidden";
       return;
     }
 
-    // Libera o scroll explicitamente e restaura a posição anterior.
+    // Libera o scroll (volta ao valor do CSS) e restaura a posição anterior.
     if (isScrollLockedRef.current) {
-      html.style.overflowY = "auto";
+      body.style.overflow = "";
       isScrollLockedRef.current = false;
       window.scrollTo(0, scrollYRef.current);
     } else {
-      // Garantia: evita ficar preso em overflow hidden por alguma razão.
-      html.style.overflowY = "auto";
+      body.style.overflow = "";
     }
   }, [showSplash, contentVisible]);
 
   return (
-    <AppDiv>
-      {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
-      <Navigation />
-      <ContentWrapper $isVisible={contentVisible}>
-        <LandingPage />
-      </ContentWrapper>
-    </AppDiv>
+    <ThemeProvider>
+      <AppDiv>
+        {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
+        <Navigation />
+        <ContentWrapper $isVisible={contentVisible}>
+          <LandingPage />
+          <Footer />
+        </ContentWrapper>
+      </AppDiv>
+    </ThemeProvider>
   );
 }
 
