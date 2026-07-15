@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { FiArrowRight, FiArrowUp } from "react-icons/fi";
-import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa6";
 
 const FooterWrap = styled.footer`
@@ -34,25 +34,19 @@ const Watermark = styled.span`
   font-weight: 900;
   font-size: clamp(64px, 21vw, 340px);
   line-height: 0.78;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
   color: var(--on-ink-faint);
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
 `;
 
-const WatermarkParallax = styled.div`
+const WatermarkLayer = styled.div`
   position: absolute;
   inset: 0;
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  will-change: transform;
-
-  @media (prefers-reduced-motion: reduce) {
-    will-change: auto;
-    transform: none !important;
-  }
 `;
 
 const FooterInner = styled.div`
@@ -71,17 +65,6 @@ const Cta = styled.div`
   gap: clamp(20px, 3vw, 28px);
   padding-bottom: clamp(48px, 6vw, 80px);
   border-bottom: 1px solid var(--on-ink-line);
-  will-change: transform;
-
-  @media (prefers-reduced-motion: reduce) {
-    will-change: auto;
-    transform: none !important;
-  }
-
-  @media (max-width: 899px) {
-    will-change: auto;
-    transform: none !important;
-  }
 `;
 
 const CtaKicker = styled.span`
@@ -351,12 +334,12 @@ const Footer = () => {
 
   return (
     <FooterWrap>
-      <WatermarkParallax data-parallax="0.28" data-parallax-layer="decor" aria-hidden="true">
+      <WatermarkLayer aria-hidden="true">
         <Watermark>Possidonio</Watermark>
-      </WatermarkParallax>
+      </WatermarkLayer>
 
       <FooterInner>
-        <Cta data-parallax="0.1">
+        <Cta>
           <CtaKicker>{t("footer.ctaKicker")}</CtaKicker>
           <CtaTitle>{t("footer.ctaTitle")}</CtaTitle>
           <CtaAction href="#contact">
@@ -408,13 +391,6 @@ const Footer = () => {
                 rel="noreferrer"
               >
                 <FaWhatsapp aria-hidden="true" /> WhatsApp
-              </a>
-              <a
-                href="https://www.instagram.com/_possidonioj/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaInstagram aria-hidden="true" /> Instagram
               </a>
             </LinkList>
           </Col>

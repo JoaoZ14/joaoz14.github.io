@@ -3,8 +3,8 @@ import styled, { keyframes } from "styled-components";
 
 export const SPLASH_SESSION_KEY = "splash-seen";
 
-const HOLD_MS = 700;
-const FADE_MS = 350;
+const HOLD_MS = 280;
+const FADE_MS = 200;
 
 const scaleIn = keyframes`
   from {
@@ -49,7 +49,7 @@ const LogoImage = styled.img`
   max-height: 70vh;
   object-fit: contain;
   filter: brightness(0);
-  animation: ${scaleIn} 0.6s var(--ease-out);
+  animation: ${scaleIn} 0.35s var(--ease-out);
 
   [data-theme="dark"] & {
     filter: brightness(0) invert(1);

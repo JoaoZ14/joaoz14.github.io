@@ -11,7 +11,7 @@
   --ink: #000000;
   --text: #0a0a0a;
   --text-2: #4b4b4b;
-  --text-3: #8a8a8a;
+  --text-3: #595959;
   --graphite: #1a1a1a;
   --line: #000000;
   --line-soft: #e2e2e2;
@@ -19,7 +19,7 @@
   --radius: 0px;
 
   /* Watermark sobre o fundo da página */
-  --watermark: rgba(10, 10, 10, 0.045);
+  --watermark: rgba(10, 10, 10, 0.085);
 
   /* Cores de conteúdo sobre superfície "ink" (ex.: footer).
      Acompanham o tema: claro = branco translúcido; escuro = preto translúcido. */
@@ -39,7 +39,7 @@
   /* Layout */
   --container-max: 1240px;
   --container-x: clamp(20px, 4vw, 48px);
-  --section-y: clamp(72px, 9vw, 128px);
+  --section-y: clamp(48px, 6vw, 80px);
 
   /* Escala de espaçamento (4pt) */
   --space-xs: 8px;
@@ -76,13 +76,13 @@
   --ink: #ffffff;
   --text: #ededed;
   --text-2: #a8a8a8;
-  --text-3: #9a9a9a;
+  --text-3: #a3a3a3;
   --graphite: #d0d0d0;
   --line: #ffffff;
   --line-soft: #2a2a2a;
   --hover: #1a1a1a;
 
-  --watermark: rgba(255, 255, 255, 0.05);
+  --watermark: rgba(255, 255, 255, 0.09);
 
   /* Sobre superfície "ink" (agora branca): conteúdo preto translúcido. */
   --on-ink-faint: rgba(0, 0, 0, 0.05);
@@ -182,16 +182,10 @@ h4 {
   outline-offset: 3px;
 }
 
-/* ===== Motion: entrada AOS ativa; desligada para reduced-motion ===== */
+/* ===== Motion: reduced-motion ===== */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  [data-aos] {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
   }
 
   *,

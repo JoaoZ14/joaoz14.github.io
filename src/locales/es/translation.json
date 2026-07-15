@@ -10,9 +10,12 @@
   },
   "hero": {
     "greeting": "Hello World,",
+    "brand": "João Possidonio",
     "intro": "Mi nombre es João Guilherme,",
-    "role": "DESARROLLADOR FULLSTACK",
-    "cv": "Currículum Virtual",
+    "role": "Desarrollador fullstack",
+    "meta": "Brasil",
+    "projectsCta": "Ver proyectos",
+    "cv": "Descargar currículum",
     "portuguese": "Portugués",
     "english": "Inglés",
     "spanish": "Español"
@@ -98,7 +101,8 @@
     }
   },
   "tech": {
-    "title": "Tecnologías",
+    "title": "Stack",
+    "lead": "Herramientas que uso en el día a día para entregar productos de punta a punta.",
     "showMore": "Ver todas",
     "showLess": "Ver menos",
     "categories": {
@@ -146,6 +150,10 @@
   },
   "projects": {
     "title": "Proyectos",
+    "production": "En producción",
+    "productionLead": "Productos y sistemas en uso real, con cliente o socio.",
+    "studies": "Estudios",
+    "studiesLead": "Proyectos personales, prototipos y ejercicios. Más modestos, aún abiertos.",
     "inCollaborationWith": "En colaboración con",
     "personal": "Proyecto personal",
     "visitPartnerSiteAria": "Visitar el sitio de {{name}}",
@@ -156,7 +164,7 @@
     "code": "Código",
     "codeFrontend": "Código (FE)",
     "codeBackend": "Código (BE)",
-    "privateNote": "Código privado · proyecto interno",
+    "privateNote": "Código privado. Proyecto interno.",
     "items": {
       "elevateAuthApi": {
         "description": "Plataforma de autenticación y autorización (Java + Spring Boot) con OAuth2/OpenID Connect y emisión/validación de tokens JWT. Solución multi-tenant por dominio, login personalizado por cliente, control de scopes/permisos y endpoints administrativos, con despliegue containerizado vía Docker."

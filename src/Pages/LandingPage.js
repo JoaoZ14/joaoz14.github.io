@@ -1,15 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled, { css } from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
-import {
-  HiOutlineBriefcase,
-  HiOutlineChatBubbleLeftRight,
-  HiOutlineCodeBracketSquare,
-  HiOutlineCommandLine,
-  HiOutlineEnvelope,
-  HiOutlineSquare3Stack3D,
-  HiOutlineUser,
-} from "react-icons/hi2";
 import { useTranslation } from "react-i18next";
 import {
   FaAws,
@@ -63,8 +54,6 @@ import {
   SiJsonwebtokensIcon,
   SiSpringbootIcon,
 } from "../components/Icons";
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 /* ============================================================
    LAYOUT BASE
@@ -131,6 +120,53 @@ const HeroDotsLayer = styled(HeroParallaxLayer)`
   pointer-events: none;
 `;
 
+const HeroSnippet = styled.pre`
+  display: none;
+  position: absolute;
+  top: clamp(96px, 12vh, 128px);
+  right: var(--container-x);
+  z-index: 1;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1.25vw, 13px);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+  color: var(--text-3);
+  pointer-events: none;
+  user-select: none;
+  white-space: pre;
+
+  .kw {
+    color: var(--text-2);
+  }
+
+  .key {
+    color: var(--text-2);
+  }
+
+  .str {
+    color: var(--ink);
+  }
+
+  .bool {
+    color: var(--ink);
+  }
+
+  .punct {
+    color: var(--text-3);
+  }
+
+  .cmt {
+    color: var(--text-3);
+    opacity: 0.75;
+  }
+
+  @media (min-width: 900px) {
+    display: block;
+  }
+`;
+
 const HeroInner = styled(HeroParallaxLayer)`
   position: relative;
   z-index: 1;
@@ -142,17 +178,40 @@ const HeroInner = styled(HeroParallaxLayer)`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 22px;
-  padding: 128px var(--container-x) 88px;
+  gap: 28px;
+  padding: clamp(108px, 14vh, 140px) var(--container-x) clamp(64px, 10vh, 100px);
   box-sizing: border-box;
 
-  @media (max-width: 900px) {
-    padding: 112px var(--container-x) 64px;
-    gap: 18px;
+  @media (min-width: 900px) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  @media (max-width: 899px) {
+    padding: 112px var(--container-x) 56px;
   }
 `;
 
-/* Campo de pontos interativo do hero — "ímã ao contrário":
+const HeroActions = styled.div`
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    gap: 14px;
+  }
+`;
+
+/* Campo de pontos interativo do hero:
    os pontos fogem do cursor e voltam suave à origem ao afastar. */
 const HeroCanvas = styled.canvas`
   position: absolute;
@@ -343,16 +402,17 @@ const HeroDotField = () => {
   return <HeroCanvas ref={canvasRef} aria-hidden="true" />;
 };
 
+/* Ghost tipográfico: camada de fundo da cena. O H1 sólido é o sujeito. */
 const HeroWatermark = styled(HeroParallaxLayer)`
   position: absolute;
   left: var(--container-x);
-  bottom: 4%;
+  bottom: 2%;
   z-index: 0;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(64px, 17vw, 228px);
-  line-height: 0.82;
-  letter-spacing: -0.05em;
+  font-size: clamp(72px, 18vw, 240px);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
   color: var(--watermark);
   pointer-events: none;
   user-select: none;
@@ -360,56 +420,110 @@ const HeroWatermark = styled(HeroParallaxLayer)`
   max-width: min(100%, calc(100% - var(--container-x) * 2));
 `;
 
+const HeroCopy = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: 100%;
+`;
+
+const HeroLead = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+`;
+
+const HeroPrint = styled.pre`
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 2.4vw, 15px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: var(--text-3);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  .obj {
+    color: var(--text-2);
+  }
+
+  .fn {
+    color: var(--ink);
+  }
+
+  .str {
+    color: var(--text-2);
+  }
+
+  .punct {
+    color: var(--text-3);
+  }
+`;
+
 const TextFirst = styled.h1`
   position: relative;
   z-index: 1;
   margin: 0;
+  width: 100%;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(48px, 9vw, 104px);
-  line-height: 0.92;
-  letter-spacing: -0.045em;
+  font-size: clamp(72px, 12vw, 90px);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
   color: var(--ink);
+  text-wrap: balance;
+
+  @media (max-width: 899px) {
+    font-size: clamp(48px, 13.5vw, 68px);
+  }
 `;
 
-const TextSecond = styled.h2`
+const TextSecond = styled.p`
   position: relative;
   z-index: 1;
   margin: 0;
-  max-width: 46ch;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(22px, 3.4vw, 38px);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  max-width: 32ch;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--text-2);
+`;
+
+const HeroMeta = styled.p`
+  position: relative;
+  z-index: 1;
+  margin: 6px 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-2);
 
-  p {
-    margin: 18px 0 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--font-mono);
-    font-weight: 500;
-    font-size: clamp(12px, 1.6vw, 14px);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text);
-  }
-
-  p::before {
-    content: "";
-    width: 40px;
-    height: 1px;
-    background: var(--ink);
+  img {
+    width: 18px;
+    height: 12px;
+    object-fit: cover;
+    border: 1px solid var(--line-soft);
+    flex-shrink: 0;
   }
 `;
 
 const DivIcons = styled.div`
   position: relative;
   z-index: 1;
-  margin-top: 10px;
   display: flex;
+  align-items: center;
   gap: 10px;
 
   a {
@@ -435,14 +549,20 @@ const DivIcons = styled.div`
       height: 44px;
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    a:hover {
+      transform: none;
+    }
+  }
 `;
 
-/* Botão Currículo — primary (preto sólido, hover invertido) */
+/* Botão Currículo: primary */
 const ButtonCVContainer = styled.div`
   position: relative;
   z-index: 2;
-  display: inline-block;
-  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
 `;
 
 const ButtonCV = styled.button`
@@ -452,9 +572,12 @@ const ButtonCV = styled.button`
   color: var(--bg);
   font-family: var(--font-mono);
   font-size: 13px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 14px 22px;
+  padding: 0 22px;
+  height: 46px;
+  min-height: 46px;
+  box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -464,6 +587,11 @@ const ButtonCV = styled.button`
   &:hover {
     background: var(--bg);
     color: var(--ink);
+  }
+
+  @media (max-width: 600px) {
+    height: 44px;
+    min-height: 44px;
   }
 `;
 
@@ -487,6 +615,11 @@ const DropdownMenu = styled.div`
   transform: ${({ $isOpen }) => ($isOpen ? "translateY(0)" : "translateY(-8px)")};
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
   z-index: 1000;
+
+  @media (min-width: 900px) {
+    left: auto;
+    right: 0;
+  }
 `;
 
 const DropdownItem = styled.button`
@@ -524,41 +657,11 @@ const sectionTitle = css`
   line-height: 1.02;
   letter-spacing: -0.04em;
   color: var(--ink);
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
+  display: block;
   text-wrap: balance;
 
   @media (min-width: 900px) {
     margin-bottom: 56px;
-  }
-`;
-
-const SectionLead = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--ink);
-  color: var(--ink);
-  background: var(--bg);
-
-  svg {
-    width: 16px;
-    height: 16px;
-    stroke-width: 1.6;
-  }
-
-  @media (min-width: 900px) {
-    width: 40px;
-    height: 40px;
-
-    svg {
-      width: 18px;
-      height: 18px;
-    }
   }
 `;
 
@@ -592,10 +695,10 @@ const AboutBlocks = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: clamp(72px, 11vw, 96px);
+  gap: clamp(40px, 6vw, 64px);
 
   @media (min-width: 900px) {
-    gap: clamp(64px, 9vw, 112px);
+    gap: clamp(48px, 6vw, 72px);
   }
 `;
 
@@ -608,15 +711,13 @@ const AboutBlock = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 0;
-  will-change: transform;
-  backface-visibility: hidden;
 
   ${({ $withLifeField }) =>
     $withLifeField &&
     css`
       overflow: hidden;
-      min-height: 320px;
-      padding-bottom: var(--space-2xl);
+      min-height: 280px;
+      padding-bottom: var(--space-xl);
 
       @media (min-width: 900px) {
         display: grid;
@@ -638,17 +739,6 @@ const AboutBlock = styled.div`
         padding-top: clamp(40px, 6vw, 72px);
       }
     `}
-
-  @media (prefers-reduced-motion: reduce) {
-    will-change: auto;
-    transform: none !important;
-  }
-
-  /* Mobile: sem translate de parallax — seções em fluxo não podem se sobrepor */
-  @media (max-width: 899px) {
-    will-change: auto;
-    transform: none !important;
-  }
 `;
 
 const AboutSectionTitle = styled.h2`
@@ -694,36 +784,31 @@ const AboutIconCell = styled.span`
 const AboutMedia = styled.div`
   display: flex;
   position: relative;
-  width: 100%;
-  align-self: stretch;
+  width: min(100%, 280px);
+  aspect-ratio: 1 / 1;
+  align-self: center;
   align-items: center;
   justify-content: center;
   margin-top: var(--space-xl);
-  min-height: 280px;
-  padding: var(--space-lg) 0 var(--space-md);
 
   @media (min-width: 900px) {
+    width: min(100%, 360px);
     margin-top: 0;
-    padding: 0;
+    margin-left: auto;
     grid-column: 2;
     grid-row: 2;
-    min-height: 320px;
   }
 `;
 
 const AboutPortrait = styled.div`
   position: relative;
   z-index: 1;
-  width: min(72%, 260px);
+  width: 72%;
   aspect-ratio: 1 / 1;
   border: 1px solid var(--line);
   background: var(--bg-2);
   overflow: hidden;
   box-shadow: 8px 8px 0 0 var(--ink);
-
-  @media (min-width: 900px) {
-    width: min(94%, 340px);
-  }
 
   img {
     display: block;
@@ -740,7 +825,6 @@ const AboutCopy = styled.div`
   z-index: 1;
   max-width: 48ch;
   padding: var(--space-md) var(--space-lg);
-  border-left: 1px solid var(--line);
   background: transparent;
 
   @media (min-width: 900px) {
@@ -752,9 +836,9 @@ const AboutCopy = styled.div`
 
 const AboutSectionText = styled.p`
   font-size: clamp(15px, 1.35vw, 17px);
-  line-height: 1.85;
+  line-height: 1.75;
   color: var(--text-2);
-  font-family: var(--font-editorial);
+  font-family: var(--font-body);
   margin: 0 0 20px;
   max-width: 48ch;
   text-wrap: pretty;
@@ -762,21 +846,6 @@ const AboutSectionText = styled.p`
   &:last-child {
     margin-bottom: 0;
   }
-
-  ${({ $lead }) =>
-    $lead &&
-    css`
-      &::first-letter {
-        float: left;
-        font-family: var(--font-display);
-        font-weight: 800;
-        font-size: 3.35em;
-        line-height: 0.82;
-        letter-spacing: -0.04em;
-        color: var(--ink);
-        padding: 4px 10px 0 0;
-      }
-    `}
 `;
 
 /* ============================================================
@@ -817,9 +886,9 @@ const CompanyDescription = styled.p`
   margin: 0 0 var(--space-xl);
   max-width: 62ch;
   font-size: 15px;
-  line-height: 1.85;
+  line-height: 1.75;
   color: var(--text-2);
-  font-family: var(--font-editorial);
+  font-family: var(--font-body);
   text-wrap: pretty;
 `;
 
@@ -906,9 +975,9 @@ const ExperiencePhrase = styled.p`
   padding-left: var(--space-md);
   max-width: 62ch;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.7;
   color: var(--text-2);
-  font-family: var(--font-editorial);
+  font-family: var(--font-body);
   text-wrap: pretty;
 
   &::before {
@@ -928,267 +997,6 @@ const ExperiencePhrase = styled.p`
   }
 `;
 
-/* ============================================================
-   HABILIDADES
-   ============================================================ */
-/* Faixas editoriais: label à esquerda, conteúdo à direita */
-const SkillsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border-top: 1px solid var(--line);
-`;
-
-const SkillCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  padding: clamp(24px, 4vw, 40px) 0;
-  border-bottom: 1px solid var(--line-soft);
-  align-items: flex-start;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  h3 {
-    margin: 0;
-    color: var(--ink);
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: clamp(20px, 2.4vw, 26px);
-    line-height: 1.02;
-    letter-spacing: -0.035em;
-    text-align: left;
-    text-wrap: balance;
-  }
-`;
-
-/* Coluna de conteúdo (resumo + lista) da faixa */
-const SkillBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-md);
-`;
-
-const SkillSummary = styled.p`
-  margin: 0;
-  font-size: clamp(15px, 1.3vw, 16px);
-  line-height: 1.7;
-  color: var(--text);
-  font-family: var(--font-body);
-  text-align: left;
-  max-width: 60ch;
-`;
-
-const SkillList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  width: 100%;
-  max-width: 60ch;
-`;
-
-const SkillListItem = styled.li`
-  position: relative;
-  padding-left: 22px;
-  text-align: left;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.55;
-  letter-spacing: 0.01em;
-  color: var(--text-2);
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 9px;
-    width: 12px;
-    height: 1px;
-    background: var(--ink);
-  }
-`;
-
-/* ============================================================
-   TECNOLOGIAS
-   ============================================================ */
-const TechTitle = styled.h3`
-  ${sectionTitle}
-`;
-
-const TechCategories = styled.div`
-  width: 100%;
-  margin: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 48px;
-    row-gap: 44px;
-  }
-`;
-
-const TechCategory = styled.div`
-  text-align: left;
-  align-self: start;
-`;
-
-const TechCategoryTitle = styled.h4`
-  margin: 0 0 18px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
-  font-size: 12px;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-
-  svg {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-    color: var(--ink);
-    stroke-width: 1.6;
-  }
-`;
-
-const TechItems = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  align-items: stretch;
-  overflow: visible;
-
-  @media (min-width: 520px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-`;
-
-const techTooltipBase = css`
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: min(240px, 72vw);
-  padding: 10px 12px;
-  background: var(--ink);
-  color: var(--bg);
-  font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 1.5;
-  text-align: left;
-  text-transform: none;
-  letter-spacing: normal;
-  text-wrap: pretty;
-  z-index: var(--z-tooltip);
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-  box-sizing: border-box;
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: var(--ink);
-  }
-
-  /* Mobile: mesma largura do card da tech */
-  @media (max-width: 899px) {
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: none;
-    transform: none;
-
-    &::after {
-      left: 50%;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-`;
-
-const tooltipVisible = css`
-  opacity: 1;
-  visibility: visible;
-`;
-
-/* Chip quadrado com borda */
-const IconWrapper = styled.button`
-  position: relative;
-  appearance: none;
-  border: 1px solid var(--line-soft);
-  background: var(--bg);
-  border-radius: 0;
-  padding: 14px 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  color: var(--ink);
-  min-height: 104px;
-  overflow: visible;
-  transition: border-color 0.2s ease, background-color 0.2s ease,
-    transform 0.2s ease;
-
-  ${({ $raised }) =>
-    $raised &&
-    css`
-      z-index: 3;
-    `}
-
-  &:hover,
-  &:focus-visible {
-    z-index: 3;
-    border-color: var(--ink);
-    background: var(--hover);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--ink);
-    outline-offset: 2px;
-  }
-
-  svg {
-    font-size: 34px;
-    color: var(--ink);
-  }
-`;
-
-const TechIconSlot = styled.div`
-  width: 40px;
-  height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink);
-`;
-
 const TechFallbackIcon = styled.div`
   width: 40px;
   height: 40px;
@@ -1202,60 +1010,6 @@ const TechFallbackIcon = styled.div`
   letter-spacing: 0.05em;
   font-size: 12px;
   text-transform: uppercase;
-`;
-
-const TechName = styled.span`
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-2);
-  text-align: center;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  line-height: 1.3;
-  max-width: 104px;
-  word-break: break-word;
-`;
-
-const TechTooltip = styled.span`
-  ${techTooltipBase}
-
-  ${({ $active }) => $active && tooltipVisible}
-
-  @media (hover: hover) and (pointer: fine) {
-    ${IconWrapper}:hover &,
-    ${IconWrapper}:focus-visible & {
-      ${tooltipVisible}
-    }
-  }
-`;
-
-const SoftSkillsProse = styled.p`
-  margin: 0;
-  max-width: 65ch;
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--text-2);
-  font-family: var(--font-body);
-  text-wrap: pretty;
-`;
-
-const TechToggle = styled.button`
-  margin-top: var(--space-md);
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-
-  &:hover {
-    background: var(--ink);
-    color: var(--bg);
-  }
 `;
 
 const ProjectPrivateNote = styled.p`
@@ -1278,18 +1032,6 @@ const ProjectsSection = styled.section`
   padding: var(--section-y) var(--container-x);
   scroll-margin-top: 96px;
   box-sizing: border-box;
-  will-change: transform;
-  backface-visibility: hidden;
-
-  @media (prefers-reduced-motion: reduce) {
-    will-change: auto;
-    transform: none !important;
-  }
-
-  @media (max-width: 899px) {
-    will-change: auto;
-    transform: none !important;
-  }
 `;
 
 const ProjectsTitle = styled.h2`
@@ -1339,9 +1081,31 @@ const ProjectRowMarker = styled.span`
 const ProjectRowIndexNum = styled.span`
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: inherit;
-  opacity: 0.65;
+`;
+
+const ProjectGroupTitle = styled.h3`
+  margin: clamp(40px, 6vw, 64px) 0 12px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--text-2);
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+`;
+
+const ProjectGroupLead = styled.p`
+  margin: 0 0 20px;
+  max-width: 52ch;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-2);
+  text-wrap: pretty;
 `;
 
 const ProjectRowName = styled.span`
@@ -1768,18 +1532,6 @@ const ContactSection = styled.section`
   padding: var(--section-y) var(--container-x);
   scroll-margin-top: 96px;
   box-sizing: border-box;
-  will-change: transform;
-  backface-visibility: hidden;
-
-  @media (prefers-reduced-motion: reduce) {
-    will-change: auto;
-    transform: none !important;
-  }
-
-  @media (max-width: 899px) {
-    will-change: auto;
-    transform: none !important;
-  }
 `;
 
 const ContactTitle = styled.h2`
@@ -1787,10 +1539,38 @@ const ContactTitle = styled.h2`
 `;
 
 const ContactWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: stretch;
+`;
+
+const ContactPrimary = styled.a`
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 16px 24px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(16px, 2vw, 20px);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  svg {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: var(--bg);
+    color: var(--ink);
+  }
 `;
 
 const ContactInfo = styled.div`
@@ -1800,7 +1580,7 @@ const ContactInfo = styled.div`
   border-top: 1px solid var(--line);
 
   @media (min-width: 760px) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 `;
 
@@ -1813,17 +1593,17 @@ const ContactItem = styled.div`
   border-bottom: 1px solid var(--line-soft);
 
   h3 {
-    font-size: 12px;
-    font-family: var(--font-mono);
-    font-weight: 500;
-    color: var(--text-3);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: 13px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--text-2);
+    letter-spacing: -0.01em;
+    text-transform: none;
     margin: 0;
   }
 
   a {
-    font-size: clamp(16px, 2vw, 20px);
+    font-size: clamp(15px, 1.8vw, 18px);
     font-family: var(--font-display);
     font-weight: 700;
     color: var(--ink);
@@ -1849,7 +1629,7 @@ const ContactItem = styled.div`
   @media (min-width: 760px) {
     padding: 24px;
 
-    &:nth-child(odd) {
+    &:not(:last-child) {
       border-right: 1px solid var(--line-soft);
     }
   }
@@ -1889,7 +1669,7 @@ const seededRandom = (seed) => {
   };
 };
 
-const ABOUT_ICON_SPACING = 48;
+const ABOUT_ICON_SPACING = 40;
 
 const AboutLifeField = () => {
   const rootRef = useRef(null);
@@ -1903,16 +1683,16 @@ const AboutLifeField = () => {
       const { width, height } = root.getBoundingClientRect();
       if (width < 8 || height < 8) return;
 
-      // Preenche a largura (e a altura) inteiras sem sobra nas laterais.
-      const cols = Math.max(1, Math.round(width / ABOUT_ICON_SPACING));
-      const rows = Math.max(1, Math.round(height / ABOUT_ICON_SPACING));
+      // Grade quadrada: mesma quantidade de colunas e linhas.
+      const size = Math.min(width, height);
+      const n = Math.max(1, Math.round(size / ABOUT_ICON_SPACING));
       const rand = seededRandom(14072026);
-      const icons = Array.from({ length: cols * rows }, () => {
+      const icons = Array.from({ length: n * n }, () => {
         const index = Math.floor(rand() * ABOUT_LIFE_ICONS.length);
         return ABOUT_LIFE_ICONS[index];
       });
 
-      setGrid({ cols, rows, icons });
+      setGrid({ cols: n, rows: n, icons });
     };
 
     build();
@@ -1939,32 +1719,17 @@ const AboutLifeField = () => {
   );
 };
 
-const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
 const SHOWCASE_QUERY = "(min-width: 900px) and (hover: hover) and (pointer: fine)";
 
 const LandingPage = () => {
   const { t } = useTranslation();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [activeTooltip, setActiveTooltip] = useState("");
-  const [canHover, setCanHover] = useState(() =>
-    typeof window !== "undefined" && window.matchMedia(FINE_POINTER_QUERY).matches
-  );
   const [projectShowcase, setProjectShowcase] = useState(() =>
     typeof window !== "undefined" && window.matchMedia(SHOWCASE_QUERY).matches
   );
   const [activeProject, setActiveProject] = useState(0);
-  const [openProject, setOpenProject] = useState(0);
-  const [showAllTech, setShowAllTech] = useState(false);
+  const [openProjectName, setOpenProjectName] = useState("SeatHub");
   const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    AOS.init({
-      duration: 700,
-      easing: "ease-out",
-      once: true,
-      offset: 40,
-    });
-  }, []);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -2024,19 +1789,6 @@ const LandingPage = () => {
   }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(FINE_POINTER_QUERY);
-    const handleChange = (event) => {
-      setCanHover(event.matches);
-      if (event.matches) setActiveTooltip("");
-    };
-
-    setCanHover(mediaQuery.matches);
-    mediaQuery.addEventListener("change", handleChange);
-
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
-  useEffect(() => {
     const mediaQuery = window.matchMedia(SHOWCASE_QUERY);
     const handleChange = (event) => setProjectShowcase(event.matches);
 
@@ -2045,19 +1797,6 @@ const LandingPage = () => {
 
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
-
-  useEffect(() => {
-    if (!activeTooltip) return undefined;
-
-    const handleCloseTooltip = (event) => {
-      if (!event.target.closest("[data-tech-chip]")) {
-        setActiveTooltip("");
-      }
-    };
-
-    document.addEventListener("click", handleCloseTooltip);
-    return () => document.removeEventListener("click", handleCloseTooltip);
-  }, [activeTooltip]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -2075,32 +1814,6 @@ const LandingPage = () => {
     };
   }, [showDropdown]);
 
-  const descriptions = {
-    react: t("tech.descriptions.react"),
-    reactnative: t("tech.descriptions.reactnative"),
-    js: t("tech.descriptions.js"),
-    typescript: t("tech.descriptions.typescript"),
-    html: t("tech.descriptions.html"),
-    css: t("tech.descriptions.css"),
-    styledcomponents: t("tech.descriptions.styledcomponents"),
-    node: t("tech.descriptions.node"),
-    python: t("tech.descriptions.python"),
-    java: t("tech.descriptions.java"),
-    springboot: t("tech.descriptions.springboot"),
-    sql: t("tech.descriptions.sql"),
-    postgresql: t("tech.descriptions.postgresql"),
-    firebase: t("tech.descriptions.firebase"),
-    restful: t("tech.descriptions.restful"),
-    aws: t("tech.descriptions.aws"),
-    googlecloud: t("tech.descriptions.googlecloud"),
-    stripe: t("tech.descriptions.stripe"),
-    supabase: t("tech.descriptions.supabase"),
-    oauth2: t("tech.descriptions.oauth2"),
-    git: t("tech.descriptions.git"),
-    github: t("tech.descriptions.github"),
-    softskills: t("tech.descriptions.softskills"),
-  };
-
   const techNames = {
     react: "React",
     reactnative: "React Native",
@@ -2108,7 +1821,7 @@ const LandingPage = () => {
     typescript: "TypeScript",
     js: "JavaScript",
     html: "HTML5",
-    css: "HTML & CSS",
+    css: "CSS",
     node: "Node.js",
     python: "Python",
     java: "Java",
@@ -2124,7 +1837,9 @@ const LandingPage = () => {
     oauth2: "OAuth 2.0",
     git: "Git",
     github: "GitHub",
-    softskills: "Soft Skills",
+    docker: "Docker",
+    openid: "OpenID",
+    jwt: "JWT",
   };
 
   const icons = {
@@ -2153,51 +1868,10 @@ const LandingPage = () => {
     jwt: <SiJsonwebtokensIcon />,
   };
 
-  const technologyCategories = [
-    {
-      title: t("tech.categories.frontend"),
-      keys: ["react", "reactnative", "html", "css", "js", "styledcomponents", "typescript"],
-    },
-    {
-      title: t("tech.categories.backend"),
-      keys: ["node", "java", "springboot", "python", "sql", "postgresql", "restful", "oauth2"],
-    },
-    {
-      title: t("tech.categories.other"),
-      keys: ["firebase", "supabase", "aws", "googlecloud", "stripe", "git", "github"],
-    },
-  ];
-
-  const TECH_PREVIEW_LIMIT = 4;
-  const softSkillsRaw = t("tech.softSkills.items", { returnObjects: true });
-  const softSkills = Array.isArray(softSkillsRaw) ? softSkillsRaw : [];
-  const softSkillsProse = softSkills.join(" · ");
-  const hasHiddenTech = technologyCategories.some(
-    (category) => category.keys.length > TECH_PREVIEW_LIMIT
-  );
-  const handleTechClick = (key) => {
-    if (canHover) return;
-    setActiveTooltip((prev) => (prev === key ? "" : key));
-  };
-
   const hasProjectLinks = (project) =>
     Boolean(project.deploy || project.github || project.githubBe);
 
-  const projects = [
-    {
-      name: "Elevate Auth API",
-      image: "https://elevatebr.org/images/elevate-logo.png",
-      descriptionKey: "projects.items.elevateAuthApi.description",
-      logoThumbnail: true,
-      github: "",
-      deploy: "",
-      partner: {
-        name: "Elevate",
-        logo: "https://elevatebr.org/images/elevate-logo.png",
-        url: "https://elevatebr.org/",
-      },
-      technologies: ["java", "springboot", "openid", "jwt", "docker", "git"],
-    },
+  const productionProjects = [
     {
       name: "SeatHub",
       image: "Logo_seathub.png",
@@ -2224,6 +1898,23 @@ const LandingPage = () => {
         url: "https://elevatebr.org/"
       }
     },
+    {
+      name: "Elevate Auth API",
+      image: "https://elevatebr.org/images/elevate-logo.png",
+      descriptionKey: "projects.items.elevateAuthApi.description",
+      logoThumbnail: true,
+      github: "",
+      deploy: "",
+      partner: {
+        name: "Elevate",
+        logo: "https://elevatebr.org/images/elevate-logo.png",
+        url: "https://elevatebr.org/",
+      },
+      technologies: ["java", "springboot", "openid", "jwt", "docker", "git"],
+    },
+  ];
+
+  const studyProjects = [
     {
       name: "CampoLead",
       image: `${process.env.PUBLIC_URL || ""}/Design sem nome (36).png`,
@@ -2269,10 +1960,9 @@ const LandingPage = () => {
       deploy: "",
       technologies: ["html", "css", "js"],
     },
-
   ];
 
-  const activeProjectData = projects[activeProject] || projects[0];
+  const activeProjectData = productionProjects[activeProject] || productionProjects[0];
 
   const renderProjectDetails = (project, index) => {
     const hasLinks = hasProjectLinks(project);
@@ -2416,68 +2106,131 @@ const LandingPage = () => {
           <HeroWatermark data-parallax="0.38" data-parallax-layer="decor" aria-hidden="true">
             João<br />Possidonio
           </HeroWatermark>
+          <HeroSnippet aria-hidden="true">
+            <span className="cmt">{"// developer.js"}</span>
+            {"\n"}
+            <span className="kw">const</span>
+            {" developer = {\n"}
+            {"  "}
+            <span className="key">name</span>
+            <span className="punct">: </span>
+            <span className="str">"João Possidonio"</span>
+            <span className="punct">,</span>
+            {"\n"}
+            {"  "}
+            <span className="key">role</span>
+            <span className="punct">: </span>
+            <span className="str">"fullstack"</span>
+            <span className="punct">,</span>
+            {"\n"}
+            {"  "}
+            <span className="key">base</span>
+            <span className="punct">: </span>
+            <span className="str">"Brasil"</span>
+            <span className="punct">,</span>
+            {"\n"}
+            {"  "}
+            <span className="key">openToWork</span>
+            <span className="punct">: </span>
+            <span className="bool">true</span>
+            {"\n"}
+            <span className="punct">{"};"}</span>
+          </HeroSnippet>
           <HeroInner data-parallax="0.08">
-            <TextFirst>{t("hero.greeting")}</TextFirst>
-            <TextSecond>
-              {t("hero.intro")}
-              <br /> <p>{t("hero.role")}</p>
-            </TextSecond>
+            <HeroCopy>
+              <HeroLead>
+                <HeroPrint aria-hidden="true">
+                  <span className="obj">console</span>
+                  <span className="punct">.</span>
+                  <span className="fn">log</span>
+                  <span className="punct">(</span>
+                  <span className="str">"Hello World"</span>
+                  <span className="punct">);</span>
+                </HeroPrint>
+                <TextFirst>
+                  {t("hero.brand")
+                    .split(/\s+/)
+                    .map((part, index) => (
+                      <React.Fragment key={part}>
+                        {index > 0 && <br />}
+                        {part}
+                      </React.Fragment>
+                    ))}
+                </TextFirst>
+              </HeroLead>
+              <TextSecond>{t("hero.role")}</TextSecond>
+              <HeroMeta>
+                <img
+                  src="https://flagcdn.com/w40/br.png"
+                  srcSet="https://flagcdn.com/w80/br.png 2x"
+                  width="18"
+                  height="12"
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                />
+                {t("hero.meta")}
+              </HeroMeta>
+            </HeroCopy>
 
-            <DivIcons>
-              <a
-                href="https://wa.me/5524988685043"
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t("contact.whatsapp")}
-              >
-                <FaWhatsappIcon />
-              </a>
+            <HeroActions>
+              <DivIcons>
+                <a
+                  href="https://wa.me/5524988685043"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={t("contact.whatsapp")}
+                >
+                  <FaWhatsappIcon />
+                </a>
 
-              <a
-                href="https://github.com/JoaoZ14"
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t("contact.github")}
-              >
-                <FaGithubIcon />
-              </a>
+                <a
+                  href="https://github.com/JoaoZ14"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={t("contact.github")}
+                >
+                  <FaGithubIcon />
+                </a>
 
-              <a
-                href="https://www.linkedin.com/in/joao-possidonio"
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t("contact.linkedin")}
-              >
-                <FaLinkedinIcon />
-              </a>
+                <a
+                  href="https://www.linkedin.com/in/joao-possidonio"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={t("contact.linkedin")}
+                >
+                  <FaLinkedinIcon />
+                </a>
 
-              <a
-                href="https://www.instagram.com/_possidonioj/"
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t("contact.instagram")}
-              >
-                <FaInstagramIcon />
-              </a>
-            </DivIcons>
+                <a
+                  href="https://www.instagram.com/_possidonioj/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={t("contact.instagram")}
+                >
+                  <FaInstagramIcon />
+                </a>
+              </DivIcons>
 
-            <ButtonCVContainer ref={dropdownRef}>
-              <ButtonCV onClick={toggleDropdown}>
-                {t("hero.cv")}
-                <ArrowIcon $isOpen={showDropdown} />
-              </ButtonCV>
-              <DropdownMenu $isOpen={showDropdown}>
-                <DropdownItem onClick={() => handleDownloadCV("pt")}>
-                  {t("hero.portuguese")}
-                </DropdownItem>
-                <DropdownItem onClick={() => handleDownloadCV("en")}>
-                  {t("hero.english")}
-                </DropdownItem>
-                <DropdownItem onClick={() => handleDownloadCV("es")}>
-                  {t("hero.spanish")}
-                </DropdownItem>
-              </DropdownMenu>
-            </ButtonCVContainer>
+              <ButtonCVContainer ref={dropdownRef}>
+                <ButtonCV onClick={toggleDropdown}>
+                  {t("hero.cv")}
+                  <ArrowIcon $isOpen={showDropdown} />
+                </ButtonCV>
+                <DropdownMenu $isOpen={showDropdown}>
+                  <DropdownItem onClick={() => handleDownloadCV("pt")}>
+                    {t("hero.portuguese")}
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleDownloadCV("en")}>
+                    {t("hero.english")}
+                  </DropdownItem>
+                  <DropdownItem onClick={() => handleDownloadCV("es")}>
+                    {t("hero.spanish")}
+                  </DropdownItem>
+                </DropdownMenu>
+              </ButtonCVContainer>
+            </HeroActions>
           </HeroInner>
         </DivText>
 
@@ -2486,13 +2239,12 @@ const LandingPage = () => {
           <AboutSection>
             <AboutContent>
               <AboutBlocks>
-                <AboutBlock $withLifeField data-parallax="0.1">
+                <AboutBlock $withLifeField>
                   <AboutSectionTitle $span>
-                    <SectionLead aria-hidden="true"><HiOutlineUser /></SectionLead>
                     {t("about.title")}
                   </AboutSectionTitle>
                   <AboutCopy>
-                    <AboutSectionText $lead>
+                    <AboutSectionText>
                       {t("about.summary1")}
                     </AboutSectionText>
                     <AboutSectionText>
@@ -2512,9 +2264,8 @@ const LandingPage = () => {
                   </AboutMedia>
                 </AboutBlock>
 
-                <AboutBlock id="experience" data-parallax="0.12">
+                <AboutBlock id="experience">
                   <ExperienceTitle>
-                    <SectionLead aria-hidden="true"><HiOutlineBriefcase /></SectionLead>
                     {t("about.experienceTitle")}
                   </ExperienceTitle>
                   <CompanyHeader>
@@ -2577,122 +2328,6 @@ const LandingPage = () => {
                     </ExperienceTimelineItem>
                   </ExperienceTimeline>
                 </AboutBlock>
-
-                <AboutBlock data-parallax="0.11" $spaceBefore>
-                  <ExperienceTitle>
-                    <SectionLead aria-hidden="true"><HiOutlineSquare3Stack3D /></SectionLead>
-                    {t("skills.title")}
-                  </ExperienceTitle>
-                  <SkillsContainer>
-                    <SkillCard>
-                      <h3>{t("skills.frontend.title")}</h3>
-                      <SkillBody>
-                        <SkillSummary>
-                          {t("skills.frontend.summary")}
-                        </SkillSummary>
-                        <SkillList>
-                          <SkillListItem>{t("skills.frontend.items.reusableComponents")}</SkillListItem>
-                          <SkillListItem>{t("skills.frontend.items.performanceUx")}</SkillListItem>
-                          <SkillListItem>{t("skills.frontend.items.serviceIntegrations")}</SkillListItem>
-                        </SkillList>
-                      </SkillBody>
-                    </SkillCard>
-
-                    <SkillCard>
-                      <h3>{t("skills.backend.title")}</h3>
-                      <SkillBody>
-                        <SkillSummary>
-                          {t("skills.backend.summary")}
-                        </SkillSummary>
-                        <SkillList>
-                          <SkillListItem>{t("skills.backend.items.endpointsIntegrations")}</SkillListItem>
-                          <SkillListItem>{t("skills.backend.items.businessRules")}</SkillListItem>
-                          <SkillListItem>{t("skills.backend.items.authAccessControl")}</SkillListItem>
-                        </SkillList>
-                      </SkillBody>
-                    </SkillCard>
-
-                    <SkillCard>
-                      <h3>{t("skills.excellence.title")}</h3>
-                      <SkillBody>
-                        <SkillSummary>
-                          {t("skills.excellence.summary")}
-                        </SkillSummary>
-                        <SkillList>
-                          <SkillListItem>{t("skills.excellence.items.codeReview")}</SkillListItem>
-                          <SkillListItem>{t("skills.excellence.items.documentation")}</SkillListItem>
-                          <SkillListItem>{t("skills.excellence.items.teamwork")}</SkillListItem>
-                        </SkillList>
-                      </SkillBody>
-                    </SkillCard>
-                  </SkillsContainer>
-                </AboutBlock>
-
-                <AboutBlock data-parallax="0.13">
-                  <TechTitle>
-                    <SectionLead aria-hidden="true"><HiOutlineCommandLine /></SectionLead>
-                    {t("tech.title")}
-                  </TechTitle>
-                  <TechCategories>
-                    {technologyCategories.map((category, categoryIndex) => {
-                      const visibleKeys = showAllTech
-                        ? category.keys
-                        : category.keys.slice(0, TECH_PREVIEW_LIMIT);
-
-                      return (
-                        <TechCategory key={category.title}>
-                          <TechCategoryTitle>{category.title}</TechCategoryTitle>
-                          <TechItems>
-                            {visibleKeys.map((key) => (
-                              <IconWrapper
-                                key={key}
-                                data-tech-chip
-                                type="button"
-                                $raised={activeTooltip === key}
-                                aria-describedby={`tech-tooltip-${key}`}
-                                onClick={() => handleTechClick(key)}
-                              >
-                                <TechIconSlot>
-                                  {icons[key] ? icons[key] : (
-                                    <TechFallbackIcon>{(techNames[key] || key).slice(0, 2)}</TechFallbackIcon>
-                                  )}
-                                </TechIconSlot>
-                                <TechName>{techNames[key]}</TechName>
-                                <TechTooltip
-                                  id={`tech-tooltip-${key}`}
-                                  role="tooltip"
-                                  $active={activeTooltip === key}
-                                >
-                                  {descriptions[key]}
-                                </TechTooltip>
-                              </IconWrapper>
-                            ))}
-                          </TechItems>
-                        </TechCategory>
-                      );
-                    })}
-
-                    {softSkillsProse && (
-                      <TechCategory>
-                        <TechCategoryTitle>
-                          <HiOutlineChatBubbleLeftRight aria-hidden="true" />
-                          {t("tech.categories.softSkills")}
-                        </TechCategoryTitle>
-                        <SoftSkillsProse>{softSkillsProse}</SoftSkillsProse>
-                      </TechCategory>
-                    )}
-                  </TechCategories>
-
-                  {hasHiddenTech && (
-                    <TechToggle
-                      type="button"
-                      onClick={() => setShowAllTech((prev) => !prev)}
-                      aria-expanded={showAllTech}
-                    >
-                      {showAllTech ? t("tech.showLess") : t("tech.showMore")}
-                    </TechToggle>
-                  )}
-                </AboutBlock>
               </AboutBlocks>
             </AboutContent>
           </AboutSection>
@@ -2700,16 +2335,18 @@ const LandingPage = () => {
 
         <Line />
 
-        <ProjectsSection id="projects" data-parallax="0.12">
+        <ProjectsSection id="projects">
           <ProjectsTitle>
-            <SectionLead aria-hidden="true"><HiOutlineCodeBracketSquare /></SectionLead>
             {t("projects.title")}
           </ProjectsTitle>
+
+          <ProjectGroupTitle>{t("projects.production")}</ProjectGroupTitle>
+          <ProjectGroupLead>{t("projects.productionLead")}</ProjectGroupLead>
 
           {projectShowcase ? (
             <ProjectShowcase>
               <ProjectIndexList>
-                {projects.map((project, index) => (
+                {productionProjects.map((project, index) => (
                   <li key={project.name}>
                     <ProjectIndexRow
                       type="button"
@@ -2735,16 +2372,16 @@ const LandingPage = () => {
             </ProjectShowcase>
           ) : (
             <ProjectIndexList as="div">
-              {projects.map((project, index) => {
-                const open = openProject === index;
+              {productionProjects.map((project, index) => {
+                const open = openProjectName === project.name;
 
                 return (
                   <div key={project.name}>
                     <ProjectIndexRow
                       type="button"
                       aria-expanded={open}
-                      aria-controls={`project-panel-${index}`}
-                      onClick={() => setOpenProject(open ? -1 : index)}
+                      aria-controls={`project-panel-${project.name}`}
+                      onClick={() => setOpenProjectName(open ? "" : project.name)}
                     >
                       <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
                       <ProjectRowName>{project.name}</ProjectRowName>
@@ -2752,7 +2389,7 @@ const LandingPage = () => {
                     </ProjectIndexRow>
                     {open && (
                       <ProjectAccordionPanel
-                        id={`project-panel-${index}`}
+                        id={`project-panel-${project.name}`}
                         role="region"
                         aria-label={project.name}
                       >
@@ -2764,29 +2401,63 @@ const LandingPage = () => {
               })}
             </ProjectIndexList>
           )}
+
+          <ProjectGroupTitle>{t("projects.studies")}</ProjectGroupTitle>
+          <ProjectGroupLead>{t("projects.studiesLead")}</ProjectGroupLead>
+
+          <ProjectIndexList as="div">
+            {studyProjects.map((project, index) => {
+              const open = openProjectName === project.name;
+
+              return (
+                <div key={project.name}>
+                  <ProjectIndexRow
+                    type="button"
+                    aria-expanded={open}
+                    aria-controls={`project-panel-${project.name}`}
+                    onClick={() => setOpenProjectName(open ? "" : project.name)}
+                  >
+                    <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
+                    <ProjectRowName>{project.name}</ProjectRowName>
+                    <ProjectRowMarker aria-hidden="true">{open ? "−" : "+"}</ProjectRowMarker>
+                  </ProjectIndexRow>
+                  {open && (
+                    <ProjectAccordionPanel
+                      id={`project-panel-${project.name}`}
+                      role="region"
+                      aria-label={project.name}
+                    >
+                      {renderProjectDetails(project, index)}
+                    </ProjectAccordionPanel>
+                  )}
+                </div>
+              );
+            })}
+          </ProjectIndexList>
         </ProjectsSection>
 
         <Line />
 
-        <ContactSection id="contact" data-parallax="0.1">
+        <ContactSection id="contact">
           <ContactTitle>
-            <SectionLead aria-hidden="true"><HiOutlineEnvelope /></SectionLead>
             {t("contact.title")}
           </ContactTitle>
 
           <ContactWrapper>
+            <ContactPrimary
+              href="https://wa.me/5524988685043"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaWhatsappIcon aria-hidden="true" />
+              {t("contact.whatsapp")} · +55 (24) 98868-5043
+            </ContactPrimary>
+
             <ContactInfo>
               <ContactItem>
                 <h3>{t("contact.email")}</h3>
                 <a href="mailto:joaopossidonio.dev@gmail.com">
                   joaopossidonio.dev@gmail.com
-                </a>
-              </ContactItem>
-
-              <ContactItem>
-                <h3>{t("contact.whatsapp")}</h3>
-                <a href="https://wa.me/5524988685043" target="_blank" rel="noopener noreferrer">
-                  <FaWhatsappIcon /> +55 (24) 98868-5043
                 </a>
               </ContactItem>
 
@@ -2801,17 +2472,6 @@ const LandingPage = () => {
                 <h3>{t("contact.github")}</h3>
                 <a href="https://github.com/JoaoZ14" target="_blank" rel="noopener noreferrer">
                   <FaGithubIcon /> /JoaoZ14
-                </a>
-              </ContactItem>
-
-              <ContactItem>
-                <h3>{t("contact.instagram")}</h3>
-                <a
-                  href="https://www.instagram.com/_possidonioj/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaInstagramIcon /> @_possidonioj
                 </a>
               </ContactItem>
             </ContactInfo>

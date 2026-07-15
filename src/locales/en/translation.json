@@ -10,9 +10,12 @@
   },
   "hero": {
     "greeting": "Hello World,",
+    "brand": "João Possidonio",
     "intro": "My name is João Guilherme,",
-    "role": "FULLSTACK DEVELOPER",
-    "cv": "Virtual Resume",
+    "role": "Fullstack developer",
+    "meta": "Brasil",
+    "projectsCta": "View projects",
+    "cv": "Download resume",
     "portuguese": "Portuguese",
     "english": "English",
     "spanish": "Spanish"
@@ -98,7 +101,8 @@
     }
   },
   "tech": {
-    "title": "Technologies",
+    "title": "Stack",
+    "lead": "Tools I use day to day to ship products end to end.",
     "showMore": "Show all",
     "showLess": "Show less",
     "categories": {
@@ -146,6 +150,10 @@
   },
   "projects": {
     "title": "Projects",
+    "production": "In production",
+    "productionLead": "Products and systems in real use, with a client or partner.",
+    "studies": "Studies",
+    "studiesLead": "Personal projects, prototypes, and exercises. Smaller in scope, still open.",
     "inCollaborationWith": "In collaboration with",
     "personal": "Personal project",
     "visitPartnerSiteAria": "Visit {{name}} website",
@@ -156,7 +164,7 @@
     "code": "Code",
     "codeFrontend": "Code (FE)",
     "codeBackend": "Code (BE)",
-    "privateNote": "Private code · internal project",
+    "privateNote": "Private code. Internal project.",
     "items": {
       "elevateAuthApi": {
         "description": "Authentication and authorization platform (Java + Spring Boot) with OAuth2/OpenID Connect and JWT token issuance/validation. Multi-tenant solution by domain, client-specific custom login, scope/permission control, and administrative endpoints, with containerized deployment via Docker."

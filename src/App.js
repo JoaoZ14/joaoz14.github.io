@@ -24,9 +24,8 @@ const AppDiv = styled.div`
 
 const ContentWrapper = styled.div`
   opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
-  transform: ${({ $isVisible }) => ($isVisible ? "translateY(0)" : "translateY(20px)")};
-  transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1),
-    transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+  transform: ${({ $isVisible }) => ($isVisible ? "translateY(0)" : "translateY(12px)")};
+  transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
   overflow-x: clip;
   height: auto;
 

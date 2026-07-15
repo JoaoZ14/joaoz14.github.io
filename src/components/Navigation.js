@@ -24,23 +24,17 @@ const NavBar = styled.header`
   box-sizing: border-box;
   padding: 0 var(--container-x);
   z-index: var(--z-nav);
-  transition: background-color 0.3s ease, border-color 0.3s ease,
-    backdrop-filter 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   background-color: ${({ $scrolled }) =>
-    $scrolled ? "var(--nav-bg-scrolled)" : "transparent"};
-  backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(12px)" : "none")};
-  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? "blur(12px)" : "none")};
+    $scrolled ? "var(--bg)" : "transparent"};
   border-bottom: 1px solid
     ${({ $scrolled }) => ($scrolled ? "var(--line)" : "transparent")};
 
-  /* No mobile a barra é sempre sólida com borda dura: sem conteúdo do hero
-     vazando por trás. O topo transparente/vidro fica só no desktop. */
+  /* No mobile a barra é sempre sólida com borda dura. */
   @media (max-width: 899px) {
     background-color: var(--bg);
     border-bottom-color: var(--line);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
   }
 
   @media (min-width: 900px) {
