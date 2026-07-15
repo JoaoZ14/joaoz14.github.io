@@ -91,11 +91,12 @@ const Line = styled.div`
    ============================================================ */
 const DivText = styled.section`
   position: relative;
+  z-index: 2;
   width: 100%;
   min-height: 92vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 
   @media (max-width: 900px) {
     min-height: 100svh;
@@ -117,6 +118,7 @@ const HeroDotsLayer = styled(HeroParallaxLayer)`
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
   pointer-events: none;
 `;
 
@@ -560,7 +562,7 @@ const DivIcons = styled.div`
 /* Botão Currículo: primary */
 const ButtonCVContainer = styled.div`
   position: relative;
-  z-index: 2;
+  z-index: 5;
   display: inline-flex;
   align-items: center;
 `;
@@ -614,7 +616,8 @@ const DropdownMenu = styled.div`
   visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
   transform: ${({ $isOpen }) => ($isOpen ? "translateY(0)" : "translateY(-8px)")};
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-  z-index: 1000;
+  z-index: 20;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 
   @media (min-width: 900px) {
     left: auto;
