@@ -114,12 +114,32 @@ const HeroParallaxLayer = styled.div`
   }
 `;
 
-const HeroDotsLayer = styled(HeroParallaxLayer)`
+const HeroDotsLayer = styled.div`
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: calc(-1 * clamp(48px, 10vh, 96px));
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    height: clamp(96px, 22vh, 180px);
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--bg) 55%, transparent) 45%,
+      var(--bg) 100%
+    );
+    pointer-events: none;
+  }
 `;
 
 const HeroSnippet = styled.pre`
@@ -148,11 +168,11 @@ const HeroSnippet = styled.pre`
   }
 
   .str {
-    color: var(--ink);
+    color: var(--accent);
   }
 
   .bool {
-    color: var(--ink);
+    color: var(--accent);
   }
 
   .punct {
@@ -241,10 +261,9 @@ const HeroDotField = () => {
     const INFLUENCE = 130; // raio de ação do cursor (px)
     const MAX_PUSH = 28; // deslocamento máximo por ponto (px)
     const EASE = 0.15; // suavização do retorno
-    // Cores lidas do design system para acompanhar o tema (claro/escuro):
-    // BASE = --line-soft (ponto em repouso), NEAR = --ink (ponto sob o cursor).
+    // BASE = --line-soft (ponto em repouso), NEAR = --accent (ponto sob o cursor).
     let BASE = { r: 226, g: 226, b: 226 };
-    let NEAR = { r: 0, g: 0, b: 0 };
+    let NEAR = { r: 196, g: 92, b: 38 };
 
     const hexToRgb = (hex) => {
       const v = (hex || "").trim().replace("#", "");
@@ -268,7 +287,7 @@ const HeroDotField = () => {
     const readThemeColors = () => {
       const cs = getComputedStyle(document.documentElement);
       BASE = hexToRgb(cs.getPropertyValue("--line-soft")) || BASE;
-      NEAR = hexToRgb(cs.getPropertyValue("--ink")) || NEAR;
+      NEAR = hexToRgb(cs.getPropertyValue("--accent")) || NEAR;
     };
 
     readThemeColors();
@@ -460,7 +479,7 @@ const HeroPrint = styled.pre`
   }
 
   .str {
-    color: var(--text-2);
+    color: var(--accent);
   }
 
   .punct {
@@ -568,10 +587,10 @@ const ButtonCVContainer = styled.div`
 `;
 
 const ButtonCV = styled.button`
-  background: var(--ink);
-  border: 1px solid var(--ink);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   border-radius: 0;
-  color: var(--bg);
+  color: var(--on-accent);
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.06em;
@@ -584,11 +603,12 @@ const ButtonCV = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
   &:hover {
     background: var(--bg);
-    color: var(--ink);
+    color: var(--accent);
+    border-color: var(--accent);
   }
 
   @media (max-width: 600px) {
@@ -674,6 +694,7 @@ const SectionProfile = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+  scroll-margin-top: 96px;
 `;
 
 const AboutSection = styled.section`
@@ -811,7 +832,7 @@ const AboutPortrait = styled.div`
   border: 1px solid var(--line);
   background: var(--bg-2);
   overflow: hidden;
-  box-shadow: 8px 8px 0 0 var(--ink);
+  box-shadow: 8px 8px 0 0 var(--accent);
 
   img {
     display: block;
@@ -921,7 +942,7 @@ const ExperienceTimelineItem = styled.div`
     left: calc(-1 * var(--exp-pad) - 5px);
     width: 9px;
     height: 9px;
-    background: var(--ink);
+    background: var(--accent);
   }
 
   &:last-child {
@@ -1141,13 +1162,13 @@ const ProjectIndexRow = styled.button`
   &:hover,
   &[aria-current="true"],
   &[aria-expanded="true"] {
-    color: var(--ink);
+    color: var(--accent);
   }
 
   &:hover ${ProjectRowMarker},
   &[aria-current="true"] ${ProjectRowMarker},
   &[aria-expanded="true"] ${ProjectRowMarker} {
-    color: var(--ink);
+    color: var(--accent);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -1163,7 +1184,7 @@ const ProjectIndexRow = styled.button`
   }
 
   &:focus-visible {
-    outline: 2px solid var(--ink);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
@@ -1329,7 +1350,7 @@ const PartnerLogoLink = styled.a`
 
   &:focus-visible {
     opacity: 1;
-    outline: 2px solid var(--ink);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
@@ -1472,7 +1493,7 @@ const ProjectLink = styled.a`
   }
 
   &:focus-visible {
-    outline: 2px solid var(--ink);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 
@@ -2103,7 +2124,7 @@ const LandingPage = () => {
         <DivMargin id="home" />
 
         <DivText>
-          <HeroDotsLayer data-parallax="0.22" data-parallax-layer="decor">
+          <HeroDotsLayer>
             <HeroDotField />
           </HeroDotsLayer>
           <HeroWatermark data-parallax="0.38" data-parallax-layer="decor" aria-hidden="true">
@@ -2237,8 +2258,7 @@ const LandingPage = () => {
           </HeroInner>
         </DivText>
 
-        <Line id="about" />
-        <SectionProfile>
+        <SectionProfile id="about">
           <AboutSection>
             <AboutContent>
               <AboutBlocks>

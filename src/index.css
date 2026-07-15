@@ -18,6 +18,11 @@
   --hover: #efefef;
   --radius: 0px;
 
+  /* Acento — terracota (uso pontual: CTA, estados ativos, foco) */
+  --accent: #c45c26;
+  --accent-soft: #f4e4da;
+  --on-accent: #ffffff;
+
   /* Watermark sobre o fundo da página */
   --watermark: rgba(10, 10, 10, 0.085);
 
@@ -81,6 +86,11 @@
   --line: #ffffff;
   --line-soft: #2a2a2a;
   --hover: #1a1a1a;
+
+  /* Terracota um pouco mais clara no escuro para manter contraste */
+  --accent: #945736;
+  --accent-soft: #3a2218;
+  --on-accent: #0a0a0a;
 
   --watermark: rgba(255, 255, 255, 0.09);
 
@@ -172,13 +182,13 @@ h4 {
 }
 
 ::selection {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 /* ===== Foco acessível padrão ===== */
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 

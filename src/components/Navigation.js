@@ -134,7 +134,7 @@ const NavLinks = styled.nav`
   }
 
   a:hover {
-    color: var(--ink);
+    color: var(--accent);
     transform: translateX(8px);
   }
 
@@ -166,7 +166,8 @@ const NavLinks = styled.nav`
 
     a:hover {
       transform: none;
-      border-bottom-color: var(--line);
+      color: var(--accent);
+      border-bottom-color: var(--accent);
     }
   }
 `;
@@ -234,7 +235,7 @@ const FlagButton = styled.button`
   width: 30px;
   height: 30px;
   border-radius: 0;
-  border: 1px solid ${({ $active }) => ($active ? "var(--ink)" : "var(--line-soft)")};
+  border: 1px solid ${({ $active }) => ($active ? "var(--accent)" : "var(--line-soft)")};
   background: var(--bg);
   cursor: pointer;
   display: inline-flex;
@@ -255,7 +256,7 @@ const FlagButton = styled.button`
   &:hover {
     opacity: 1;
     filter: none;
-    border-color: var(--ink);
+    border-color: var(--accent);
   }
 
   @media (min-width: 900px) {
