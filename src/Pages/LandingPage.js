@@ -703,9 +703,10 @@ const AboutSection = styled.section`
   margin: 0 auto;
   padding: var(--section-y) var(--container-x);
   box-sizing: border-box;
-  background: var(--bg);
   color: var(--text);
   position: relative;
+
+z-index: 8;
 `;
 
 const AboutContent = styled.div`
