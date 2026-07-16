@@ -399,6 +399,11 @@ const Navigation = () => {
             </a>
           </li>
           <li>
+            <a href="#skills" onClick={closeMenu}>
+              {t("nav.skills")}
+            </a>
+          </li>
+          <li>
             <a href="#projects" onClick={closeMenu}>
               {t("nav.projects")}
             </a>

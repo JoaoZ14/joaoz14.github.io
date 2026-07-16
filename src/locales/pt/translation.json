@@ -1,6 +1,7 @@
 {
   "nav": {
     "about": "Sobre",
+    "skills": "Habilidades",
     "projects": "Projetos",
     "contact": "Contato",
     "language": "Idioma",
@@ -101,7 +102,7 @@
     }
   },
   "tech": {
-    "title": "Stack",
+    "title": "Tecnologias",
     "lead": "Ferramentas que uso no dia a dia para entregar produtos de ponta a ponta.",
     "showMore": "Ver todas",
     "showLess": "Ver menos",

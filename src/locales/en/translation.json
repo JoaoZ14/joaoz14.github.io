@@ -1,6 +1,7 @@
 {
   "nav": {
     "about": "About",
+    "skills": "Skills",
     "projects": "Projects",
     "contact": "Contact",
     "language": "Language",
@@ -101,7 +102,7 @@
     }
   },
   "tech": {
-    "title": "Stack",
+    "title": "Technologies",
     "lead": "Tools I use day to day to ship products end to end.",
     "showMore": "Show all",
     "showLess": "Show less",

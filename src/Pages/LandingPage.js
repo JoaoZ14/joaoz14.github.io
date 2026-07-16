@@ -3,12 +3,12 @@ import styled, { css } from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 import { useTranslation } from "react-i18next";
 import {
-  FaAws,
   FaBolt,
   FaCamera,
   FaCar,
   FaCat,
   FaClock,
+  FaCode,
   FaCoffee,
   FaDumbbell,
   FaFutbol,
@@ -22,38 +22,18 @@ import {
   FaMusic,
   FaPizzaSlice,
   FaSeedling,
+  FaServer,
   FaTree,
 } from "react-icons/fa";
 import { MdOutdoorGrill } from "react-icons/md";
 import { GiCowboyBoot } from "react-icons/gi";
 import {
-  SiFirebase,
-  SiGooglecloud,
-  SiPostgresql,
-  SiReact,
-  SiMercadopago,
-  SiStyledcomponents,
-  SiSupabase,
-  SiTypescript,
-} from "react-icons/si";
-import {
-  FaCssIcon,
   FaGithubIcon,
-  FaHtmlIcon,
   FaInstagramIcon,
-  FaJavaIcon,
-  FaJsIcon,
   FaLinkedinIcon,
-  FaNodeJsIcon,
-  FaPythonIcon,
-  FaReactIcon,
   FaWhatsappIcon,
-  SiGitIcon,
-  SiDockerIcon,
-  SiOpenidIcon,
-  SiJsonwebtokensIcon,
-  SiSpringbootIcon,
 } from "../components/Icons";
+import TechTags from "../components/TechTags";
 
 /* ============================================================
    LAYOUT BASE
@@ -1022,29 +1002,276 @@ const ExperiencePhrase = styled.p`
   }
 `;
 
-const TechFallbackIcon = styled.div`
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--line);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  font-size: 12px;
-  text-transform: uppercase;
-`;
-
 const ProjectPrivateNote = styled.p`
-  margin: var(--space-sm) 0 0;
+  margin: 0;
   max-width: 52ch;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.04em;
   color: var(--text-3);
   line-height: 1.5;
+`;
+
+/* ============================================================
+   HABILIDADES & TECNOLOGIAS
+   — sticker / comic brutal (eco do retrato 8px shadow)
+   ============================================================ */
+const SkillsSection = styled.section`
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--section-y) var(--container-x);
+  scroll-margin-top: 96px;
+  box-sizing: border-box;
+
+  /* No escuro o accent global fica opaco no preto; aqui sobe a saturação/luminância. */
+  html[data-theme="dark"] & {
+    --accent: #e08a55;
+    --accent-soft: #2a1810;
+    --on-accent: #0a0a0a;
+  }
+`;
+
+const SkillsTitle = styled.h2`
+  ${sectionTitle}
+  margin-bottom: var(--space-xl);
+
+  @media (min-width: 900px) {
+    margin-bottom: var(--space-2xl);
+  }
+`;
+
+const SkillsStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+`;
+
+const SkillBlock = styled.article`
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-md);
+  row-gap: var(--space-md);
+  padding: var(--space-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 6px 6px 0 0 var(--accent);
+
+  @media (min-width: 900px) {
+    grid-template-columns: auto minmax(0, 40ch) minmax(0, 1fr);
+    column-gap: clamp(var(--space-lg), 3vw, var(--space-2xl));
+    padding: var(--space-xl);
+    align-items: start;
+  }
+
+  html[data-theme="dark"] & {
+    background: var(--bg-2);
+    border-color: rgba(255, 255, 255, 0.42);
+  }
+`;
+
+const SkillBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  padding: var(--space-xs);
+  border: 1px solid var(--line);
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 3px 3px 0 0 var(--ink);
+  flex-shrink: 0;
+
+  svg {
+    font-size: 26px;
+    width: 1em;
+    height: 1em;
+  }
+
+  @media (min-width: 900px) {
+    width: 56px;
+    height: 56px;
+
+    svg {
+      font-size: 28px;
+    }
+  }
+
+  html[data-theme="dark"] & {
+    border-color: rgba(255, 255, 255, 0.55);
+  }
+`;
+
+const SkillBlockMain = styled.div`
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+`;
+
+const SkillBlockTitle = styled.h3`
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.6vw, 28px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-wrap: balance;
+`;
+
+const SkillSummary = styled.p`
+  margin: 0;
+  max-width: 48ch;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-2);
+  text-wrap: pretty;
+`;
+
+const SkillPhrases = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-width: 0;
+
+  @media (max-width: 899px) {
+    grid-column: 1 / -1;
+  }
+`;
+
+const SkillPhrase = styled.li`
+  position: relative;
+  margin: 0;
+  padding: var(--space-sm) var(--space-md) var(--space-sm) calc(var(--space-md) + 8px);
+  border: 1px solid var(--line-soft);
+  background: var(--bg-2);
+  max-width: 52ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  font-family: var(--font-body);
+  text-wrap: pretty;
+  box-shadow: 2px 2px 0 0 var(--ink);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: var(--space-sm);
+    top: calc(var(--space-sm) + 0.8em - 0.5px);
+    width: 8px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  html[data-theme="dark"] & {
+    background: #1c1c1c;
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 2px 2px 0 0 rgba(255, 255, 255, 0.55);
+  }
+`;
+
+const TechBlock = styled.div`
+  margin-top: var(--section-y);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--line-soft);
+`;
+
+const TechGroupHeading = styled.h3`
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 3vw, 32px);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--ink);
+  text-wrap: balance;
+`;
+
+const TechLead = styled.p`
+  margin: 0 0 var(--space-xl);
+  max-width: 52ch;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-2);
+  text-wrap: pretty;
+`;
+
+const TechGroups = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+`;
+
+const TechGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+`;
+
+const TechGroupLabel = styled.h4`
+  margin: 0;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+`;
+
+const SoftSkillList = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+`;
+
+const SoftSkillChip = styled.li`
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--text);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 0 var(--accent);
+  cursor: default;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out);
+
+  &:hover {
+    transform: translate(-2px, -2px) rotate(1.5deg);
+    box-shadow: 5px 5px 0 0 var(--ink);
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+
+  &:nth-child(odd):hover {
+    transform: translate(-2px, -2px) rotate(-1.5deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: background-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+
+    &:hover {
+      transform: none;
+    }
+  }
 `;
 
 /* ============================================================
@@ -1057,6 +1284,12 @@ const ProjectsSection = styled.section`
   padding: var(--section-y) var(--container-x);
   scroll-margin-top: 96px;
   box-sizing: border-box;
+
+  html[data-theme="dark"] & {
+    --accent: #e08a55;
+    --accent-soft: #2a1810;
+    --on-accent: #0a0a0a;
+  }
 `;
 
 const ProjectsTitle = styled.h2`
@@ -1206,10 +1439,20 @@ const ProjectPreview = styled.div`
   gap: var(--space-lg);
 `;
 
+const ProjectDetailCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+
+  @media (min-width: 900px) {
+    gap: var(--space-lg);
+  }
+`;
+
 const ProjectPreviewFade = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   animation: projectFade 0.4s var(--ease-out) both;
 
   @keyframes projectFade {
@@ -1223,6 +1466,10 @@ const ProjectPreviewFade = styled.div`
     }
   }
 
+  @media (min-width: 900px) {
+    gap: var(--space-lg);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
@@ -1231,8 +1478,10 @@ const ProjectPreviewFade = styled.div`
 const ProjectAccordionPanel = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   padding: var(--space-md) 0 var(--space-xl);
+  scroll-margin-top: 112px;
+  scroll-margin-bottom: 64px;
   animation: projectFade 0.35s var(--ease-out) both;
 
   @keyframes projectFade {
@@ -1257,6 +1506,7 @@ const ProjectImageWrapper = styled.div`
   order: 0;
   border: 1px solid var(--line);
   background: var(--surface);
+  box-shadow: 6px 6px 0 0 var(--accent);
 
   img {
     width: 100%;
@@ -1322,18 +1572,36 @@ const ProjectImageNote = styled.div`
 `;
 
 const ProjectPartner = styled.div`
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  align-self: flex-start;
   gap: var(--space-sm);
   flex-wrap: wrap;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 
   span {
     font-family: var(--font-mono);
     font-size: 11px;
-    color: var(--text-2);
+    color: var(--text-3);
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
+
+  ${({ $chip }) =>
+    $chip &&
+    css`
+      padding: var(--space-xs) var(--space-sm);
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+      box-shadow: 3px 3px 0 0 var(--accent);
+
+      span {
+        color: var(--text-2);
+      }
+    `}
 `;
 
 const PartnerLogoLink = styled.a`
@@ -1341,7 +1609,7 @@ const PartnerLogoLink = styled.a`
   align-items: center;
   gap: var(--space-xs);
   transition: opacity 0.2s var(--ease-out);
-  opacity: 0.8;
+  opacity: 0.85;
   text-decoration: none;
   border-radius: 0;
 
@@ -1371,11 +1639,15 @@ const PartnerLogoLink = styled.a`
 
 const ProjectDescription = styled.p`
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--text-2);
   font-family: var(--font-body);
   margin: 0;
-  max-width: 65ch;
+  max-width: 58ch;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
   text-wrap: pretty;
 
   @media (max-width: 768px) {
@@ -1387,68 +1659,19 @@ const ProjectActions = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   width: 100%;
+  margin-top: var(--space-xs);
 `;
 
 const ProjectTechLabel = styled.span`
   display: block;
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-sm);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-3);
-`;
-
-const ProjectTechnologies = styled.div`
-  display: flex;
-  gap: var(--space-md);
-  flex-wrap: wrap;
-`;
-
-const ProjectTechIcon = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  color: var(--ink);
-
-  svg {
-    font-size: 20px;
-    color: currentColor;
-    transition: transform 0.2s var(--ease-out);
-  }
-
-  ${TechFallbackIcon} {
-    width: 28px;
-    height: 28px;
-    font-size: 10px;
-  }
-
-  &:hover svg {
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
-
-    svg {
-      font-size: 18px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    svg {
-      transition: none;
-    }
-
-    &:hover svg {
-      transform: none;
-    }
-  }
 `;
 
 const ProjectLinks = styled.div`
@@ -1486,7 +1709,7 @@ const ProjectLink = styled.a`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out),
-    transform 0.15s var(--ease-out);
+    transform 0.15s var(--ease-out), box-shadow 0.15s var(--ease-out);
 
   svg {
     font-size: 16px;
@@ -1507,19 +1730,25 @@ const ProjectLink = styled.a`
       ? css`
           background: var(--ink);
           color: var(--bg);
+          box-shadow: 4px 4px 0 0 var(--accent);
 
           &:hover {
-            background: var(--bg);
-            color: var(--ink);
+            transform: translate(-2px, -2px);
+            background: var(--accent);
+            color: var(--on-accent);
+            border-color: var(--accent);
+            box-shadow: 6px 6px 0 0 var(--ink);
           }
         `
       : css`
           background: transparent;
           color: var(--text);
+          box-shadow: none;
 
           &:hover {
-            background: var(--ink);
-            color: var(--bg);
+            background: var(--bg-2);
+            color: var(--ink);
+            border-color: var(--line);
           }
         `}
 
@@ -1539,8 +1768,10 @@ const ProjectLink = styled.a`
   }
 
   @media (prefers-reduced-motion: reduce) {
-    transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+    transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out),
+      box-shadow 0.2s var(--ease-out);
 
+    &:hover,
     &:active {
       transform: none;
     }
@@ -1755,6 +1986,28 @@ const LandingPage = () => {
   const [activeProject, setActiveProject] = useState(0);
   const [openProjectName, setOpenProjectName] = useState("SeatHub");
   const dropdownRef = useRef(null);
+  const skipAccordionScrollRef = useRef(true);
+
+  useEffect(() => {
+    if (skipAccordionScrollRef.current) {
+      skipAccordionScrollRef.current = false;
+      return;
+    }
+    if (!openProjectName) return undefined;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(() => {
+      const panel = document.getElementById(`project-panel-${openProjectName}`);
+      if (!panel) return;
+      panel.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }, reduceMotion ? 0 : 90);
+
+    return () => window.clearTimeout(timer);
+  }, [openProjectName]);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -1839,59 +2092,65 @@ const LandingPage = () => {
     };
   }, [showDropdown]);
 
-  const techNames = {
-    react: "React",
-    reactnative: "React Native",
-    styledcomponents: "Styled-components",
-    typescript: "TypeScript",
-    js: "JavaScript",
-    html: "HTML5",
-    css: "CSS",
-    node: "Node.js",
-    python: "Python",
-    java: "Java",
-    springboot: "Spring Boot",
-    sql: "SQL",
-    postgresql: "PostgreSQL",
-    firebase: "Firebase",
-    restful: "RESTful APIs",
-    aws: "AWS",
-    googlecloud: "Google Cloud",
-    stripe: "API Mercado Pago",
-    supabase: "Supabase",
-    oauth2: "OAuth 2.0",
-    git: "Git",
-    github: "GitHub",
-    docker: "Docker",
-    openid: "OpenID",
-    jwt: "JWT",
-  };
+  const skillPillars = [
+    {
+      key: "frontend",
+      Icon: FaLaptop,
+      items: ["reusableComponents", "performanceUx", "serviceIntegrations"],
+    },
+    {
+      key: "backend",
+      Icon: FaServer,
+      items: ["endpointsIntegrations", "businessRules", "authAccessControl"],
+    },
+    {
+      key: "excellence",
+      Icon: FaCode,
+      items: ["codeReview", "documentation", "teamwork"],
+    },
+  ];
 
-  const icons = {
-    react: <FaReactIcon />,
-    reactnative: <SiReact />,
-    js: <FaJsIcon />,
-    typescript: <SiTypescript />,
-    html: <FaHtmlIcon />,
-    css: <FaCssIcon />,
-    styledcomponents: <SiStyledcomponents />,
-    node: <FaNodeJsIcon />,
-    python: <FaPythonIcon />,
-    java: <FaJavaIcon />,
-    springboot: <SiSpringbootIcon />,
-    postgresql: <SiPostgresql />,
-    firebase: <SiFirebase />,
-    aws: <FaAws />,
-    googlecloud: <SiGooglecloud />,
-    stripe: <SiMercadopago />,
-    supabase: <SiSupabase />,
-    oauth2: <SiOpenidIcon />,
-    git: <SiGitIcon />,
-    github: <FaGithubIcon />,
-    docker: <SiDockerIcon />,
-    openid: <SiOpenidIcon />,
-    jwt: <SiJsonwebtokensIcon />,
-  };
+  const techCategories = [
+    {
+      key: "frontend",
+      items: [
+        "react",
+        "reactnative",
+        "html",
+        "css",
+        "js",
+        "styledcomponents",
+        "typescript",
+      ],
+    },
+    {
+      key: "backend",
+      items: [
+        "node",
+        "java",
+        "springboot",
+        "python",
+        "sql",
+        "postgresql",
+        "restful",
+        "oauth2",
+      ],
+    },
+    {
+      key: "other",
+      items: [
+        "firebase",
+        "supabase",
+        "aws",
+        "googlecloud",
+        "stripe",
+        "git",
+        "github",
+      ],
+    },
+  ];
+
+  const softSkills = t("tech.softSkills.items", { returnObjects: true });
 
   const hasProjectLinks = (project) =>
     Boolean(project.deploy || project.github || project.githubBe);
@@ -1994,7 +2253,7 @@ const LandingPage = () => {
     const hasDualCode = Boolean(project.github && project.githubBe);
 
     return (
-      <>
+      <ProjectDetailCard>
         <ProjectImageWrapper $logoThumbnail={project.logoThumbnail}>
           <img
             src={project.image}
@@ -2008,7 +2267,7 @@ const LandingPage = () => {
         </ProjectImageWrapper>
 
         {project.partner ? (
-          <ProjectPartner>
+          <ProjectPartner $chip>
             <span>{t("projects.inCollaborationWith")}</span>
             <PartnerLogoLink
               href={project.partner.url}
@@ -2042,26 +2301,6 @@ const LandingPage = () => {
 
         {(project.technologies.length > 0 || hasLinks) && (
           <ProjectActions>
-            {project.technologies.length > 0 && (
-              <div>
-                <ProjectTechLabel>{t("projects.stack")}</ProjectTechLabel>
-                <ProjectTechnologies>
-                  {project.technologies.map((tech) => (
-                    <ProjectTechIcon
-                      key={tech}
-                      role="img"
-                      aria-label={techNames[tech] || tech}
-                      title={techNames[tech] || tech}
-                    >
-                      {icons[tech] ? icons[tech] : (
-                        <TechFallbackIcon>{(techNames[tech] || tech).slice(0, 2)}</TechFallbackIcon>
-                      )}
-                    </ProjectTechIcon>
-                  ))}
-                </ProjectTechnologies>
-              </div>
-            )}
-
             {hasLinks && (
               <ProjectLinks $dualCode={hasDualCode}>
                 {project.deploy && (
@@ -2098,9 +2337,16 @@ const LandingPage = () => {
                 )}
               </ProjectLinks>
             )}
+
+            {project.technologies.length > 0 && (
+              <div>
+                <ProjectTechLabel>{t("projects.stack")}</ProjectTechLabel>
+                <TechTags items={project.technologies} />
+              </div>
+            )}
           </ProjectActions>
         )}
-      </>
+      </ProjectDetailCard>
     );
   };
 
@@ -2356,6 +2602,68 @@ const LandingPage = () => {
             </AboutContent>
           </AboutSection>
         </SectionProfile>
+
+        <Line />
+
+        <SkillsSection id="skills" aria-labelledby="skills-title">
+          <SkillsTitle id="skills-title">{t("skills.title")}</SkillsTitle>
+
+          <SkillsStack>
+            {skillPillars.map((pillar) => {
+              const PillarIcon = pillar.Icon;
+              return (
+                <SkillBlock key={pillar.key}>
+                  <SkillBadge aria-hidden="true">
+                    <PillarIcon />
+                  </SkillBadge>
+                  <SkillBlockMain>
+                    <SkillBlockTitle>
+                      {t(`skills.${pillar.key}.title`)}
+                    </SkillBlockTitle>
+                    <SkillSummary>
+                      {t(`skills.${pillar.key}.summary`)}
+                    </SkillSummary>
+                  </SkillBlockMain>
+                  <SkillPhrases>
+                    {pillar.items.map((itemKey) => (
+                      <SkillPhrase key={itemKey}>
+                        {t(`skills.${pillar.key}.items.${itemKey}`)}
+                      </SkillPhrase>
+                    ))}
+                  </SkillPhrases>
+                </SkillBlock>
+              );
+            })}
+          </SkillsStack>
+
+          <TechBlock>
+            <TechGroupHeading id="tech-title">{t("tech.title")}</TechGroupHeading>
+            <TechLead>{t("tech.lead")}</TechLead>
+
+            <TechGroups>
+              {techCategories.map((category) => (
+                <TechGroup key={category.key}>
+                  <TechGroupLabel>
+                    {t(`tech.categories.${category.key}`)}
+                  </TechGroupLabel>
+                  <TechTags items={category.items} />
+                </TechGroup>
+              ))}
+
+              <TechGroup>
+                <TechGroupLabel>
+                  {t("tech.categories.softSkills")}
+                </TechGroupLabel>
+                <SoftSkillList>
+                  {Array.isArray(softSkills) &&
+                    softSkills.map((skill) => (
+                      <SoftSkillChip key={skill}>{skill}</SoftSkillChip>
+                    ))}
+                </SoftSkillList>
+              </TechGroup>
+            </TechGroups>
+          </TechBlock>
+        </SkillsSection>
 
         <Line />
 

@@ -363,6 +363,7 @@ const Footer = () => {
             <ColTitle>{t("footer.navTitle")}</ColTitle>
             <LinkList>
               <a href="#about">{t("nav.about")}</a>
+              <a href="#skills">{t("nav.skills")}</a>
               <a href="#projects">{t("nav.projects")}</a>
               <a href="#contact">{t("nav.contact")}</a>
             </LinkList>
