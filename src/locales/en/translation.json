@@ -149,6 +149,20 @@
       "softskills": "Proactive attitude, effective communication, problem solving, teamwork, adaptability, and leadership"
     }
   },
+  "contributions": {
+    "title": "Contributions",
+    "lead": "Public GitHub activity over the last year.",
+    "loading": "Loading contributions…",
+    "error": "Could not load the graph right now.",
+    "empty": "No public contributions in this period.",
+    "openProfile": "Open profile",
+    "total": "{{count}} contributions in the last year",
+    "ariaLabel": "GitHub contributions graph: {{count}} in the last year",
+    "contribution": "contribution",
+    "contributions": "contributions",
+    "less": "Less",
+    "more": "More"
+  },
   "projects": {
     "title": "Projects",
     "production": "In production",

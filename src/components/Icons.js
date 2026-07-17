@@ -15,24 +15,24 @@ import { SiDocker, SiGit, SiJsonwebtokens, SiOpenid, SiSpringboot } from "react-
 import styled from "styled-components";
 import { IoMdCloseCircle } from "react-icons/io";
 
-/* Ícones sociais — monocromáticos */
+/* Ícones sociais — herdam a cor do contexto (CTA, links, hero). */
 export const FaWhatsappIcon = styled(FaWhatsapp)`
-  color: var(--ink);
+  color: currentColor;
   font-size: 26px;
 `;
 
 export const FaGithubIcon = styled(FaGithub)`
-  color: var(--ink);
+  color: currentColor;
   font-size: 26px;
 `;
 
 export const FaLinkedinIcon = styled(FaLinkedin)`
-  color: var(--ink);
+  color: currentColor;
   font-size: 26px;
 `;
 
 export const FaInstagramIcon = styled(FaInstagram)`
-  color: var(--ink);
+  color: currentColor;
   font-size: 26px;
 `;
 

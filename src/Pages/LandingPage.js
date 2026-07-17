@@ -34,6 +34,7 @@ import {
   FaWhatsappIcon,
 } from "../components/Icons";
 import TechTags from "../components/TechTags";
+import GitHubContributions from "../components/GitHubContributions";
 
 /* ============================================================
    LAYOUT BASE
@@ -535,6 +536,7 @@ const DivIcons = styled.div`
     height: 46px;
     border: 1px solid var(--line);
     background: var(--bg);
+    color: var(--ink);
     transition: background-color 0.2s ease, transform 0.2s ease;
   }
 
@@ -568,7 +570,7 @@ const ButtonCVContainer = styled.div`
 
 const ButtonCV = styled.button`
   background: var(--accent);
-  border: 1px solid var(--accent);
+  border: 2px solid var(--ink);
   border-radius: 0;
   color: var(--on-accent);
   font-family: var(--font-mono);
@@ -583,17 +585,36 @@ const ButtonCV = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  box-shadow: 4px 4px 0 0 var(--ink);
+  transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
+    transform 0.15s var(--ease-out);
 
   &:hover {
     background: var(--bg);
     color: var(--accent);
-    border-color: var(--accent);
+    border-color: var(--ink);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
   }
 
   @media (max-width: 600px) {
     height: 44px;
     min-height: 44px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out),
+      box-shadow 0.2s var(--ease-out);
+
+    &:hover {
+      transform: none;
+    }
   }
 `;
 
@@ -649,19 +670,43 @@ const DropdownItem = styled.button`
 `;
 
 /* ============================================================
-   SEÇÕES DE CONTEÚDO — títulos
+   SEÇÕES DE CONTEÚDO — títulos + onda accent (ref curta)
    ============================================================ */
+const WAVE_MASK = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M0 7 Q10 2 20 7 T40 7 T60 7 T80 7 T100 7 T120 7' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`;
+
 const sectionTitle = css`
   position: relative;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
   margin: 0 0 40px;
+  padding-bottom: 0.42em;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(28px, 5vw, 46px);
   line-height: 1.02;
   letter-spacing: -0.04em;
   color: var(--ink);
-  display: block;
   text-wrap: balance;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0.02em;
+    width: 2.75em;
+    max-width: 72px;
+    height: 0.22em;
+    min-height: 7px;
+    pointer-events: none;
+    background-color: var(--accent);
+    -webkit-mask-image: ${WAVE_MASK};
+    mask-image: ${WAVE_MASK};
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }
 
   @media (min-width: 900px) {
     margin-bottom: 56px;
@@ -1058,7 +1103,7 @@ const SkillBlock = styled.article`
   column-gap: var(--space-md);
   row-gap: var(--space-md);
   padding: var(--space-lg);
-  border: 1px solid var(--line);
+  border: 2px solid var(--line);
   background: var(--surface);
   box-shadow: 6px 6px 0 0 var(--accent);
 
@@ -1082,11 +1127,13 @@ const SkillBadge = styled.span`
   width: 52px;
   height: 52px;
   padding: var(--space-xs);
-  border: 1px solid var(--line);
+  border: 3px solid var(--ink);
   background: var(--accent);
-  color: var(--on-accent);
+  /* Ícone branco no tile, independente do tema. */
+  color: #ffffff;
   box-shadow: 3px 3px 0 0 var(--ink);
   flex-shrink: 0;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
 
   svg {
     font-size: 26px;
@@ -1103,8 +1150,19 @@ const SkillBadge = styled.span`
     }
   }
 
-  html[data-theme="dark"] & {
-    border-color: rgba(255, 255, 255, 0.55);
+  @media (hover: hover) and (pointer: fine) {
+    .skill-block:hover & {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 0 var(--ink);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    .skill-block:hover & {
+      transform: none;
+    }
   }
 `;
 
@@ -1313,6 +1371,15 @@ const ProjectShowcase = styled.div`
   }
 `;
 
+const ProjectIndexSticky = styled.div`
+  @media (min-width: 900px) {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+    z-index: 1;
+  }
+`;
+
 const ProjectIndexList = styled.ul`
   list-style: none;
   margin: 0;
@@ -1432,11 +1499,10 @@ const ProjectIndexRow = styled.button`
 `;
 
 const ProjectPreview = styled.div`
-  position: sticky;
-  top: 96px;
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  min-width: 0;
 `;
 
 const ProjectDetailCard = styled.div`
@@ -1728,6 +1794,7 @@ const ProjectLink = styled.a`
   ${({ $primary }) =>
     $primary
       ? css`
+          border-width: 2px;
           background: var(--ink);
           color: var(--bg);
           box-shadow: 4px 4px 0 0 var(--accent);
@@ -1735,8 +1802,8 @@ const ProjectLink = styled.a`
           &:hover {
             transform: translate(-2px, -2px);
             background: var(--accent);
-            color: var(--on-accent);
-            border-color: var(--accent);
+            color: #0a0a0a;
+            border-color: var(--ink);
             box-shadow: 6px 6px 0 0 var(--ink);
           }
         `
@@ -1808,7 +1875,7 @@ const ContactPrimary = styled.a`
   gap: 12px;
   min-height: 52px;
   padding: 16px 24px;
-  border: 1px solid var(--ink);
+  border: 2px solid var(--ink);
   background: var(--ink);
   color: var(--bg);
   font-family: var(--font-display);
@@ -1816,16 +1883,35 @@ const ContactPrimary = styled.a`
   font-size: clamp(16px, 2vw, 20px);
   letter-spacing: -0.02em;
   text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  box-shadow: 4px 4px 0 0 var(--accent);
+  transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out), transform 0.15s var(--ease-out);
 
   svg {
     font-size: 20px;
     flex-shrink: 0;
+    color: currentColor;
   }
 
   &:hover {
-    background: var(--bg);
-    color: var(--ink);
+    background: var(--accent);
+    color: #0a0a0a;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--ink);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out),
+      box-shadow 0.2s var(--ease-out);
+
+    &:hover {
+      transform: none;
+    }
   }
 `;
 
@@ -2612,7 +2698,7 @@ const LandingPage = () => {
             {skillPillars.map((pillar) => {
               const PillarIcon = pillar.Icon;
               return (
-                <SkillBlock key={pillar.key}>
+                <SkillBlock key={pillar.key} className="skill-block">
                   <SkillBadge aria-hidden="true">
                     <PillarIcon />
                   </SkillBadge>
@@ -2667,34 +2753,39 @@ const LandingPage = () => {
 
         <Line />
 
+        <GitHubContributions />
+
+        <Line />
+
         <ProjectsSection id="projects">
           <ProjectsTitle>
             {t("projects.title")}
           </ProjectsTitle>
 
-          <ProjectGroupTitle>{t("projects.production")}</ProjectGroupTitle>
-          <ProjectGroupLead>{t("projects.productionLead")}</ProjectGroupLead>
-
           {projectShowcase ? (
             <ProjectShowcase>
-              <ProjectIndexList>
-                {productionProjects.map((project, index) => (
-                  <li key={project.name}>
-                    <ProjectIndexRow
-                      type="button"
-                      aria-current={activeProject === index}
-                      aria-label={project.name}
-                      onMouseEnter={() => setActiveProject(index)}
-                      onFocus={() => setActiveProject(index)}
-                      onClick={() => setActiveProject(index)}
-                    >
-                      <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
-                      <ProjectRowName>{project.name}</ProjectRowName>
-                      <ProjectRowMarker aria-hidden="true">→</ProjectRowMarker>
-                    </ProjectIndexRow>
-                  </li>
-                ))}
-              </ProjectIndexList>
+              <ProjectIndexSticky>
+                <ProjectGroupTitle>{t("projects.production")}</ProjectGroupTitle>
+                <ProjectGroupLead>{t("projects.productionLead")}</ProjectGroupLead>
+                <ProjectIndexList>
+                  {productionProjects.map((project, index) => (
+                    <li key={project.name}>
+                      <ProjectIndexRow
+                        type="button"
+                        aria-current={activeProject === index}
+                        aria-label={project.name}
+                        onMouseEnter={() => setActiveProject(index)}
+                        onFocus={() => setActiveProject(index)}
+                        onClick={() => setActiveProject(index)}
+                      >
+                        <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
+                        <ProjectRowName>{project.name}</ProjectRowName>
+                        <ProjectRowMarker aria-hidden="true">→</ProjectRowMarker>
+                      </ProjectIndexRow>
+                    </li>
+                  ))}
+                </ProjectIndexList>
+              </ProjectIndexSticky>
 
               <ProjectPreview aria-live="polite">
                 <ProjectPreviewFade key={activeProjectData.name}>
@@ -2703,35 +2794,39 @@ const LandingPage = () => {
               </ProjectPreview>
             </ProjectShowcase>
           ) : (
-            <ProjectIndexList as="div">
-              {productionProjects.map((project, index) => {
-                const open = openProjectName === project.name;
+            <>
+              <ProjectGroupTitle>{t("projects.production")}</ProjectGroupTitle>
+              <ProjectGroupLead>{t("projects.productionLead")}</ProjectGroupLead>
+              <ProjectIndexList as="div">
+                {productionProjects.map((project, index) => {
+                  const open = openProjectName === project.name;
 
-                return (
-                  <div key={project.name}>
-                    <ProjectIndexRow
-                      type="button"
-                      aria-expanded={open}
-                      aria-controls={`project-panel-${project.name}`}
-                      onClick={() => setOpenProjectName(open ? "" : project.name)}
-                    >
-                      <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
-                      <ProjectRowName>{project.name}</ProjectRowName>
-                      <ProjectRowMarker aria-hidden="true">{open ? "−" : "+"}</ProjectRowMarker>
-                    </ProjectIndexRow>
-                    {open && (
-                      <ProjectAccordionPanel
-                        id={`project-panel-${project.name}`}
-                        role="region"
-                        aria-label={project.name}
+                  return (
+                    <div key={project.name}>
+                      <ProjectIndexRow
+                        type="button"
+                        aria-expanded={open}
+                        aria-controls={`project-panel-${project.name}`}
+                        onClick={() => setOpenProjectName(open ? "" : project.name)}
                       >
-                        {renderProjectDetails(project, index)}
-                      </ProjectAccordionPanel>
-                    )}
-                  </div>
-                );
-              })}
-            </ProjectIndexList>
+                        <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
+                        <ProjectRowName>{project.name}</ProjectRowName>
+                        <ProjectRowMarker aria-hidden="true">{open ? "−" : "+"}</ProjectRowMarker>
+                      </ProjectIndexRow>
+                      {open && (
+                        <ProjectAccordionPanel
+                          id={`project-panel-${project.name}`}
+                          role="region"
+                          aria-label={project.name}
+                        >
+                          {renderProjectDetails(project, index)}
+                        </ProjectAccordionPanel>
+                      )}
+                    </div>
+                  );
+                })}
+              </ProjectIndexList>
+            </>
           )}
 
           <ProjectGroupTitle>{t("projects.studies")}</ProjectGroupTitle>
