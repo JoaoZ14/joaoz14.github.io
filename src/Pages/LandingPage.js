@@ -590,6 +590,10 @@ const ButtonCV = styled.button`
     border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
     transform 0.15s var(--ease-out);
 
+  [data-theme="dark"] & {
+    color: #ffffff;
+  }
+
   &:hover {
     background: var(--bg);
     color: var(--accent);
@@ -1072,13 +1076,6 @@ const SkillsSection = styled.section`
   padding: var(--section-y) var(--container-x);
   scroll-margin-top: 96px;
   box-sizing: border-box;
-
-  /* No escuro o accent global fica opaco no preto; aqui sobe a saturação/luminância. */
-  html[data-theme="dark"] & {
-    --accent: #e08a55;
-    --accent-soft: #2a1810;
-    --on-accent: #0a0a0a;
-  }
 `;
 
 const SkillsTitle = styled.h2`
@@ -1342,12 +1339,6 @@ const ProjectsSection = styled.section`
   padding: var(--section-y) var(--container-x);
   scroll-margin-top: 96px;
   box-sizing: border-box;
-
-  html[data-theme="dark"] & {
-    --accent: #e08a55;
-    --accent-soft: #2a1810;
-    --on-accent: #0a0a0a;
-  }
 `;
 
 const ProjectsTitle = styled.h2`

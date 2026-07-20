@@ -87,10 +87,10 @@
   --line-soft: #2a2a2a;
   --hover: #1a1a1a;
 
-  /* Terracota um pouco mais clara no escuro para manter contraste */
-  --accent: #945736;
+  /* Terracota — mesma do tema claro */
+  --accent: #df601c;
   --accent-soft: #3a2218;
-  --on-accent: #0a0a0a;
+  --on-accent: #ffffff;
 
   --watermark: rgba(255, 255, 255, 0.09);
 

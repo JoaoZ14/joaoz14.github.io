@@ -30,12 +30,6 @@ const Section = styled.section`
   padding: var(--section-y) var(--container-x);
   scroll-margin-top: 96px;
   box-sizing: border-box;
-
-  html[data-theme="dark"] & {
-    --accent: #e08a55;
-    --accent-soft: #2a1810;
-    --on-accent: #0a0a0a;
-  }
 `;
 
 const Header = styled.div`
