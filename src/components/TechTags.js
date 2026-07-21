@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { FaAws } from "react-icons/fa";
+import { FaAws, FaWhatsapp } from "react-icons/fa";
 import {
   SiFirebase,
   SiGooglecloud,
@@ -46,6 +46,8 @@ export const TECH_NAMES = {
   aws: "AWS",
   googlecloud: "Google Cloud",
   stripe: "API Mercado Pago",
+  asaas: "Asaas",
+  whatsapp: "WhatsApp API",
   supabase: "Supabase",
   oauth2: "OAuth 2.0",
   git: "Git",
@@ -76,6 +78,8 @@ export const TECH_BRAND = {
   aws: { brand: "#FF9900", ink: "#0a0a0a" },
   googlecloud: { brand: "#4285F4", ink: "#ffffff" },
   stripe: { brand: "#00B1EA", ink: "#ffffff" },
+  asaas: { brand: "#0052CC", ink: "#ffffff" },
+  whatsapp: { brand: "#25D366", ink: "#0a0a0a" },
   git: { brand: "#F05032", ink: "#ffffff" },
   github: { brand: "#24292F", ink: "#ffffff" },
   docker: { brand: "#2496ED", ink: "#ffffff" },
@@ -235,6 +239,7 @@ const TECH_ICONS = {
   aws: <FaAws />,
   googlecloud: <SiGooglecloud />,
   stripe: <SiMercadopago />,
+  whatsapp: <FaWhatsapp />,
   supabase: <SiSupabase />,
   oauth2: <SiOpenidIcon />,
   git: <SiGitIcon />,

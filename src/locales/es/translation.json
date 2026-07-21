@@ -180,9 +180,26 @@
     "codeFrontend": "Código (FE)",
     "codeBackend": "Código (BE)",
     "privateNote": "Código privado. Proyecto interno.",
+    "seekingInvestment": "Abierto a inversión",
+    "investmentCta": "Hablar sobre inversión",
+    "investmentCtaAria": "Hablar sobre inversión en el proyecto {{name}} (abre WhatsApp)",
+    "investmentWhatsappMessage": "¡Hola! Vi {{name}} en el portafolio y me gustaría hablar sobre inversión.",
     "items": {
       "elevateAuthApi": {
         "description": "Plataforma de autenticación y autorización (Java + Spring Boot) con OAuth2/OpenID Connect y emisión/validación de tokens JWT. Solución multi-tenant por dominio, login personalizado por cliente, control de scopes/permisos y endpoints administrativos, con despliegue containerizado vía Docker."
+      },
+      "jkDistribuidora": {
+        "description": "Sitio institucional para distribuidora B2B de hotelería y food service. Presenta las marcas representadas (Tutty Sucos y Café Igarapé), diferenciales de logística y atención, socios atendidos y canales de cotización/pedido con contacto comercial en Río de Janeiro y la región."
+      },
+      "vendaJk": {
+        "description": "CRM interno para captación y gestión de clientes de JK Distribuidora. Organiza leads por región en el mapa y por tipo de cliente, con autenticación y datos en PostgreSQL vía Supabase, API en Node.js e interfaz en React."
+      },
+      "gmkSoftware": {
+        "description": "Landing page institucional de GMK, software house de Resende/RJ. Presenta servicios de desarrollo a medida (SaaS, sistemas web, apps móviles e IA), posicionamiento y canales de contacto para empresas que buscan crecer con tecnología."
+      },
+      "agAssist": {
+        "description": "Asistente de IA en WhatsApp para el agro: orientación práctica para cultivo y ganado con texto, foto y audio. Landing en React, backend en Node.js con WhatsApp API y pagos vía Asaas (planes gratuito y de pago). Llegó a tener uso real; la operación se pausó por falta de inversión y está abierta a quien quiera retomar el producto.",
+        "statusNote": "Operación pausada por falta de inversión. Llegó a tener uso real."
       },
       "seatHub": {
         "description": "Plataforma completa de coworking para reserva de espacios de trabajo. Sistema de gestión con control de disponibilidad, reservas por hora/día/mes, panel administrativo e integración de pagos. Aplicación web y móvil con mapas interactivos."
@@ -205,8 +222,8 @@
         "description": "Aplicación de pronóstico del tiempo en tiempo real integrada con una API meteorológica. Muestra temperatura, condiciones y pronósticos con un diseño limpio y responsivo.",
         "inactivityNote": "El sitio puede estar fuera de línea por inactividad de la API meteorológica."
       },
-      "calculator": {
-        "description": "Calculadora web moderna y funcional con diseño minimalista. Realiza operaciones matemáticas básicas con interfaz responsiva y experiencia de usuario fluida."
+      "pythonChat": {
+        "description": "Chat en tiempo real con sockets TCP e interfaz gráfica en CustomTkinter. Empezó como ejercicio de facultad en terminal y evolucionó para portfolio: servidor multi-hilo con broadcast, protocolo JSON (join, leave, message, system), login con tema claro/oscuro y mensajes en burbujas. Funciona en red local."
       }
     }
   }

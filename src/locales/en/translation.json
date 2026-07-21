@@ -180,9 +180,26 @@
     "codeFrontend": "Code (FE)",
     "codeBackend": "Code (BE)",
     "privateNote": "Private code. Internal project.",
+    "seekingInvestment": "Open to investment",
+    "investmentCta": "Talk about investment",
+    "investmentCtaAria": "Talk about investing in {{name}} (opens WhatsApp)",
+    "investmentWhatsappMessage": "Hi! I saw {{name}} on the portfolio and would like to talk about investment.",
     "items": {
       "elevateAuthApi": {
         "description": "Authentication and authorization platform (Java + Spring Boot) with OAuth2/OpenID Connect and JWT token issuance/validation. Multi-tenant solution by domain, client-specific custom login, scope/permission control, and administrative endpoints, with containerized deployment via Docker."
+      },
+      "jkDistribuidora": {
+        "description": "Institutional website for a B2B distributor serving hospitality and food service. Showcases represented brands (Tutty Sucos and Café Igarapé), logistics and service differentiators, partner hotels, and quotation/order channels with commercial contact across Rio de Janeiro and the surrounding region."
+      },
+      "vendaJk": {
+        "description": "Internal CRM for JK Distribuidora client acquisition and management. Organizes leads by map region and client type, with authentication and data on PostgreSQL via Supabase, a Node.js API, and a React interface."
+      },
+      "gmkSoftware": {
+        "description": "Institutional landing page for GMK, a software house based in Resende, RJ. Showcases custom development services (SaaS, web systems, mobile apps, and AI), positioning, and contact channels for companies looking to grow through technology."
+      },
+      "agAssist": {
+        "description": "AI assistant on WhatsApp for agribusiness: practical guidance for crops and livestock via text, photo, and audio. React landing page, Node.js backend with the WhatsApp API, and payments through Asaas (free and paid plans). It reached real usage; operations paused due to lack of investment and are open to anyone who wants to revive the product.",
+        "statusNote": "Operations paused due to lack of investment. It reached real usage."
       },
       "seatHub": {
         "description": "Complete coworking platform for booking workspaces. Management system with availability control, hourly/daily/monthly bookings, an admin dashboard, and payments integration. Web and mobile apps with interactive maps."
@@ -205,8 +222,8 @@
         "description": "Real-time weather forecast app integrated with a weather API. Displays temperature, conditions, and forecasts with a clean, responsive design.",
         "inactivityNote": "Site may be offline due to weather API inactivity."
       },
-      "calculator": {
-        "description": "Modern, functional web calculator with a minimalist design. Performs basic math operations with a responsive UI and smooth user experience."
+      "pythonChat": {
+        "description": "Real-time chat with TCP sockets and a CustomTkinter GUI. Started as a college terminal exercise and evolved for portfolio: multi-threaded server with broadcast, JSON protocol (join, leave, message, system), light/dark login, and bubble-style messages. Runs on a local network."
       }
     }
   }

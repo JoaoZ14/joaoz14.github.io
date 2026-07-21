@@ -1362,6 +1362,13 @@ const ProjectShowcase = styled.div`
   }
 `;
 
+const ProjectsGroupDivider = styled.div`
+  width: 100%;
+  height: 1px;
+  margin: clamp(48px, 7vw, 80px) 0;
+  background-color: var(--line);
+`;
+
 const ProjectIndexSticky = styled.div`
   @media (min-width: 900px) {
     position: sticky;
@@ -1402,16 +1409,12 @@ const ProjectRowIndexNum = styled.span`
 `;
 
 const ProjectGroupTitle = styled.h3`
-  margin: clamp(40px, 6vw, 64px) 0 12px;
+  margin: 0 0 12px;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 15px;
   letter-spacing: -0.01em;
   color: var(--text-2);
-
-  &:first-of-type {
-    margin-top: 0;
-  }
 `;
 
 const ProjectGroupLead = styled.p`
@@ -1433,6 +1436,43 @@ const ProjectRowName = styled.span`
   color: inherit;
   text-wrap: balance;
   transition: transform 0.25s var(--ease-out);
+`;
+
+const ProjectRowNameBlock = styled.span`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  transition: transform 0.25s var(--ease-out);
+`;
+
+const ProjectRowStatus = styled.span`
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+`;
+
+const ProjectInvestmentTag = styled.span`
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  box-shadow: 3px 3px 0 0 var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
 `;
 
 const ProjectIndexRow = styled.button`
@@ -1464,8 +1504,8 @@ const ProjectIndexRow = styled.button`
   }
 
   @media (hover: hover) and (pointer: fine) {
-    &:hover ${ProjectRowName},
-    &[aria-current="true"] ${ProjectRowName} {
+    &:hover ${ProjectRowNameBlock},
+    &[aria-current="true"] ${ProjectRowNameBlock} {
       transform: translateX(var(--space-sm));
     }
 
@@ -1482,6 +1522,7 @@ const ProjectIndexRow = styled.button`
 
   @media (prefers-reduced-motion: reduce) {
     ${ProjectRowName},
+    ${ProjectRowNameBlock},
     ${ProjectRowMarker} {
       transition: color 0.25s var(--ease-out);
       transform: none;
@@ -1494,12 +1535,17 @@ const ProjectPreview = styled.div`
   flex-direction: column;
   gap: var(--space-lg);
   min-width: 0;
+
+  @media (min-width: 900px) {
+    min-height: 920px;
+  }
 `;
 
 const ProjectDetailCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  min-width: 0;
 
   @media (min-width: 900px) {
     gap: var(--space-lg);
@@ -1510,6 +1556,7 @@ const ProjectPreviewFade = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  min-width: 0;
   animation: projectFade 0.4s var(--ease-out) both;
 
   @keyframes projectFade {
@@ -1561,13 +1608,15 @@ const ProjectImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
   order: 0;
+  flex-shrink: 0;
+  height: clamp(240px, 32vw, 320px);
   border: 1px solid var(--line);
   background: var(--surface);
   box-shadow: 6px 6px 0 0 var(--accent);
 
   img {
     width: 100%;
-    height: clamp(240px, 35vw, 380px);
+    height: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.45s var(--ease-out);
@@ -1597,7 +1646,6 @@ const ProjectImageWrapper = styled.div`
       align-items: center;
       justify-content: center;
       background: var(--bg-2);
-      min-height: clamp(200px, 28vw, 280px);
 
       img {
         width: auto;
@@ -2061,7 +2109,9 @@ const LandingPage = () => {
     typeof window !== "undefined" && window.matchMedia(SHOWCASE_QUERY).matches
   );
   const [activeProject, setActiveProject] = useState(0);
+  const [activeStudyProject, setActiveStudyProject] = useState(0);
   const [openProjectName, setOpenProjectName] = useState("SeatHub");
+  const [openStudyName, setOpenStudyName] = useState("");
   const dropdownRef = useRef(null);
   const skipAccordionScrollRef = useRef(true);
 
@@ -2085,6 +2135,23 @@ const LandingPage = () => {
 
     return () => window.clearTimeout(timer);
   }, [openProjectName]);
+
+  useEffect(() => {
+    if (!openStudyName) return undefined;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(() => {
+      const panel = document.getElementById(`study-panel-${openStudyName}`);
+      if (!panel) return;
+      panel.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }, reduceMotion ? 0 : 90);
+
+    return () => window.clearTimeout(timer);
+  }, [openStudyName]);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -2273,6 +2340,44 @@ const LandingPage = () => {
       },
       technologies: ["java", "springboot", "openid", "jwt", "docker", "git"],
     },
+    {
+      name: "JK Distribuidora",
+      image: "Logo_acsdistribuidora.png",
+      descriptionKey: "projects.items.jkDistribuidora.description",
+      logoThumbnail: true,
+      github: "",
+      deploy: "https://acsdistribuidora.netlify.app",
+      technologies: ["html", "css", "js"],
+    },
+    {
+      name: "VendaJK CRM",
+      image: "Logo_acsdistribuidora.png",
+      descriptionKey: "projects.items.vendaJk.description",
+      logoThumbnail: true,
+      github: "",
+      deploy: "https://vendajk.netlify.app",
+      technologies: ["react", "js", "node", "postgresql", "supabase"],
+    },
+    {
+      name: "GMK Software",
+      image: "Logo_gmk.png",
+      descriptionKey: "projects.items.gmkSoftware.description",
+      logoThumbnail: true,
+      github: "",
+      deploy: "https://gmkagency.com",
+      technologies: ["react", "js"],
+    },
+    {
+      name: "AG Assist",
+      image: "Logo_agassist.png",
+      descriptionKey: "projects.items.agAssist.description",
+      noteKey: "projects.items.agAssist.statusNote",
+      logoThumbnail: true,
+      seekingInvestment: true,
+      github: "",
+      deploy: "https://agassist.netlify.app",
+      technologies: ["react", "js", "node", "asaas", "whatsapp"],
+    },
   ];
 
   const studyProjects = [
@@ -2314,16 +2419,18 @@ const LandingPage = () => {
       technologies: ["react", "html", "css", "js"],
     },
     {
-      name: "Calculadora",
-      image: "calculadora.png",
-      descriptionKey: "projects.items.calculator.description",
-      github: "https://github.com/JoaoZ14/Calculator",
+      name: "PythonChat",
+      image: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+      descriptionKey: "projects.items.pythonChat.description",
+      logoThumbnail: true,
+      github: "https://github.com/JoaoZ14/PythonChat",
       deploy: "",
-      technologies: ["html", "css", "js"],
+      technologies: ["python", "git"],
     },
   ];
 
   const activeProjectData = productionProjects[activeProject] || productionProjects[0];
+  const activeStudyData = studyProjects[activeStudyProject] || studyProjects[0];
 
   const renderProjectDetails = (project, index) => {
     const hasLinks = hasProjectLinks(project);
@@ -2368,6 +2475,10 @@ const LandingPage = () => {
           </ProjectPartner>
         )}
 
+        {project.seekingInvestment && (
+          <ProjectInvestmentTag>{t("projects.seekingInvestment")}</ProjectInvestmentTag>
+        )}
+
         <ProjectDescription>{t(project.descriptionKey)}</ProjectDescription>
 
         {!hasLinks && (
@@ -2376,9 +2487,9 @@ const LandingPage = () => {
           </ProjectPrivateNote>
         )}
 
-        {(project.technologies.length > 0 || hasLinks) && (
+        {(project.technologies.length > 0 || hasLinks || project.seekingInvestment) && (
           <ProjectActions>
-            {hasLinks && (
+            {(hasLinks || project.seekingInvestment) && (
               <ProjectLinks $dualCode={hasDualCode}>
                 {project.deploy && (
                   <ProjectLink
@@ -2390,6 +2501,18 @@ const LandingPage = () => {
                     aria-label={t("projects.viewSiteAria", { name: project.name })}
                   >
                     {t("projects.viewSite")}
+                  </ProjectLink>
+                )}
+                {project.seekingInvestment && (
+                  <ProjectLink
+                    href={`https://wa.me/5524988685043?text=${encodeURIComponent(
+                      t("projects.investmentWhatsappMessage", { name: project.name })
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t("projects.investmentCtaAria", { name: project.name })}
+                  >
+                    <FaWhatsappIcon aria-hidden="true" /> {t("projects.investmentCta")}
                   </ProjectLink>
                 )}
                 {project.github && (
@@ -2770,7 +2893,12 @@ const LandingPage = () => {
                         onClick={() => setActiveProject(index)}
                       >
                         <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
-                        <ProjectRowName>{project.name}</ProjectRowName>
+                        <ProjectRowNameBlock>
+                          <ProjectRowName>{project.name}</ProjectRowName>
+                          {project.seekingInvestment && (
+                            <ProjectRowStatus>{t("projects.seekingInvestment")}</ProjectRowStatus>
+                          )}
+                        </ProjectRowNameBlock>
                         <ProjectRowMarker aria-hidden="true">→</ProjectRowMarker>
                       </ProjectIndexRow>
                     </li>
@@ -2801,7 +2929,12 @@ const LandingPage = () => {
                         onClick={() => setOpenProjectName(open ? "" : project.name)}
                       >
                         <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
-                        <ProjectRowName>{project.name}</ProjectRowName>
+                        <ProjectRowNameBlock>
+                          <ProjectRowName>{project.name}</ProjectRowName>
+                          {project.seekingInvestment && (
+                            <ProjectRowStatus>{t("projects.seekingInvestment")}</ProjectRowStatus>
+                          )}
+                        </ProjectRowNameBlock>
                         <ProjectRowMarker aria-hidden="true">{open ? "−" : "+"}</ProjectRowMarker>
                       </ProjectIndexRow>
                       {open && (
@@ -2820,38 +2953,84 @@ const LandingPage = () => {
             </>
           )}
 
-          <ProjectGroupTitle>{t("projects.studies")}</ProjectGroupTitle>
-          <ProjectGroupLead>{t("projects.studiesLead")}</ProjectGroupLead>
+          <ProjectsGroupDivider aria-hidden="true" />
 
-          <ProjectIndexList as="div">
-            {studyProjects.map((project, index) => {
-              const open = openProjectName === project.name;
+          {projectShowcase ? (
+            <ProjectShowcase>
+              <ProjectIndexSticky>
+                <ProjectGroupTitle>{t("projects.studies")}</ProjectGroupTitle>
+                <ProjectGroupLead>{t("projects.studiesLead")}</ProjectGroupLead>
+                <ProjectIndexList>
+                  {studyProjects.map((project, index) => (
+                    <li key={project.name}>
+                      <ProjectIndexRow
+                        type="button"
+                        aria-current={activeStudyProject === index}
+                        aria-label={project.name}
+                        onMouseEnter={() => setActiveStudyProject(index)}
+                        onFocus={() => setActiveStudyProject(index)}
+                        onClick={() => setActiveStudyProject(index)}
+                      >
+                        <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
+                        <ProjectRowNameBlock>
+                          <ProjectRowName>{project.name}</ProjectRowName>
+                          {project.seekingInvestment && (
+                            <ProjectRowStatus>{t("projects.seekingInvestment")}</ProjectRowStatus>
+                          )}
+                        </ProjectRowNameBlock>
+                        <ProjectRowMarker aria-hidden="true">→</ProjectRowMarker>
+                      </ProjectIndexRow>
+                    </li>
+                  ))}
+                </ProjectIndexList>
+              </ProjectIndexSticky>
 
-              return (
-                <div key={project.name}>
-                  <ProjectIndexRow
-                    type="button"
-                    aria-expanded={open}
-                    aria-controls={`project-panel-${project.name}`}
-                    onClick={() => setOpenProjectName(open ? "" : project.name)}
-                  >
-                    <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
-                    <ProjectRowName>{project.name}</ProjectRowName>
-                    <ProjectRowMarker aria-hidden="true">{open ? "−" : "+"}</ProjectRowMarker>
-                  </ProjectIndexRow>
-                  {open && (
-                    <ProjectAccordionPanel
-                      id={`project-panel-${project.name}`}
-                      role="region"
-                      aria-label={project.name}
-                    >
-                      {renderProjectDetails(project, index)}
-                    </ProjectAccordionPanel>
-                  )}
-                </div>
-              );
-            })}
-          </ProjectIndexList>
+              <ProjectPreview aria-live="polite">
+                <ProjectPreviewFade key={activeStudyData.name}>
+                  {renderProjectDetails(activeStudyData, activeStudyProject)}
+                </ProjectPreviewFade>
+              </ProjectPreview>
+            </ProjectShowcase>
+          ) : (
+            <>
+              <ProjectGroupTitle>{t("projects.studies")}</ProjectGroupTitle>
+              <ProjectGroupLead>{t("projects.studiesLead")}</ProjectGroupLead>
+              <ProjectIndexList as="div">
+                {studyProjects.map((project, index) => {
+                  const open = openStudyName === project.name;
+
+                  return (
+                    <div key={project.name}>
+                      <ProjectIndexRow
+                        type="button"
+                        aria-expanded={open}
+                        aria-controls={`study-panel-${project.name}`}
+                        onClick={() => setOpenStudyName(open ? "" : project.name)}
+                      >
+                        <ProjectRowIndexNum>{String(index + 1).padStart(2, "0")}</ProjectRowIndexNum>
+                        <ProjectRowNameBlock>
+                          <ProjectRowName>{project.name}</ProjectRowName>
+                          {project.seekingInvestment && (
+                            <ProjectRowStatus>{t("projects.seekingInvestment")}</ProjectRowStatus>
+                          )}
+                        </ProjectRowNameBlock>
+                        <ProjectRowMarker aria-hidden="true">{open ? "−" : "+"}</ProjectRowMarker>
+                      </ProjectIndexRow>
+                      {open && (
+                        <ProjectAccordionPanel
+                          id={`study-panel-${project.name}`}
+                          role="region"
+                          aria-label={project.name}
+                        >
+                          {renderProjectDetails(project, index)}
+                        </ProjectAccordionPanel>
+                      )}
+                    </div>
+                  );
+                })}
+              </ProjectIndexList>
+            </>
+          )}
         </ProjectsSection>
 
         <Line />
